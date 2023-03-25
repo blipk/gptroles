@@ -7,20 +7,28 @@ Has some features to increase interactivity and context awareness:
     - GPT can run shell scripts on your computer, so you can ask it directly to find files or open programs
 
 These are programmed in a root prompt.
-Be direct as possible in your commands or questions to get them issued correctly.
+
+Additional features:
+    - List roles from jailbreakchat.com and set them as the root prompt
+
 
 TODO: The chat UI has action indicators for the interactivity
 TODO: Also the messages in the current prompt chain are
 
-TODO: List and add roles from jailbreakchat.com
 
 ## Installing/Running
+
+#### Packaged AppImage/PyInstaller
+
+##TODO
+
+#### From pip
+
+`pip install gptroles && ./install.sh`
+
+The install script is required to install desktop icons
 
 #### From source with Poetry
 ```shell
 poetry install && poetry run main
 ```
-
-#### From pip
-TODO
-

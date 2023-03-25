@@ -47,5 +47,3 @@ devtest = { callable = "mypackage:test.run_tests", extras = ["test"] }
 # optional = true
 # [tool.poetry.group.docs.dependencies]
 # Sphinx = "^5.1.1"
-
-# Python-style entrypoints and scripts are easily expressed

@@ -1,10 +1,11 @@
 import sys
 from PyQt6.QtGui import QDragEnterEvent, QDropEvent, QDragLeaveEvent, QDragMoveEvent, QAction
-from PyQt6.QtCore import QTimer, QSize, QRect
+from PyQt6.QtCore import QTimer, QSize, QRect, QSettings, QByteArray
 from PyQt6.QtWidgets import QApplication, QVBoxLayout, QWidget, QLayout, QLineEdit, QTextEdit, QMessageBox, QMainWindow
 from .chatbox import ChatBox
 
 APP_VERSION = "v0.1" #TODO read from package
+APP_ORG = "blipk"
 APP_NAME = "GPT CHAT"
 from ..settings import settings
 print(settings)
@@ -12,9 +13,11 @@ print(settings)
 class RoleChat(QApplication):
     def __init__(self, argv):
         super(QApplication, self).__init__(argv)
-        self.setApplicationVersion(APP_VERSION)
+        self.setOrganizationName(APP_ORG)
         self.setApplicationName(APP_NAME)
+        self.setApplicationVersion(APP_VERSION)
         self.setApplicationDisplayName(APP_NAME)
+        self.settings = QSettings(self)
 
         self.mainWindow = MainWindow(self)
         self.mainWindow.center()
@@ -69,7 +72,21 @@ class MainWindow(QMainWindow):
         # Menu
         menu = self.menuBar()
         # menu.addMenu("File")
+        self.readSettings()
 
+    def readSettings(self):
+        self.app.settings.beginGroup("MainWindow");
+        geometry = self.app.settings.value("geometry", QByteArray())
+        if geometry.isEmpty():
+            self.setGeometry(200, 200, 400, 400);
+        else:
+            self.restoreGeometry(geometry)
+        self.app.settings.endGroup();
+
+    def writeSettings(self):
+        self.app.settings.beginGroup("MainWindow")
+        self.app.settings.setValue("geometry", self.saveGeometry());
+        self.app.settings.endGroup()
 
     def dragEnterEvent(self, e: QDragEnterEvent) -> None:
         mimedata = e.mimeData()
@@ -87,6 +104,9 @@ class MainWindow(QMainWindow):
         if self.app.useIndicator:
             event.ignore()
             self.hide()
+        else:
+            self.writeSettings()
+            event.accept()
 
     def showErrorMSG(self, msg_str: str, title_msg="ERROR", detail: str = None):
         self.appear()
