@@ -8,7 +8,7 @@ from gptroles.ui.mainwindow import MainWindow
 APP_VERSION = "v0.1"  # TODO read from package
 APP_ORG = "blipk"
 APP_NAME = "gptroles"
-
+APP_SETTINGS_FNAME = "gptroles.toml"
 
 class RoleChat(QApplication):
     def __init__(self, argv):
@@ -22,7 +22,7 @@ class RoleChat(QApplication):
         self.debug_mode = self.parser.isSet(self.cli_options["debug_option"])
 
         self.qsettings = QSettings(self)
-        self.settings = Settings("gptroles.toml", APP_NAME, APP_ORG)
+        self.settings = Settings(APP_SETTINGS_FNAME, APP_NAME, APP_ORG)
         print(self.settings)
 
         self.mainWindow = MainWindow(self)
