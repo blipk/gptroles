@@ -18,7 +18,7 @@ class Settings():
     ))
     def __init__(self, settings_file="env.toml") -> None:
         self.settings_file=settings_file
-        self.settings = self.default_settings.copy()
+        self._settings = self.default_settings.copy()
         if not os.path.exists(settings_file):
             with open(settings_file, 'w') as f:
                 f.write('OPENAI_API_KEY=""')
@@ -32,13 +32,13 @@ class Settings():
         self.setSettings(l_settings)
 
     def setSettings(self, l_settings: dict):
-        settings = self.settings.copy()
+        settings = self._settings.copy()
         for k, v in l_settings.items():
             if type(v) is dict:
                 settings[k] |= l_settings[k]
             else:
                 settings[k] = l_settings[k]
-        self.settings = settings
+        self._settings = settings
         for key in settings:
             setattr(self, key, settings[key])
 
@@ -47,12 +47,12 @@ class Settings():
             settings_file = self.settings_file
 
         if not settings:
-            settings = self.settings
+            settings = self._settings
 
         with open(settings_file) as f:
             toml.dump(settings, f)
 
     def __repr__(self) -> str:
-        return repr_(self, ignore_keys=["settings", "default_settings"])
+        return repr_(self, ignore_keys=["_settings", "default_settings"])
 
-settings = Settings()
+# settings = Settings()

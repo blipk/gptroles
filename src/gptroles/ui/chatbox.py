@@ -3,11 +3,11 @@ import html
 import threading
 from PyQt6.QtGui import QAction
 from PyQt6.QtCore import Qt, QUrl, pyqtSignal, pyqtSlot, QVariant, QObject
-from PyQt6.QtWidgets import QApplication, QVBoxLayout, QWidget, QLineEdit, QMainWindow
+from PyQt6.QtWidgets import QApplication, QVBoxLayout, QHBoxLayout, QWidget, QLineEdit, QMainWindow
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWebEngineCore import QWebEnginePage, QWebEngineSettings
 from PyQt6.QtWebChannel import QWebChannel
-from gptroles.gpt import rolegpt, RoleGpt
+from gptroles.gpt import RoleGpt, coder_role
 from gptroles.ui.netprompts import BorderlessWindow
 
 class Bridge(QObject):
@@ -40,7 +40,7 @@ class ChatBox(QWidget):
 
     def __init__(self, parent=None):
         super(ChatBox, self).__init__(parent)
-        self.rolegpt = rolegpt
+        self.rolegpt = RoleGpt(parent.settings, coder_role, "")
 
         self.layout: QVBoxLayout = QVBoxLayout(self)
         self.input_box = QLineEdit(self)
@@ -91,7 +91,7 @@ class ChatBox(QWidget):
 
     def onLoadFinished(self, ok):
         if ok:
-            chat_user, chat_response = rolegpt.confirm_role()
+            chat_user, chat_response = self.rolegpt.confirm_role()
             self.after_input_entered(chat_user, chat_response)
 
     def on_input_entered(self):
@@ -102,7 +102,7 @@ class ChatBox(QWidget):
         thread.start()
 
     def ask(self, prompt):
-        role, answer = rolegpt.ask(prompt)
+        role, answer = self.rolegpt.ask(prompt)
         self.sig.emit(role, answer)
 
     @pyqtSlot(str, str)

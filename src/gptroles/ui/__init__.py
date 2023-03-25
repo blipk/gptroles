@@ -1,14 +1,15 @@
 import sys
 from PyQt6.QtGui import QDragEnterEvent, QDropEvent, QDragLeaveEvent, QDragMoveEvent, QAction
 from PyQt6.QtCore import QTimer, QSize, QRect, QSettings, QByteArray
-from PyQt6.QtWidgets import QApplication, QVBoxLayout, QWidget, QLayout, QLineEdit, QTextEdit, QMessageBox, QMainWindow
-from .chatbox import ChatBox
+from PyQt6.QtWidgets import QApplication, QVBoxLayout, QHBoxLayout, QWidget, QLayout, QLineEdit, QTextEdit, QMessageBox, QMainWindow
+from gptroles.ui.chatbox import ChatBox
+from gptroles.ui.settings import DictWidget
+
 
 APP_VERSION = "v0.1" #TODO read from package
 APP_ORG = "blipk"
 APP_NAME = "GPT CHAT"
-from ..settings import settings
-print(settings)
+from gptroles.settings import Settings
 
 class RoleChat(QApplication):
     def __init__(self, argv):
@@ -17,7 +18,9 @@ class RoleChat(QApplication):
         self.setApplicationName(APP_NAME)
         self.setApplicationVersion(APP_VERSION)
         self.setApplicationDisplayName(APP_NAME)
-        self.settings = QSettings(self)
+        self.qsettings = QSettings(self)
+        self.settings = Settings()
+        print(self.settings)
 
         self.mainWindow = MainWindow(self)
         self.mainWindow.center()
@@ -44,6 +47,8 @@ class MainWindow(QMainWindow):
     def __init__(self, app: RoleChat):
         super(QMainWindow, self).__init__()
         self.app = app
+        self.qsettings = self.app.qsettings
+        self.settings = self.app.settings
         self.setAcceptDrops(True)
         self.setupUi(self)
         # self.label_3.setText(self.label_3.text().replace("$$$", APP_VERSION))
@@ -56,37 +61,55 @@ class MainWindow(QMainWindow):
 
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
-        self.verticalLayoutWidget = QWidget(self.centralwidget)
-        self.verticalLayoutWidget.setObjectName(u"verticalLayoutWidget")
-        self.verticalLayoutWidget.setGeometry(self.geometry())
-        self.verticalLayout = QVBoxLayout(self.verticalLayoutWidget)
-        self.verticalLayout.setObjectName(u"verticalLayout")
-        self.verticalLayout.setSizeConstraint(QLayout.SizeConstraint.SetMaximumSize)
-        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
-        # self.setCentralWidget(QWidget(self))
-        # centralWidget = self.centralWidget()
-        # self.verticalLayout.addWidget(self.chatbox)
+
+        self.vLayoutWidget = QWidget(self.centralwidget)
+        self.vLayoutWidget.setObjectName(u"vLayoutWidget")
+        self.vLayoutWidget.setGeometry(self.geometry())
+        self.vLayout = QVBoxLayout(self.vLayoutWidget)
+        self.vLayout.setObjectName(u"vLayout")
+        self.vLayout.setSizeConstraint(QLayout.SizeConstraint.SetMaximumSize)
+        self.vLayout.setContentsMargins(0, 0, 0, 0)
+
+        self.hLayoutWidget = QWidget(self.vLayoutWidget)
+        self.hLayoutWidget.setObjectName(u"hLayoutWidget")
+        self.hLayoutWidget.setGeometry(self.vLayoutWidget.geometry())
+        self.hLayout = QHBoxLayout(self.hLayoutWidget)
+        self.hLayout.setObjectName(u"hLayout")
+        self.hLayout.setSizeConstraint(QLayout.SizeConstraint.SetMaximumSize)
+        self.hLayout.setContentsMargins(0, 0, 0, 0)
+
+
+        self.settingsWidget = DictWidget(self.settings._settings)
         self.chatbox = ChatBox(self)
-        self.setCentralWidget(self.chatbox)
+        self.hLayout.addWidget(self.chatbox)
+        self.hLayout.addWidget(self.settingsWidget)
 
         # Menu
         menu = self.menuBar()
-        # menu.addMenu("File")
+        settings_action = QAction("Settings", self)
+        settings_action.triggered.connect(self.settingsWidget.toggle)
+        menu.addAction(settings_action)
+
+        self.setCentralWidget(self.hLayoutWidget)
+
+
+
+        # Load window QSettings
         self.readSettings()
 
     def readSettings(self):
-        self.app.settings.beginGroup("MainWindow");
-        geometry = self.app.settings.value("geometry", QByteArray())
+        self.app.qsettings.beginGroup("MainWindow");
+        geometry = self.app.qsettings.value("geometry", QByteArray())
         if geometry.isEmpty():
             self.setGeometry(200, 200, 400, 400);
         else:
             self.restoreGeometry(geometry)
-        self.app.settings.endGroup();
+        self.app.qsettings.endGroup();
 
     def writeSettings(self):
-        self.app.settings.beginGroup("MainWindow")
-        self.app.settings.setValue("geometry", self.saveGeometry());
-        self.app.settings.endGroup()
+        self.app.qsettings.beginGroup("MainWindow")
+        self.app.qsettings.setValue("geometry", self.saveGeometry());
+        self.app.qsettings.endGroup()
 
     def dragEnterEvent(self, e: QDragEnterEvent) -> None:
         mimedata = e.mimeData()

@@ -5,9 +5,10 @@ import openai
 import openai.error
 from os import getenv
 from pprint import pprint
-from gptroles.settings import settings
 from gptroles.prompts import system_role, coder_role, role_confirmation
-openai.api_key = settings.OPENAI_API_KEY
+# from gptroles.settings import settings
+# openai.api_key = settings.OPENAI_API_KEY
+
 
 # models = sorted(openai.Model.list().data, key=lambda x: x.id)
 # for model in models:
@@ -31,11 +32,37 @@ def run_shell(command, autorun=False):
 class RoleGpt():
     prompt_chain = []
 
-    def __init__(self, sub_role, system_role=system_role, prompt_chain=None) -> None:
+    def __init__(self, settings, sub_role, system_role=system_role, prompt_chain=None) -> None:
+        self._settings = None
+        self._api_key = None
+        self.settings = settings
+        self.api_key = settings.OPENAI_API_KEY
         self.sub_role = sub_role
         self.system_role = system_role
         if prompt_chain:
             self.prompt_chain = prompt_chain
+
+    @property
+    def settings(self):
+        return self._settings
+
+    @settings.setter
+    def settings(self, value):
+        self._settings = value
+        self.api_key = value.OPENAI_API_KEY
+
+    @property
+    def api_key(self):
+        assert self._api_key == openai.api_key
+        return self._api_key
+
+    @api_key.setter
+    def api_key(self, value):
+        self._api_key = value
+        openai.api_key = value
+
+    def change_api_key(self, api_key):
+        openai.api_key = api_key
 
     def confirm_role(self):
         return self.ask(role_confirmation, prompt_chain=[], assistant_name="System")
@@ -57,7 +84,7 @@ class RoleGpt():
 
         try:
             response = openai.ChatCompletion.create(
-                **(settings.chatcompletion | dict(messages=messages)),
+                **(self.settings.chatcompletion | dict(messages=messages)),
             )
         except openai.error.AuthenticationError as e:
             print("Auth Error", e)
@@ -101,4 +128,4 @@ class RoleGpt():
         return (assistant_name, answer)
 
 
-rolegpt = RoleGpt(coder_role, "")
+# rolegpt = RoleGpt(settings, coder_role, "")
