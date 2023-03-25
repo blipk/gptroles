@@ -6,6 +6,7 @@ signal.signal(signal.SIGINT, signal.SIG_DFL)
 from gptroles.ui import RoleChat
 
 def main():
+    # print("Creating RoleChat()")
     app = RoleChat(sys.argv)
     sys.exit(app.exec())
 

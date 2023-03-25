@@ -7,4 +7,4 @@ rm -rf dist
 poetry build
 poetry -v build --format=wheel
 # poetry publish
-# pip install .
+

@@ -40,6 +40,7 @@ class ChatBox(QWidget):
 
     def __init__(self, parent=None):
         super(ChatBox, self).__init__(parent)
+        self.mwindow = parent
         self.rolegpt = RoleGpt(parent.settings, coder_role, "")
 
         self.layout: QVBoxLayout = QVBoxLayout(self)
@@ -59,24 +60,24 @@ class ChatBox(QWidget):
         self.layout.addWidget(self.webview)
         self.layout.addWidget(self.input_box)
 
-        # Dev view for ChatPage
-        self.dev_view = QWebEngineView()
-        self.dev_view.setMaximumHeight(440)
-        self.dev_view.setVisible(False)
-        self.layout.addWidget(self.dev_view, 100)
-        self.page.setDevToolsPage(self.dev_view.page())
-
         menu = self.parent().menuBar()
-        # menu.addMenu("File")
-        devt_action = QAction("DevTools", self)
-        devt_action.triggered.connect(self.toggleDevTools)
-        menu.addAction(devt_action)
-        msgaction = QAction("PyMessage", self)
-        msgaction.triggered.connect(lambda: self.page.sendMessageToJS("Hello from Python!"))
-        menu.addAction(msgaction)
         netaction = QAction("JailBreakChat", self)
         netaction.triggered.connect(self.toggleNetPrompts)
         menu.addAction(netaction)
+        # Dev view for ChatPage
+        if self.mwindow.app.debug_mode:
+            self.dev_view = QWebEngineView()
+            self.dev_view.setMaximumHeight(440)
+            self.dev_view.setVisible(False)
+            self.layout.addWidget(self.dev_view, 100)
+            self.page.setDevToolsPage(self.dev_view.page())
+
+            devt_action = QAction("DevTools", self)
+            devt_action.triggered.connect(self.toggleDevTools)
+            menu.addAction(devt_action)
+            # msgaction = QAction("PyMessage", self)
+            # msgaction.triggered.connect(lambda: self.page.sendMessageToJS("Hello from Python!"))
+            # menu.addAction(msgaction)
 
         self.webview.loadFinished.connect(self.onLoadFinished)
         self.netPromptsWindow = None
