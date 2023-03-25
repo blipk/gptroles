@@ -7,8 +7,9 @@ from PyQt6.QtWidgets import QApplication, QVBoxLayout, QHBoxLayout, QWidget, QLi
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWebEngineCore import QWebEnginePage, QWebEngineSettings
 from PyQt6.QtWebChannel import QWebChannel
-from gptroles.gpt import RoleGpt, coder_role
-from gptroles.ui.netprompts import BorderlessWindow
+from .netprompts import BorderlessWindow
+from ..gpt import RoleGpt, coder_role
+
 
 class Bridge(QObject):
     dataChanged = pyqtSignal(QVariant)

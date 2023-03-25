@@ -5,15 +5,12 @@ import openai
 import openai.error
 from os import getenv
 from pprint import pprint
-from gptroles.prompts import system_role, coder_role, role_confirmation
-# from gptroles.settings import settings
-# openai.api_key = settings.OPENAI_API_KEY
+from .prompts import system_role, coder_role, role_confirmation
 
 
 # models = sorted(openai.Model.list().data, key=lambda x: x.id)
 # for model in models:
 #     print(model)
-
 
 def run_shell(command, autorun=False):
     print("#running proc", command)
@@ -48,7 +45,6 @@ class RoleGpt():
     @settings.setter
     def settings(self, value):
         self._settings = value
-        self.api_key = value.OPENAI_API_KEY
         openai.api_key = value.OPENAI_API_KEY
         print("GPT Settings Updated")
 
@@ -80,7 +76,8 @@ class RoleGpt():
             {"role": "system", "content": self.sub_role},
         ]
         # pprint(system_roles)
-        messages = system_roles + prompt_chain
+        input_prompt_chain = [m for m in prompt_chain if m["role"] in ("system", "assistant", "user")]
+        messages = system_roles + input_prompt_chain
 
         try:
             response = openai.ChatCompletion.create(

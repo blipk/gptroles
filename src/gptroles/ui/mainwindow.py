@@ -2,8 +2,8 @@ import sys
 from PyQt6.QtGui import QDragEnterEvent, QDropEvent, QDragLeaveEvent, QDragMoveEvent, QAction
 from PyQt6.QtCore import QTimer, QSize, QRect, QSettings, QByteArray
 from PyQt6.QtWidgets import QApplication, QVBoxLayout, QHBoxLayout, QWidget, QLayout, QLineEdit, QTextEdit, QMessageBox, QMainWindow
-from gptroles.ui.chatbox import ChatBox
-from gptroles.ui.settings import SettingsWidget
+from .chatbox import ChatBox
+from .settings import SettingsWidget
 
 
 class MainWindow(QMainWindow):

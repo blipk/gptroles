@@ -14,6 +14,7 @@ Additional features:
 
 TODO: The chat UI has action indicators for the interactivity
 TODO: Also the messages in the current prompt chain are
+TODO: Show alternate choices and commit to conversation
 
 
 ## Installing/Running
