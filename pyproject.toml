@@ -1,0 +1,51 @@
+[tool.poetry]
+name = "gptroles"
+version = "0.1.01"
+description = "Interact with chatgpt and assign different roles"
+authors = [
+    "Blipk A.D."
+]
+homepage = "https://github.com/blipk/pysh"
+repository = "https://github.com/blipk/pysh"
+documentation = "https://github.com/blipk/pysh"
+license = "MIT"
+
+# README file(s) are used as the package description
+readme = "README.md" #, "LICENSE"
+keywords = ["pysh", "shell", "bash"] # Keywords (translated to tags on the package index)
+classifiers = [
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+
+packages = [
+    { include = "gptroles", from = "src" }
+]
+include = [
+    { path = "gptroles/ui/web/**/*", format = ["sdist", "wheel"] }
+]
+
+
+[tool.poetry.dependencies]
+# Compatible Python versions
+python = ">=3.10"
+openai = ">=0.27.2"
+pyqt6 = ">=6.4.2"
+pyqt6-webengine = ">=6.4.0"
+toml = "^0.10.2"
+
+[tool.poetry.scripts]
+main = "gptroles.main:main"
+devtest = { callable = "mypackage:test.run_tests", extras = ["test"] }
+
+# # Dependency groups are supported for organizing your dependencies
+# [tool.poetry.group.dev.dependencies]
+# pytest = "^7.1.2"
+# pytest-cov = "^3.0"
+
+# # ...and can be installed only when explicitly requested
+# [tool.poetry.group.docs]
+# optional = true
+# [tool.poetry.group.docs.dependencies]
+# Sphinx = "^5.1.1"
+
+# Python-style entrypoints and scripts are easily expressed

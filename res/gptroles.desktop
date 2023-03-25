@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Name=GPTRoles Chat
+GenericName=GPTRoles Chat
+Comment=Chat with GPT
+Exec=bash -c 'F=%u "$HOME/.local/bin/gptroles" "$F"'
+Icon=gptroles
+Terminal=false
+Type=Application
+X-Desktop-File-Install-Version=0.24

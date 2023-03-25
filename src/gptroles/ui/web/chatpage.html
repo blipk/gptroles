@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Chat Log</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="static/highlight.min.css">
+    <script src="qrc:///qtwebchannel/qwebchannel.js"></script>
+    <script src="static/marked.min.js"></script>
+    <script src="static/highlight.min.js"></script>
+</head>
+
+<body>
+    <div class="chat-container">
+        <!-- <div class="chat-message">
+            <span class="chat-message-username">John</span>
+            <p>Hello there!</p>
+            <span class="chat-message-time">10:00 AM</span>
+        </div>
+
+        <div class="chat-message chat-message-self">
+            <span class="chat-message-username chat-message-username-self">Me</span>
+            <p>Hi! How are you?</p>
+            <span class="chat-message-time chat-message-time-self">10:01 AM</span>
+        </div> -->
+<!--
+        <div class="chat-message">
+            <span class="chat-message-username">John</span>
+            <p>I'm good, thanks for asking.</p>
+            <span class="chat-message-time">10:02 AM</span>
+        </div>
+        <div class="chat-message ">
+            <span class="chat-message-username ">GPT</span>
+            <div class="chat-message-msg">
+                <p>To send data from a <code>QWebEnginePage</code> to its parent in PyQt6, you can use signals and
+                    slots. A signal is emitted by the <code>QWebEnginePage</code> when data is ready to be sent to the
+                    parent, and a slot is used to receive the signal in the parent.</p>
+                <p>Here's an example:</p>
+                <pre><code class="language-python">from PyQt6.QtCore import pyqtSignal, QObject
+from PyQt6.QtWebEngineWidgets import QWebEnginePage
+
+class WebEnginePage(QWebEnginePage):
+dataReady = pyqtSignal(str)
+
+def __init__(self, parent=None):
+    super(WebEnginePage, self).__init__(parent)
+
+def someFunction(self):
+    data = "example data"
+    self.dataReady.emit(data)
+</code></pre>
+                <p>In this example, a new signal <code>dataReady</code> is defined that takes a string as an argument.
+                    This signal is emitted by the <code>WebEnginePage</code> object when data is ready to be sent to the
+                    parent.</p>
+                <p>To connect this signal to a slot in the parent:</p>
+                <pre><code class="language-python">class Parent(QObject):
+def __init__(self):
+    super(Parent, self).__init__()
+
+    self.webEnginePage = WebEnginePage()
+    self.webEnginePage.dataReady.connect(self.onDataReady)
+
+def onDataReady(self, data):
+    print("Data received:", data)
+</code></pre>
+                <p>In this example, the <code>Parent</code> object creates a <code>WebEnginePage</code> object and
+                    connects its <code>dataReady</code> signal to the <code>onDataReady</code> slot in the parent. When
+                    <code>dataReady</code> is emitted by the <code>WebEnginePage</code>, the <code>onDataReady</code>
+                    function is called in the parent with the <code>data</code> argument. Here, <code>onDataReady</code>
+                    simply prints the received data.</p>
+                <p>Hope this helps!</p>
+                <p></p>
+                <span class="chat-message-time chat-message-time-self">Now</span>
+            </div>
+        </div> -->
+        <!-- More chat messages here... -->
+    </div>
+
+    <script src="chatpage.js"></script>
+</body>
+
+</html>

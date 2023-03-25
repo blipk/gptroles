@@ -1,0 +1,10 @@
+__pycache__
+dist/
+build/
+*.egg-info/
+.pypirc
+.env
+env.toml
+settings.toml
+.pypirc
+*.lock
