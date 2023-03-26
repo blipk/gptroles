@@ -5,16 +5,16 @@ import openai
 import openai.error
 from os import getenv
 from pprint import pprint
-from .prompts import system_role, coder_role, role_confirmation
+from .prompts import system_role, gptroles, role_confirmation
 
 
 # models = sorted(openai.Model.list().data, key=lambda x: x.id)
 # for model in models:
 #     print(model)
 
-def run_shell(command, autorun=False):
+def run_shell(command, shell="bash", autorun=False):
     print("#running proc", command)
-    p = subprocess.Popen(["bash", "-c", command], shell=False,
+    p = subprocess.Popen([shell, "-c", command], shell=False,
                          text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     p.communicate()
     try:
@@ -29,11 +29,13 @@ def run_shell(command, autorun=False):
 class RoleGpt():
     prompt_chain = []
 
-    def __init__(self, settings, sub_role, system_role=system_role, prompt_chain=None) -> None:
+    def __init__(self, settings, sub_roles, system_role=system_role, prompt_chain=None) -> None:
         self._settings = None
         self.settings = settings
         self.api_key = settings.OPENAI_API_KEY
-        self.sub_role = sub_role
+        if type(sub_roles) == str:
+            sub_roles = [sub_roles]
+        self.sub_roles = sub_roles
         self.system_role = system_role
         if prompt_chain:
             self.prompt_chain = prompt_chain
@@ -72,8 +74,10 @@ class RoleGpt():
         print(f"{message_role}: {prompt}")
         # print(prompt_chain[1:])
         system_roles = [
-            {"role": "system", "content": self.system_role},
-            {"role": "system", "content": self.sub_role},
+            {"role": "system", "content": self.system_role}
+        ] + [
+            {"role": "system", "content": role}
+            for role in self.sub_roles
         ]
         # pprint(system_roles)
         input_prompt_chain = [m for m in prompt_chain if m["role"] in ("system", "assistant", "user")]
@@ -105,23 +109,6 @@ class RoleGpt():
             f"{response.choices[0].message.role}: {response.choices[0].message.content.strip()}")
         answer = response.choices[0].message.content.strip()
 
-        if answer.startswith("SHELL:"):
-            idx = (answer+"\n").index("\n")
-            cmd = answer[len("SHELL:"):idx]
-            out, err, rcode = run_shell(cmd, True)
-
-            if err or rcode:
-                return self.ask("SHELLERROR: "+err, prompt_chain, message_role)
-
-            out = "\n" + out
-            if "```" in answer:
-                first = answer.index("```")
-                chat_response = answer[:first] + f"```shell {out}" + answer[answer.index("```", first+3):]
-            else:
-                assistant_name = "Shell"
-                chat_response = f"```shell {out}```"
-            return (assistant_name, chat_response)
-            return self.ask("SHELLRESPONSE:"+out, prompt_chain, message_role)
         return (assistant_name, answer)
 
 

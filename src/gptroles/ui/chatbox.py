@@ -7,8 +7,9 @@ from PyQt6.QtWidgets import QApplication, QVBoxLayout, QHBoxLayout, QWidget, QLi
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWebEngineCore import QWebEnginePage, QWebEngineSettings
 from PyQt6.QtWebChannel import QWebChannel
+from .chatmsg import ChatMessage
 from .netprompts import BorderlessWindow
-from ..gpt import RoleGpt, coder_role
+from ..gpt import RoleGpt, system_role, gptroles, run_shell
 
 
 class Bridge(QObject):
@@ -35,23 +36,39 @@ class ChatPage(QWebEnginePage):
 
     def jsMessageRecieved(self, data):
         print(f"Received JS message: {data}")
+        if type(data) is list:
+            command, *params = data
+            if command == "run_code":
+                msgid, blockindex, lang, code = params
+                shell = "python" if lang == "python" else "bash"
+                out, err, rcode = run_shell(code, shell, True)
+                if err or rcode:
+                    print("Command failure:", rcode, err)
+                else:
+                    print("Command complete:", out)
+                    js = f"window.chatPage.updateMessage('{msgid}', `{out}`, '{blockindex}')"
+                    self.runJavaScript(js)
+            elif command == "save":
+                pass
 
     def sendMessageToJS(self, message):
         script = f"window.handlePyMessage('{message}');"
         self.runJavaScript(script)
 
+
 class ChatBox(QWidget):
-    sig = pyqtSignal(str, str)
+    chatMessageSignal = pyqtSignal(ChatMessage)
 
     def __init__(self, parent=None):
         super(ChatBox, self).__init__(parent)
         self.mwindow = parent
-        self.rolegpt = RoleGpt(parent.settings, coder_role, "")
+        self.rolegpt = RoleGpt(parent.settings, gptroles)
+        self.message = []
 
         self.layout: QVBoxLayout = QVBoxLayout(self)
         self.input_box = QLineEdit(self)
         self.input_box.returnPressed.connect(self.on_input_entered)
-        self.sig.connect(self.after_input_entered, Qt.ConnectionType.QueuedConnection)
+        self.chatMessageSignal.connect(self.add_message, Qt.ConnectionType.QueuedConnection)
 
         self.webview = QWebEngineView(self)
         self.webview.settings().setAttribute(QWebEngineSettings.WebAttribute.JavascriptEnabled, True)
@@ -103,22 +120,21 @@ class ChatBox(QWidget):
     def onLoadFinished(self, ok):
         if ok:
             chat_user, chat_response = self.rolegpt.confirm_role()
-            self.after_input_entered(chat_user, chat_response)
+            self.add_message(ChatMessage(chat_user, chat_response))
 
     def on_input_entered(self):
         user_input = self.input_box.text().strip()
-        self.after_input_entered("You", user_input)
+        self.add_message(ChatMessage("You", user_input))
         self.input_box.clear()
         thread = threading.Thread(target=self.ask, args=(user_input,))
         thread.start()
 
     def ask(self, prompt):
         role, answer = self.rolegpt.ask(prompt)
-        self.sig.emit(role, answer)
+        self.chatMessageSignal.emit(ChatMessage(role, answer))
 
-    @pyqtSlot(str, str)
-    def after_input_entered(self, chat_user, chat_response):
-        # chat_response = html.escape(chat_response)
-        chat_response = chat_response.replace('`', '|TICK|').replace("${", "$|{")
-        js = f"window.chatPage.addChatMessage('{html.escape(chat_user)}', `{chat_response}`, 'Now')"
+    @pyqtSlot(ChatMessage)
+    def add_message(self, chat_message: ChatMessage):
+        chat_message_text = chat_message.text.replace('`', '|TICK|').replace("${", "$|{")
+        js = f"window.chatPage.addMessage('{html.escape(chat_message.user)}', `{chat_message_text}`, '{chat_message.time}', '{chat_message.id}')"
         self.page.runJavaScript(js)

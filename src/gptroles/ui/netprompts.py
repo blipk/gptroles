@@ -2,6 +2,12 @@ import requests
 from PyQt6.QtGui import *
 from PyQt6.QtCore import *
 from PyQt6.QtWidgets import *
+from .chatmsg import ChatMessage
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .chatbox import ChatBox
+    from ..gpt import RoleGpt
 
 
 class CustomListView(QListWidget):
@@ -16,13 +22,13 @@ class CustomListView(QListWidget):
         print(f"{item.text()} {item.id} clicked")
         prompt = item.toolTip()
         # print("Setting prompt:", prompt)
-        chatbox = self.parent().parent()
-        rolegpt = chatbox.rolegpt
+        chatbox: ChatBox = self.parent().parent()
+        rolegpt: RoleGpt = chatbox.rolegpt
         rolegpt.system_role = prompt
         rolegpt.sub_role = ""
         rolegpt.prompt_chain = []
         chat_user, chat_response = rolegpt.confirm_role()
-        chatbox.after_input_entered(chat_user, chat_response)
+        chatbox.add_message(ChatMessage(chat_user, chat_response))
 
     def on_item_select(self):
         return

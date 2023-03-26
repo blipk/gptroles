@@ -1,5 +1,6 @@
 CMD=$1
 
+
 if [ $# -eq 0 ]; then
     echo "No arguments supplied"
     exit 1
@@ -14,13 +15,26 @@ elif [[ "x$CMD" == "xsysinstall" ]]; then
 elif [[ "x$CMD" == "xrun" ]]; then
     yes | cp -rf src/gptroles/ui/* $(python3 -m site --user-site)/gptroles/ui/
     ./src/gptroles/main.py --debug
+    # poetry run main --debug
 elif [[ "x$CMD" == "xbuild" ]]; then
-    poetry install
-    rm -rf build
-    rm -rf dist
-    poetry build
-    poetry -v build --format=wheel
+    build
+    if [[ "x$2" == "xpublish" ]]; then
+        publish
+    fi
+elif [[ "x$CMD" == "xpublish" ]]; then
+    publish
 else
   echo "Unknown command: $CMD"
 fi
 
+build() {
+    poetry install && \
+    rm -rf build && \
+    rm -rf dist && \
+    poetry build && \
+    poetry -v build --format=wheel
+}
+
+publish() {
+    poetry publish
+}

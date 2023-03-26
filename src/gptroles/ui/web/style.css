@@ -99,9 +99,9 @@ body {
     margin-bottom: 10px;
     max-width: 95vw;
     white-space: pre-wrap;
-    min-width: 70%;
-    display: table;
-    border-collapse: separate;
+    /* min-width: 70%; */
+    /* display: table;
+    border-collapse: separate; */
 }
 
 .hljs {
@@ -115,6 +115,8 @@ body {
     right: 5px;
     margin: 0;
     padding: 0;
+    min-height: 40px;
+    height: 40px;
     border: none;
     border-radius: 4px;
 }

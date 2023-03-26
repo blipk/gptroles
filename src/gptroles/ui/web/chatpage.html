@@ -40,7 +40,7 @@
                     slots. A signal is emitted by the <code>QWebEnginePage</code> when data is ready to be sent to the
                     parent, and a slot is used to receive the signal in the parent.</p>
                 <p>Here's an example:</p>
-                <pre><code class="language-python">from PyQt6.QtCore import pyqtSignal, QObject
+                <pre><code class="hljs language-python">from PyQt6.QtCore import pyqtSignal, QObject
 from PyQt6.QtWebEngineWidgets import QWebEnginePage
 
 class WebEnginePage(QWebEnginePage):
@@ -57,7 +57,7 @@ def someFunction(self):
                     This signal is emitted by the <code>WebEnginePage</code> object when data is ready to be sent to the
                     parent.</p>
                 <p>To connect this signal to a slot in the parent:</p>
-                <pre><code class="language-python">class Parent(QObject):
+                <pre><code class="hljs language-python">class Parent(QObject):
 def __init__(self):
     super(Parent, self).__init__()
 

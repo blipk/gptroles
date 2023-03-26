@@ -35,16 +35,18 @@ class ChatPage {
         }, 1500)
     }
 
-    addChatMessage(username, message, time) {
+    addMessage(username, text, time, id) {
         const chatMessageClasses = username === this.username ? ["chat-message-self"] : []
         const chatNameClasses = username === this.username ? ["chat-message-username-self"] : []
-        const msg = marked.parse(message.replaceAll("|TICK|", "`").replaceAll('$|{', '${'))
+        const msg = marked.parse(text.replaceAll("|TICK|", "`").replaceAll('$|{', '${'))
+        const newMsgEl = `<div class="chat-message-msg" x-msg-id="${id}" x-msg-time="${time}" x-msg-user="${username}">${msg}</div>`
         if (username === this.lastMessage?.username) {
-            this.lastMessage.lastMessageEl.innerHTML += `<div class="chat-message-msg">${msg}</p>`
+            this.lastMessage.lastMessageEl.innerHTML += newMsgEl
+            this.lastMessage.timeEl.innerHTML = time
         } else {
             this.chatLog.innerHTML += `<div class="chat-message ${chatMessageClasses}">
                 <span class="chat-message-username ${chatNameClasses}">${username}</span>
-                <div class="chat-message-msg">${msg}</p>
+                ${newMsgEl}
                 <span class="chat-message-time chat-message-time-self">${time}</span>
             </div>`
         }
@@ -53,18 +55,31 @@ class ChatPage {
         this.chatLog.scrollTo(0, this.chatLog.scrollHeight);
     }
 
+    updateMessage(id, text, blockIndex=null, time = (Date.now()/1000)) {
+        const msg = $(`.chat-message-msg[x-msg-id="${id}"]`)
+        if (!msg)
+            return
+        if (blockIndex !== null) {
+            const block = msg.querySelectorAll("pre code")[parseInt(blockIndex, 10)]
+            block.textContent = text
+        } else {
+            msg.innerHTML = marked.parse(text)
+        }
+        msg.setAttribute("x-msg-updated", time)
+    }
+
     get lastMessage() {
         const lastMessageEl = this.chatLog.querySelector(".chat-message:last-child")
         if (!lastMessageEl)
             return lastMessageEl
         const usernameEl = lastMessageEl.querySelector(".chat-message-username")
-        const msgEl = lastMessageEl.querySelector(".chat-message-msg")
+        const msgEl = lastMessageEl.querySelector(".chat-message-msg:last-child")
         const timeEl = lastMessageEl.querySelector(".chat-message-time")
         return {
             username: usernameEl.textContent,
-            msg: msgEl.textContent,
+            msg: msgEl?.textContent,
             time: timeEl.textContent,
-            lastMessageEl, msgEl
+            lastMessageEl, msgEl, timeEl
         }
     }
 
@@ -81,21 +96,40 @@ class ChatPage {
     }
 
     applyMarkdownButtons() {
-        [...$$("pre code")].forEach(el => {
-            const codeButtons = el.querySelector(".code-buttons")
-            if (codeButtons)
-                return
-            const newButtons = document.createElement("div")
-            newButtons.setAttribute("class", "code-buttons")
-            newButtons.innerHTML = `<input type="button" class="code-button copy-button" value="📋"/></div>`
-            el.prepend(newButtons)
-            const copyButton = el.querySelector(".copy-button")
-            copyButton.addEventListener("click", (e) => {
-                e.preventDefault()
-                this.copyText(el.textContent)
-                this.notification("Copied!", copyButton.parentElement)
+        [...$$(".chat-message-msg")].forEach(chatMessageEl => {
+            [...chatMessageEl.querySelectorAll("pre code")].forEach((el, i) => {
+                const codeButtons = el.querySelector(".code-buttons")
+                const msg = el.parentElement.parentElement
+                const msgId = msg.getAttribute("x-msg-id")
+                el.setAttribute("x-block-index", i)
+                if (codeButtons)
+                    return
+                const lang = [...el.classList].find(c => c.includes("language"))?.replace("language-", "")
+                const newButtons = document.createElement("div")
+                newButtons.setAttribute("class", "code-buttons")
+                if (["python", "shell", "sh", "bash"].includes(lang))
+                    newButtons.innerHTML = `<input type="button" class="code-button play-button" value="▶️"/>`
+                newButtons.innerHTML += `<input type="button" class="code-button save-button" value="💾"/>`
+                newButtons.innerHTML += `<input type="button" class="code-button copy-button" value="📋"/>`
+                el.prepend(newButtons)
+                const copyButton = el.querySelector(".copy-button")
+                const playButton = el.querySelector(".play-button")
+                const saveButton = el.querySelector(".save-button")
+                copyButton?.addEventListener("click", (e) => {
+                    e.preventDefault()
+                    this.copyText(el.textContent)
+                    this.notification("Copied!", copyButton.parentElement)
+                })
+                playButton?.addEventListener("click", (e) => {
+                    e.preventDefault()
+                    window.bridge.setData(["run_code", msgId, i, lang, el.textContent])
+                })
+                saveButton?.addEventListener("click", (e) => {
+                    e.preventDefault()
+                    window.bridge.setData(["save", msgId, i, lang, el.textContent])
+                })
             })
-        })
+        });
     }
 }
 
