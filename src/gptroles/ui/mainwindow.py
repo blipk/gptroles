@@ -5,11 +5,14 @@ from PyQt6.QtWidgets import QApplication, QVBoxLayout, QHBoxLayout, QWidget, QLa
 from .chatbox import ChatBox
 from .settings import SettingsWidget
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from . import RoleChat
 
 class MainWindow(QMainWindow):
     def __init__(self, app):
         super(QMainWindow, self).__init__()
-        self.app = app
+        self.app: RoleChat = app
         self.qsettings = self.app.qsettings
         self.settings = self.app.settings
         self.setAcceptDrops(True)

@@ -33,6 +33,7 @@ pyqt6 = ">=6.4.2"
 pyqt6-webengine = ">=6.4.0"
 toml = "^0.10.2"
 appdirs = "^1.4.4"
+pygments = "^2.14.0"
 
 [tool.poetry.scripts]
 main = "gptroles.main:main"

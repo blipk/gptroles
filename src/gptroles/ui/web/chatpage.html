@@ -21,62 +21,62 @@
             <span class="chat-message-time">10:00 AM</span>
         </div> -->
 
-        <div class="chat-message chat-message-self">
-            <span class="chat-message-username chat-message-username-self">Me</span>
-            <p>Hi! How are you?</p>
-            <span class="chat-message-time chat-message-time-self">10:01 AM</span>
-        </div>
-
-        <div class="chat-message">
-            <span class="chat-message-username">GPT</span>
-            <p>I'm good, thanks for asking.</p>
-            <span class="chat-message-time">10:02 AM</span>
+        <div class="chat-message ">
+            <div class="message-buttons"><input type="button" class="message-button" value="⚙️"></div>
+            <span class="chat-message-username ">System</span>
+            <div class="chat-message-msg" x-msg-id="80d62596-326e-4f2c-a3fd-cd87dc7e9be1"
+                x-msg-time="1679824343.1036885" x-msg-user="System">
+                <p>Role successfully initialised.</p>
+            </div>
+            <span class="chat-message-time chat-message-time-self">1679824343.1036885</span>
         </div>
 
         <div class="chat-message ">
+            <div class="message-buttons"><input type="button" class="message-button" value="⚙️"></div>
             <span class="chat-message-username ">GPT</span>
-            <div class="chat-message-msg">
-                <p>To send data from a <code>QWebEnginePage</code> to its parent in PyQt6, you can use signals and
-                    slots. A signal is emitted by the <code>QWebEnginePage</code> when data is ready to be sent to the
-                    parent, and a slot is used to receive the signal in the parent.</p>
-                <p>Here's an example:</p>
-                <pre><code class="hljs language-python">from PyQt6.QtCore import pyqtSignal, QObject
-from PyQt6.QtWebEngineWidgets import QWebEnginePage
+            <div class="chat-message-msg" x-msg-id="ada14365-7f25-4566-9548-6df787f298fd" x-msg-time="1679824364.809487"
+                x-msg-user="GPT">
+                <p>Sure thing, here is some example code in different languages:</p>
+                <pre><code class="hljs language-python" x-block-index="0"><div class="code-buttons"><input type="button" class="code-button edit-button" value="✏️"><input type="button" class="code-button save-button" value="💾"><input type="button" class="code-button copy-button" value="📋"></div><span class="hljs-comment"># Example Python code</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">say_hello</span>(<span class="hljs-params">name</span>):
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f"Hello, <span class="hljs-subst">{name}</span>!"</span>)
 
-class WebEnginePage(QWebEnginePage):
-dataReady = pyqtSignal(str)
-
-def __init__(self, parent=None):
-    super(WebEnginePage, self).__init__(parent)
-
-def someFunction(self):
-    data = "example data"
-    self.dataReady.emit(data)
+say_hello(<span class="hljs-string">"World"</span>)
 </code></pre>
-                <p>In this example, a new signal <code>dataReady</code> is defined that takes a string as an argument.
-                    This signal is emitted by the <code>WebEnginePage</code> object when data is ready to be sent to the
-                    parent.</p>
-                <p>To connect this signal to a slot in the parent:</p>
-                <pre><code class="hljs language-python">class Parent(QObject):
-def __init__(self):
-    super(Parent, self).__init__()
+                <pre><code class="hljs language-javascript" x-block-index="1"><div class="code-buttons"><input type="button" class="code-button save-button" value="💾"><input type="button" class="code-button copy-button" value="📋"></div><span class="hljs-comment">// Example Javascript code</span>
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">sayHello</span>(<span class="hljs-params">name</span>) {
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`Hello, <span class="hljs-subst">${name}</span>!`</span>);
+}
 
-    self.webEnginePage = WebEnginePage()
-    self.webEnginePage.dataReady.connect(self.onDataReady)
-
-def onDataReady(self, data):
-    print("Data received:", data)
+<span class="hljs-title function_">sayHello</span>(<span class="hljs-string">"World"</span>);
 </code></pre>
-                <p>In this example, the <code>Parent</code> object creates a <code>WebEnginePage</code> object and
-                    connects its <code>dataReady</code> signal to the <code>onDataReady</code> slot in the parent. When
-                    <code>dataReady</code> is emitted by the <code>WebEnginePage</code>, the <code>onDataReady</code>
-                    function is called in the parent with the <code>data</code> argument. Here, <code>onDataReady</code>
-                    simply prints the received data.</p>
-                <p>Hope this helps!</p>
-                <p></p>
-                <span class="chat-message-time chat-message-time-self">Now</span>
+                <pre><code class="hljs language-java" x-block-index="2"><div class="code-buttons"><input type="button" class="code-button save-button" value="💾"><input type="button" class="code-button copy-button" value="📋"></div><span class="hljs-comment">// Example Java code</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">HelloWorld</span> {
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> {
+System.out.println(<span class="hljs-string">"Hello, World!"</span>);
+}
+}
+</code></pre>
+                <pre><code class="hljs language-ruby" x-block-index="3"><div class="code-buttons"><input type="button" class="code-button save-button" value="💾"><input type="button" class="code-button copy-button" value="📋"></div><span class="hljs-comment"># Example Ruby code</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">say_hello</span>(<span class="hljs-params">name</span>)
+puts <span class="hljs-string">"Hello, <span class="hljs-subst">#{name}</span>!"</span>
+<span class="hljs-keyword">end</span>
+
+say_hello(<span class="hljs-string">"World"</span>)
+</code></pre>
+                <pre><code class="hljs language-c" x-block-index="4"><div class="code-buttons"><input type="button" class="code-button save-button" value="💾"><input type="button" class="code-button copy-button" value="📋"></div><span class="hljs-comment">// Example C code</span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span>
+
+<span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span> {
+<span class="hljs-built_in">printf</span>(<span class="hljs-string">"Hello, World!
+"</span>);
+<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+</code></pre>
             </div>
+            <span class="chat-message-time chat-message-time-self">1679824364.809487</span>
         </div>
+
         <!-- More chat messages here... -->
     </div>
 

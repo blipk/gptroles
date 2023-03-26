@@ -59,15 +59,15 @@ body {
     border-radius: 4px;
     padding: 0 2px 0 2px;
     margin: 1px;
+    cursor: pointer;
 }
 
 .message-button:hover {
-    margin-top: 2px;
-    margin-left: 2px;
+    top: 2px;
+    left: 2px;
 }
 
 .chat-message-msg {
-    /* white-space: pre-wrap; */
     user-select: text;
     padding: 0;
     margin: 0;
@@ -75,6 +75,7 @@ body {
 }
 
 .chat-message-msg p {
+    white-space: pre-wrap;
     font-size: 0.9rem;
     /* line-height: 0.98rem; */
     padding: 1px;
@@ -127,11 +128,12 @@ body {
     border-radius: 4px;
     padding: 0 2px 0 2px;
     margin: 1px;
+    cursor: pointer;
 }
 
 .code-button:hover {
-    margin-top: 2px;
-    margin-left: 2px;
+    top: 2px;
+    left: 2px;
 }
 
 @keyframes fadein {

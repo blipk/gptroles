@@ -87,7 +87,7 @@ class ChatPage {
         [...$$(".chat-message")].forEach(el => {
             const buttons = el.querySelector(".message-buttons")
             if (buttons)
-                return
+                buttons.parentNode.removeChild(buttons)
             const newButtons = document.createElement("div")
             newButtons.setAttribute("class", "message-buttons")
             newButtons.innerHTML = `<input type="button" class="message-button" value="⚙️"/>`
@@ -103,18 +103,21 @@ class ChatPage {
                 const msgId = msg.getAttribute("x-msg-id")
                 el.setAttribute("x-block-index", i)
                 if (codeButtons)
-                    return
+                    codeButtons.parentNode.removeChild(codeButtons)
                 const lang = [...el.classList].find(c => c.includes("language"))?.replace("language-", "")
                 const newButtons = document.createElement("div")
                 newButtons.setAttribute("class", "code-buttons")
-                if (["python", "shell", "sh", "bash"].includes(lang))
+                if (["python", "shell", "sh", "bash"].includes(lang)) {
                     newButtons.innerHTML = `<input type="button" class="code-button play-button" value="▶️"/>`
+                    newButtons.innerHTML += `<input type="button" class="code-button edit-button" value="✏️"/>`
+                }
                 newButtons.innerHTML += `<input type="button" class="code-button save-button" value="💾"/>`
                 newButtons.innerHTML += `<input type="button" class="code-button copy-button" value="📋"/>`
                 el.prepend(newButtons)
-                const copyButton = el.querySelector(".copy-button")
                 const playButton = el.querySelector(".play-button")
+                const editButton = el.querySelector(".edit-button")
                 const saveButton = el.querySelector(".save-button")
+                const copyButton = el.querySelector(".copy-button")
                 copyButton?.addEventListener("click", (e) => {
                     e.preventDefault()
                     this.copyText(el.textContent)
@@ -127,6 +130,12 @@ class ChatPage {
                 saveButton?.addEventListener("click", (e) => {
                     e.preventDefault()
                     window.bridge.setData(["save", msgId, i, lang, el.textContent])
+                    //TODO add open in editor icon after saving
+                })
+                editButton?.addEventListener("click", (e) => {
+                    e.preventDefault()
+                    // window.bridge.setData(["save", msgId, i, lang, el.textContent])
+                    //TODO edit internally or open in editor on alternate click
                 })
             })
         });
@@ -156,7 +165,7 @@ window.onload = function (e) {
 
     // Messages to python
     if (typeof QWebChannel !== "undefined") {
-        window.chatPage.clear()
+        // window.chatPage.clear()
         new QWebChannel(qt.webChannelTransport, function (channel) {
             var bridge = channel.objects.bridge;
             window.bridge = bridge

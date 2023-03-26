@@ -1,6 +1,7 @@
+import os
 import sys
 from PyQt6.QtCore import QTimer, QSettings, QCommandLineOption, QCommandLineParser
-from PyQt6.QtWidgets import QApplication
+from PyQt6.QtWidgets import QApplication, QFileDialog
 from .mainwindow import MainWindow
 from ..settings import Settings
 
@@ -53,8 +54,21 @@ class RoleChat(QApplication):
         parser.process(self)
         self.parser = parser
 
+    def save_file(self, caption, file_contents, file_name=None, ddir=None, mode="w"):
+        if not file_name:
+            file_name = ".txt"
+        ddir = ddir or os.path.expanduser("~")
+        dpath = os.path.join(ddir, file_name)
+        filter = "Text Files (*.txt);;All Files (*)"
+        options = QFileDialog.Option.HideNameFilterDetails # DontUseNativeDialog
+        ofile_name, _ = QFileDialog.getSaveFileName(self.mainWindow, caption, dpath, filter, options=options)
+        if ofile_name:
+            with open(ofile_name, mode) as f:
+                f.write(file_contents)
+            return True
+        return False
+
     # def updateUI(self):
-    #     temp_info, fan_info = None, None
     #     if self.mainWindow.isActiveWindow():
     #         pass
     #     if self.useIndicator and self.menu_visible:

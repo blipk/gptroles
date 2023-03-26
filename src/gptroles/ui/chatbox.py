@@ -1,16 +1,20 @@
 import os
 import html
 import threading
-from PyQt6.QtGui import QAction
+from PyQt6.QtGui import QAction, QGuiApplication, QFontMetrics, QTextCursor
 from PyQt6.QtCore import Qt, QUrl, pyqtSignal, pyqtSlot, QVariant, QObject
-from PyQt6.QtWidgets import QApplication, QVBoxLayout, QHBoxLayout, QWidget, QLineEdit, QMainWindow
+from PyQt6.QtWidgets import QApplication, QVBoxLayout, QHBoxLayout, QWidget, QLineEdit, QMainWindow, QTextEdit
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWebEngineCore import QWebEnginePage, QWebEngineSettings
 from PyQt6.QtWebChannel import QWebChannel
+
 from .chatmsg import ChatMessage
 from .netprompts import BorderlessWindow
 from ..gpt import RoleGpt, system_role, gptroles, run_shell
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .mainwindow import MainWindow
 
 class Bridge(QObject):
     dataChanged = pyqtSignal(QVariant)
@@ -22,6 +26,8 @@ class Bridge(QObject):
 class ChatPage(QWebEnginePage):
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.view: QWebEngineView = parent
+        self.chatbox: ChatBox = self.view.parent()
         self.bridge = Bridge()
         self.bridge.dataChanged.connect(self.jsMessageRecieved)
         self.channel = QWebChannel()
@@ -33,6 +39,10 @@ class ChatPage(QWebEnginePage):
         self.setFeaturePermission(chatpage_url, QWebEnginePage.Feature.Notifications, QWebEnginePage.PermissionPolicy.PermissionGrantedByUser)
         self.setZoomFactor(1.2)
         self.load(chatpage_url)
+
+    def sendMessageToJS(self, message):
+        script = f"window.handlePyMessage('{message}');"
+        self.runJavaScript(script)
 
     def jsMessageRecieved(self, data):
         print(f"Received JS message: {data}")
@@ -49,11 +59,53 @@ class ChatPage(QWebEnginePage):
                     js = f"window.chatPage.updateMessage('{msgid}', `{out}`, '{blockindex}')"
                     self.runJavaScript(js)
             elif command == "save":
-                pass
+                msgid, blockindex, lang, code = params
+                from .utils import find_lang_extension
+                file_name = find_lang_extension(lang) or "snippet.txt"
+                res = self.chatbox.mwindow.app.save_file("Save snippet", code, file_name=file_name)
 
-    def sendMessageToJS(self, message):
-        script = f"window.handlePyMessage('{message}');"
-        self.runJavaScript(script)
+class InputBox(QTextEdit):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.chatbox: ChatBox = parent
+
+    def focusInEvent(self, e) -> None:
+        self.setSize()
+        return super().focusInEvent(e)
+
+    def setSize(self, lines=None):
+        doc = self.document()
+        # lines = lines or doc.lineCount()
+        lines = lines or self.toPlainText().count("\n") + 1
+        metrics = QFontMetrics(doc.defaultFont())
+        margins = self.contentsMargins()
+        lheight = (metrics.lineSpacing() * lines) + ((doc.documentMargin() + self.frameWidth()) * 2) + margins.top() + margins.bottom()
+        # print("Setting height:", lines, lheight, self.document().lineCount(), self.document().blockCount())
+        height = min([self.chatbox.height()/1.6, lheight])
+        self.setMaximumHeight(int(height))
+
+    def keyPressEvent(self, event):
+        modifiers = QGuiApplication.keyboardModifiers()
+        shifting = False
+        if modifiers & Qt.KeyboardModifier.ShiftModifier:
+            shifting = True
+        if event.key() == Qt.Key.Key_Return and not shifting:
+            user_input = self.toPlainText()
+            self.chatbox.add_message(ChatMessage("You", user_input))
+            self.clear()
+            self.moveCursor(QTextCursor.MoveOperation.Start, QTextCursor.MoveMode.MoveAnchor)
+            thread = threading.Thread(target=self.chatbox.ask, args=(user_input,))
+            thread.start()
+            self.setSize()
+
+        # elif event.key() in (Qt.Key.Key_Delete, Qt.Key.Key_Backspace):
+        #     super().keyPressEvent(event)
+        #     self.setSize()
+        else:
+            super().keyPressEvent(event)
+            self.setSize()
+
+        # Call the base class implementation to handle other keys
 
 
 class ChatBox(QWidget):
@@ -61,13 +113,13 @@ class ChatBox(QWidget):
 
     def __init__(self, parent=None):
         super(ChatBox, self).__init__(parent)
-        self.mwindow = parent
+        self.mwindow: MainWindow = parent
         self.rolegpt = RoleGpt(parent.settings, gptroles)
-        self.message = []
+        self.messages = []
 
         self.layout: QVBoxLayout = QVBoxLayout(self)
-        self.input_box = QLineEdit(self)
-        self.input_box.returnPressed.connect(self.on_input_entered)
+        self.input_box = InputBox(self)
+        # self.input_box.returnPressed.connect(self.on_input_entered)
         self.chatMessageSignal.connect(self.add_message, Qt.ConnectionType.QueuedConnection)
 
         self.webview = QWebEngineView(self)
@@ -122,19 +174,13 @@ class ChatBox(QWidget):
             chat_user, chat_response = self.rolegpt.confirm_role()
             self.add_message(ChatMessage(chat_user, chat_response))
 
-    def on_input_entered(self):
-        user_input = self.input_box.text().strip()
-        self.add_message(ChatMessage("You", user_input))
-        self.input_box.clear()
-        thread = threading.Thread(target=self.ask, args=(user_input,))
-        thread.start()
-
     def ask(self, prompt):
         role, answer = self.rolegpt.ask(prompt)
         self.chatMessageSignal.emit(ChatMessage(role, answer))
 
     @pyqtSlot(ChatMessage)
     def add_message(self, chat_message: ChatMessage):
+        self.messages.append(chat_message)
         chat_message_text = chat_message.text.replace('`', '|TICK|').replace("${", "$|{")
         js = f"window.chatPage.addMessage('{html.escape(chat_message.user)}', `{chat_message_text}`, '{chat_message.time}', '{chat_message.id}')"
         self.page.runJavaScript(js)

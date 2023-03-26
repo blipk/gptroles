@@ -13,7 +13,7 @@ if [[ "x$CMD" == "xinstall" ]]; then
 elif [[ "x$CMD" == "xsysinstall" ]]; then
     ./install.sh
 elif [[ "x$CMD" == "xrun" ]]; then
-    yes | cp -rf src/gptroles/ui/* $(python3 -m site --user-site)/gptroles/ui/
+    yes | cp -rf src/gptroles/* $(python3 -m site --user-site)/gptroles/
     ./src/gptroles/main.py --debug
     # poetry run main --debug
 elif [[ "x$CMD" == "xbuild" ]]; then
