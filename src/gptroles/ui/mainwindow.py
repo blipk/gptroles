@@ -62,7 +62,7 @@ class MainWindow(QMainWindow):
         self.app.qsettings.beginGroup("MainWindow");
         geometry = self.app.qsettings.value("geometry", QByteArray())
         if geometry.isEmpty():
-            self.setGeometry(200, 200, 400, 400);
+            self.center()
         else:
             self.restoreGeometry(geometry)
         self.app.qsettings.endGroup();

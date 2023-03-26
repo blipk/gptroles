@@ -27,7 +27,11 @@ class ChatPage(QWebEnginePage):
         self.channel.registerObject("bridge", self.bridge)
         self.setWebChannel(self.channel)
         page_path = os.path.join(os.path.dirname(__file__), "web", "chatpage.html")
-        self.load(QUrl("file://" + page_path))
+        chatpage_url = QUrl("file://" + page_path)
+
+        self.setFeaturePermission(chatpage_url, QWebEnginePage.Feature.Notifications, QWebEnginePage.PermissionPolicy.PermissionGrantedByUser)
+        self.setZoomFactor(1.2)
+        self.load(chatpage_url)
 
     def jsMessageRecieved(self, data):
         print(f"Received JS message: {data}")
@@ -51,9 +55,14 @@ class ChatBox(QWidget):
 
         self.webview = QWebEngineView(self)
         self.webview.settings().setAttribute(QWebEngineSettings.WebAttribute.JavascriptEnabled, True)
+        self.webview.settings().setAttribute(QWebEngineSettings.WebAttribute.JavascriptCanAccessClipboard, True)
+        self.webview.settings().setAttribute(QWebEngineSettings.WebAttribute.JavascriptCanPaste, True)
         self.webview.settings().setAttribute(QWebEngineSettings.WebAttribute.LocalContentCanAccessRemoteUrls, True)
+        # self.webview.settings().setAttribute(QWebEngineSettings.WebAttribute.LocalContentCanAccessFileUrls, True)
         self.webview.settings().setAttribute(QWebEngineSettings.WebAttribute.ErrorPageEnabled, True)
-        # self.webview.settings().setAttribute(QWebEngineSettings.WebAttribute.PluginsEnabled, True)
+        # self.webview.settings().setAttribute(QWebEngineSettings.WebAttribute.AllowRunningInsecureContent, True)
+        self.webview.settings().setAttribute(QWebEngineSettings.WebAttribute.NavigateOnDropEnabled, False)
+        self.webview.settings().setAttribute(QWebEngineSettings.WebAttribute.PdfViewerEnabled, False)
         self.page = ChatPage(self.webview)
         self.page.setVisible(True)
         self.webview.setPage(self.page)

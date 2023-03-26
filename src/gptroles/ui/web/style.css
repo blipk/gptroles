@@ -10,11 +10,14 @@ html, body {
     width: 100%; */
     overflow-x: hidden;
     overflow-y: auto;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.1em;
 }
 
 body {
     background-color: #f5f5f9;
     user-select: none;
+    /* font-size: 2em; */
 }
 
 /* Chat container */
@@ -39,16 +42,50 @@ body {
     position: relative;
 }
 
+.message-buttons {
+    position: relative;
+    float: right;
+    top: -19px;
+    right: 5px;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 4px;
+}
+
+.message-button {
+    position: relative;
+    border: none;
+    border-radius: 4px;
+    padding: 0 2px 0 2px;
+    margin: 1px;
+}
+
+.message-button:hover {
+    margin-top: 2px;
+    margin-left: 2px;
+}
+
 .chat-message-msg {
     /* white-space: pre-wrap; */
     user-select: text;
     padding: 0;
     margin: 0;
+
 }
 
 .chat-message-msg p {
     font-size: 0.9rem;
     /* line-height: 0.98rem; */
+    padding: 1px;
+    margin: 1px;
+}
+
+.chat-message-msg p code {
+    background-color: #f5f5f9;
+    border-radius: 2.5px;
+    padding: 1.4px 1.2px 1.4px 1.2px;
+    font-size: 82%;
 }
 
 .chat-message-msg pre {
@@ -57,25 +94,75 @@ body {
     border-radius: 2px;
     /* padding: 4px;
     margin: 4px; */
+    margin-left: 10px;
     margin-top: 7px;
     margin-bottom: 10px;
-    width: auto;
+    max-width: 95vw;
+    white-space: pre-wrap;
+    min-width: 70%;
+    display: table;
+    border-collapse: separate;
 }
 
 .hljs {
     padding: 0.5em !important;
 }
 
-.chat-message-msg p code {
-    background-color: #f5f5f9;
-    border-radius: 2.5px;
-    padding: 1.4px 1.2px 1.4px 1.2px;
+.code-buttons {
+    position: relative;
+    float: right;
+    top: 5px;
+    right: 5px;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 4px;
 }
 
-.chat-message-msg p {
-    padding: 1px;
+.code-button {
+    position: relative;
+    border: none;
+    border-radius: 4px;
+    padding: 0 2px 0 2px;
     margin: 1px;
 }
+
+.code-button:hover {
+    margin-top: 2px;
+    margin-left: 2px;
+}
+
+@keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; display: block; }
+}
+
+@keyframes fadeout {
+    from { opacity: 1; }
+    to   { opacity: 0; display: none !important; }
+}
+
+.notification {
+    display: block;
+    position: absolute;
+    float: inline-end;
+    top: 2.8em;
+    right: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.5rem;
+    line-height: 0.5rem;
+    white-space:nowrap;
+    margin: 0;
+    padding: 2px;
+    border-radius: 3px;
+    border: 0.9px solid #d9d9d9;
+    background-color: #fdfdfd;
+    animation: fadein 1s;
+}
+
+
+
+
 
 /* Chat message from self */
 .chat-message-self {
