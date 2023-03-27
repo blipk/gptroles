@@ -16,22 +16,27 @@ You can also change the root prompt to something else entirely, there's a list o
 ###### Command Role
 
 -- GPT can request web pages or from APIs to answer your questions, to get current prices or latest news, these requests will be hidden from the chat and passed to ChatGPT which will then use it to answer your question
+
 -- Provide basic shell commands that will be automatically be run, to find or list files etc
+
 -- Instructions to format markdown for the programming features
 
 #### App Features
 
 Programming related features:
+
+    - Copy or save markdown blocks to a file
     - Run shell or python code in markdown blocks directly in the chat interface
     - TODO Edit the markdown blocks in the chat box, or open in external editor
-    - Copy or save markdown blocks to a file
 
 Additional features:
+
     - Easily switch or add more "roles"
     - Remove the roleplaying root prompt and set it as you please
     - List roles from jailbreakchat.com and set them as the root prompt
 
 Chat related features:
+
     - TODO Shows which messages are in the current prompt chain and can be added/removed
     - TODO Show alternate choices and commit to conversation
 
@@ -39,7 +44,8 @@ Chat related features:
 #### Installing/Running
 
 ###### From pip
-Install the module and install desktop launcher integration
+Install the module and install desktop launcher integration:
+
 `pip install gptroles && ./install.sh`
 
 
