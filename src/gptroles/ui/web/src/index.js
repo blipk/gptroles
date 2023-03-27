@@ -206,7 +206,7 @@ window.onload = function (e) {
 
     // Messages to python
     if (typeof QWebChannel !== "undefined") {
-        // window.chatPage.clear()
+        window.chatPage.clear()
         new QWebChannel(qt.webChannelTransport, function (channel) {
             var bridge = channel.objects.bridge;
             window.bridge = bridge

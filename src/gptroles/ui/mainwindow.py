@@ -33,7 +33,6 @@ class CustomMenuBar(QMenuBar):
         self.setCursor(Qt.CursorShape.OpenHandCursor)
 
     def addAction(self, action) -> None:
-        print("AA", action)
         action.hovered.connect(lambda: self.setCursor(Qt.CursorShape.PointingHandCursor))
         # action.triggered.connect(lambda: self.hovered(action))
         return super().addAction(action)

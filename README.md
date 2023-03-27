@@ -4,6 +4,9 @@ Simple PyQT chatbox that connects to a chat session with ChatGPT, along with som
 
 Written as an experiment with Qt and understanding the role of LLMs in virtual assistant applications.
 
+![Screenshot of GPT Roles](doc/screenshot.png)
+![Demo video of GPT Roles](doc/demo.webm)
+
 #### Roleplayer
 It has a "roleplaying" root prompt that attempts to make implementing more roles into ChatGPT easier.
 You can add "roles" to the root prompt, by default there are some roles related to commands and programming.
