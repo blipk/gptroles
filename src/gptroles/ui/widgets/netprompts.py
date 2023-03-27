@@ -3,11 +3,12 @@ from PyQt6.QtGui import *
 from PyQt6.QtCore import *
 from PyQt6.QtWidgets import *
 from .chatmsg import ChatMessage
+from .borderlesswindow import BorderlessWindow
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .chatbox import ChatBox
-    from ..gpt import RoleGpt
+    from ...gpt import RoleGpt
 
 
 class CustomListView(QListWidget):
@@ -57,20 +58,10 @@ class CustomListView(QListWidget):
             print("Error fetching data:", e)
 
 
-class BorderlessWindow(QWidget):
+class PromptsWindow(BorderlessWindow):
     def __init__(self, parent=None):
-        super().__init__(parent)
-
-        self.setWindowFlags(
-            Qt.WindowType.Window | Qt.WindowType.FramelessWindowHint | Qt.WindowType.WindowStaysOnTopHint)
-        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-        layout = QVBoxLayout(self)
-        self.custom_list_view = CustomListView(self)
-        layout.addWidget(self.custom_list_view)
-        self.setStyleSheet('''
-            BorderlessWindow{
-                 background-color: rgba(255, 255, 255, 255);
-            }
+        super().__init__([Qt.WindowType.WindowStaysOnTopHint], parent)
+        self.setStyleSheet("""
             QListWidget{
                 border: 1px solid #d9d9d9;
                 outline: none;
@@ -84,26 +75,8 @@ class BorderlessWindow(QWidget):
             QListWidget::item:hover{
                 background-color: #f5f5f5;
             }
-            ''')
+            """)
+        layout = QVBoxLayout(self)
+        self.custom_list_view = CustomListView(self)
+        layout.addWidget(self.custom_list_view)
         self.resize(350, 500)
-
-    def toggleAppear(self):
-        if self.isVisible():
-            self.hide()
-        else:
-            self.appear()
-
-    def appear(self):
-        self.show()
-        self.raise_()
-        self.activateWindow()
-
-    # def mousePressEvent(self, event):
-    #     if event.button() == Qt.LeftButton:
-    #         self.dragPos = event.globalPos() - self.frameGeometry().topLeft()
-    #         event.accept()
-
-    # def mouseMoveEvent(self, event):
-    #     if event.buttons() == Qt.LeftButton:
-    #         self.move(event.globalPos() - self.dragPos)
-    #         event.accept()

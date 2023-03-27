@@ -17,6 +17,11 @@ class SettingsWidget(QWidget):
         self.display_dict(self.data, self.layout)
         self.layout.setSizeConstraint(QLayout.SizeConstraint.SetMinimumSize)
         self.setVisible(False)
+        # self.setAttribute(QtCore.Qt.WA_StyledBackground, True)
+        self.setStyleSheet("""
+            color: white;
+            background-color: rgba(50, 50, 50, 0.8);
+        """)
 
     def toggle(self):
         self.setVisible(not self.isVisible())

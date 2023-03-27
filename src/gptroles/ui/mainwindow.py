@@ -1,62 +1,111 @@
 import sys
-from PyQt6.QtGui import QDragEnterEvent, QDropEvent, QDragLeaveEvent, QDragMoveEvent, QAction
-from PyQt6.QtCore import QTimer, QSize, QRect, QSettings, QByteArray
-from PyQt6.QtWidgets import QApplication, QVBoxLayout, QHBoxLayout, QWidget, QLayout, QLineEdit, QTextEdit, QMessageBox, QMainWindow
-from .chatbox import ChatBox
+from PyQt6.QtGui import QDragEnterEvent, QDropEvent, QDragLeaveEvent, QDragMoveEvent, QAction, QMouseEvent
+from PyQt6.QtCore import Qt, QTimer, QSize, QRect, QSettings, QByteArray, QEvent, QPoint
+from PyQt6.QtWidgets import QApplication, QVBoxLayout, QHBoxLayout, QWidget, QLayout, QLineEdit, QTextEdit, QMessageBox, QMainWindow, QMenuBar, QPushButton
+from .widgets.chatbox import ChatBox
+# from .widgets.terminal import SerialPortWidget
+from .widgets.borderlesswindow import BorderlessWindow, BaseWindow
 from .settings import SettingsWidget
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from . import RoleChat
 
-class MainWindow(QMainWindow):
+class CustomMenuBar(QMenuBar):
+    def __init__(self, parent: QWidget = None) -> None:
+        super().__init__(parent)
+        self.mwindow = parent
+        self.dragPosition = None
+        self.setContentsMargins(0, 0, 0, 0)
+        self.setStyleSheet("""
+            QMenuBar {
+                background-color: rgba(50, 50, 50, 0.8);
+            }
+            QMenuBar::item {
+                color: white;
+                background-color: transparent;
+            }
+        """)
+        quit_button = QPushButton("Exit", self)
+        quit_button.clicked.connect(self.mwindow.app.quit)
+        self.setCornerWidget(quit_button)
+
+    def mousePressEvent(self, event: QMouseEvent) -> None:
+        if event.button() == Qt.MouseButton.LeftButton:
+            self.dragPosition = event.scenePosition().toPoint() - self.frameGeometry().topLeft()
+        return super().mousePressEvent(event)
+
+    def mouseMoveEvent(self, event: QMouseEvent) -> None:
+        if event.buttons() == Qt.MouseButton.LeftButton:
+            newPosition = event.globalPosition().toPoint() - self.dragPosition
+            self.window().move(newPosition)
+        return super().mouseMoveEvent(event)
+
+class MainWindow(QMainWindow, BorderlessWindow):
     def __init__(self, app):
+        super(BorderlessWindow, self).__init__()
         super(QMainWindow, self).__init__()
         self.app: RoleChat = app
         self.qsettings = self.app.qsettings
         self.settings = self.app.settings
         self.setAcceptDrops(True)
-        self.setupUi(self)
-        # self.label_3.setText(self.label_3.text().replace("$$$", APP_VERSION))
+        self.setupUi()
 
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName(u"MainWindow")
+    def setupUi(self):
+        # Main Layout
+        # MainWindow.setObjectName(u"MainWindow")
         self.setWindowTitle("ChatGPT")
-        MainWindow.resize(1024, 720)
-        MainWindow.setMinimumSize(QSize(1920, 1080))
+        self.resize(1920, 1080)
+        self.setMinimumSize(QSize(1024, 768))
+        self.layout().setContentsMargins(0, 0, 0, 0)
 
-        self.centralwidget = QWidget(MainWindow)
+        self.centralwidget = QWidget(self)
         self.centralwidget.setObjectName(u"centralwidget")
 
         self.vLayoutWidget = QWidget(self.centralwidget)
         self.vLayoutWidget.setObjectName(u"vLayoutWidget")
         self.vLayoutWidget.setGeometry(self.geometry())
         self.vLayout = QVBoxLayout(self.vLayoutWidget)
-        self.vLayout.setObjectName(u"vLayout")
+        # self.vLayout.setObjectName(u"vLayout")
         self.vLayout.setSizeConstraint(QLayout.SizeConstraint.SetMaximumSize)
         self.vLayout.setContentsMargins(0, 0, 0, 0)
+        self.vLayout.setSpacing(0)
 
         self.hLayoutWidget = QWidget(self.vLayoutWidget)
-        self.hLayoutWidget.setObjectName(u"hLayoutWidget")
+        # self.hLayoutWidget.setObjectName(u"hLayoutWidget")
         self.hLayoutWidget.setGeometry(self.vLayoutWidget.geometry())
         self.hLayout = QHBoxLayout(self.hLayoutWidget)
-        self.hLayout.setObjectName(u"hLayout")
+        # self.hLayout.setObjectName(u"hLayout")
         self.hLayout.setSizeConstraint(QLayout.SizeConstraint.SetMaximumSize)
         self.hLayout.setContentsMargins(0, 0, 0, 0)
+        self.hLayout.setSpacing(0)
 
+        # Menu
+        self.cmenuBar = CustomMenuBar(self)
+        self.setMenuBar(self.cmenuBar)
+        menu = self.menuBar()
+        # quit_action = QAction("Exit", self)
+        # quit_action.triggered.connect(self.app.quit)
+        # menu.addAction(quit_action)
 
+        # Widgets
         self.settingsWidget = SettingsWidget(self.settings, self)
         self.chatbox = ChatBox(self)
         self.hLayout.addWidget(self.chatbox)
         self.hLayout.addWidget(self.settingsWidget)
+        self.setStyleSheet("""
+            color: white;
+            background-color: rgba(50, 50, 50, 0.8);
+        """)
+        # Terminal
+        # self.m_serial_port_widget = SerialPortWidget(self)
+        # self.hLayout.addWidget(self.m_serial_port_widget)
+        self.setCentralWidget(self.hLayoutWidget)
 
-        # Menu
-        menu = self.menuBar()
+        # Actions
         settings_action = QAction("Config", self)
         settings_action.triggered.connect(self.settingsWidget.toggle)
         menu.addAction(settings_action)
-
-        self.setCentralWidget(self.hLayoutWidget)
 
         # Load window QSettings
         self.readSettings()
@@ -105,23 +154,3 @@ class MainWindow(QMainWindow):
         msg.setWindowTitle(title_msg)
         msg.setDefaultButton(QMessageBox.Close)
         msg.exec_()
-
-    def toggleAppear(self):
-        if self.isVisible():
-            self.hide()
-        else:
-            self.appear()
-
-    def appear(self):
-        self.show()
-        self.raise_()
-        self.activateWindow()
-
-    def center(self):
-        qr = self.frameGeometry()
-        qr.moveCenter(
-            self.app
-            .primaryScreen()
-            .availableGeometry()
-            .center())
-        self.move(qr.topLeft())

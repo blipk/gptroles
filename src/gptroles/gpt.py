@@ -71,7 +71,7 @@ class RoleGpt():
 
         prompt_chain = prompt_chain or self.prompt_chain
         prompt_chain.append({"role": message_role, "content": prompt})
-        print(f"{message_role}: {prompt}")
+        print(f"{message_role}: {prompt[:200]}")
         # print(prompt_chain[1:])
         system_roles = [
             {"role": "system", "content": self.system_role}
@@ -87,6 +87,9 @@ class RoleGpt():
             response = openai.ChatCompletion.create(
                 **(self.settings.chatcompletion | dict(messages=messages)),
             )
+        except openai.error.RateLimitError as e:
+            print("Rate limit", e)
+            return ("Error", str(e))
         except openai.error.AuthenticationError as e:
             print("Auth Error", e)
             return ("Error", str(e))
@@ -97,7 +100,10 @@ class RoleGpt():
             print(e)
             if "maximum context length" in e._message:
                 print("Trimming prompt", trim, len(prompt_chain))
-                prompt_chain = prompt_chain[(1*trim):-1]
+                time.sleep(1.1)
+                prompt_chain = prompt_chain[trim:-1]
+                if len(prompt_chain) == 0:
+                    return ("Error", str(e))
                 return self.ask(prompt, prompt_chain, message_role, trim=trim+1)
             else:
                 print(e)
@@ -108,6 +114,8 @@ class RoleGpt():
         print(
             f"{response.choices[0].message.role}: {response.choices[0].message.content.strip()}")
         answer = response.choices[0].message.content.strip()
+        if len(response.choices) > 1:
+            pprint(response.choices)
 
         return (assistant_name, answer)
 

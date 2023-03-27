@@ -119,8 +119,8 @@ class ChatPage {
                 //     currContainer.style.display = "block"
                 // })
                 // currContainer.addEventListener("mouseleave", (e) => {
-                //     // globalTermEl.style.display = "none"
-                //     // currContainer.style.display = "none"
+                //     globalTermEl.style.display = "none"
+                //     currContainer.style.display = "none"
                 // })
 
                 // Buttons container

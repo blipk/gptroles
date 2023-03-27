@@ -9,12 +9,12 @@ from PyQt6.QtWebEngineCore import QWebEnginePage, QWebEngineSettings
 from PyQt6.QtWebChannel import QWebChannel
 
 from .chatmsg import ChatMessage
-from .netprompts import BorderlessWindow
-from ..gpt import RoleGpt, system_role, gptroles, run_shell
+from .netprompts import PromptsWindow
+from ...gpt import RoleGpt, system_role, gptroles, run_shell
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from .mainwindow import MainWindow
+    from ..mainwindow import MainWindow
 
 
 class Bridge(QObject):
@@ -37,7 +37,7 @@ class ChatPage(QWebEnginePage):
         self.channel.registerObject("bridge", self.bridge)
         self.setWebChannel(self.channel)
         page_path = os.path.join(os.path.dirname(
-            __file__), "web", "dist", "chatpage.html")
+            __file__), "..", "web", "dist", "chatpage.html")
         chatpage_url = QUrl("file://" + page_path)
 
         self.setFeaturePermission(chatpage_url, QWebEnginePage.Feature.Notifications,
@@ -65,7 +65,7 @@ class ChatPage(QWebEnginePage):
                     self.runJavaScript(js)
             elif command == "save":
                 msgid, blockindex, lang, code = params
-                from .utils import find_lang_extension
+                from ..utils import find_lang_extension
                 file_name = find_lang_extension(lang) or "snippet.txt"
                 res = self.chatbox.mwindow.app.save_file(
                     "Save snippet", code, file_name=file_name)
@@ -156,7 +156,10 @@ a {
                 target=self.chatbox.ask, args=(user_input,))
             thread.start()
             self.setSize()
-
+        elif event.key() == Qt.Key.Key_Up and not shifting and not self.toPlainText():
+            user_messages = [m for m in self.chatbox.messages if m.user == "You"]
+            if len(user_messages):
+                self.setText(user_messages[-1].text)
         # elif event.key() in (Qt.Key.Key_Delete, Qt.Key.Key_Backspace):
         #     super().keyPressEvent(event)
         #     self.setSize()
@@ -174,9 +177,13 @@ class ChatBox(QWidget):
         super(ChatBox, self).__init__(parent)
         self.mwindow: MainWindow = parent
         self.rolegpt = RoleGpt(parent.settings, gptroles)
-        self.messages = []
+        self.messages: ChatMessage = []
+        self.setContentsMargins(0, 0, 0, 0)
 
         self.layout: QVBoxLayout = QVBoxLayout(self)
+        self.layout.setContentsMargins(0, 0, 0, 0)
+        self.layout.setSpacing(0)
+
         self.input_box = InputBox(self)
         # self.input_box.returnPressed.connect(self.on_input_entered)
         self.chatMessageSignal.connect(
@@ -230,7 +237,7 @@ class ChatBox(QWidget):
 
     def toggleNetPrompts(self):
         if not self.netPromptsWindow:
-            self.netPromptsWindow = BorderlessWindow(self)
+            self.netPromptsWindow = PromptsWindow(self)
         self.netPromptsWindow.toggleAppear()
 
     def toggleDevTools(self):
