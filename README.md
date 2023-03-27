@@ -49,5 +49,14 @@ poetry install && poetry run main
 
 `TODO`
 
+###### Development installation
 
+Use the `dev.sh` script.
 
+```shell
+# This only needs to be run once
+./dev.sh build && ./dev.sh sysinstall && ./dev.sh install
+
+# Then you can run with the install and dev environment matching code
+./dev.sh run
+```

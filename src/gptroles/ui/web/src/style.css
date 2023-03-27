@@ -89,13 +89,28 @@ body {
     font-size: 82%;
 }
 
-.inline-terminal {
+.inline-container {
+    pointer-events: all !important;
+    /* visibility: hidden; */
+    position: absolute;
+    width: 60%;
+    height: 50px;
+    padding: 0;
+    margin: 4px;
+    background-color: transparent;
+    z-index: 10;
+}
+
+#terminal {
+    pointer-events: all !important;
+    /* visibility: hidden; */
     position: absolute;
     width: 80%;
-    height: 100%;
-    margin: 10px;
-    background-color: transparent;
     height: 50px;
+    padding: 0;
+    margin: 4px;
+    background-color: transparent;
+    z-index: 10;
 }
 
 .chat-message-msg pre {

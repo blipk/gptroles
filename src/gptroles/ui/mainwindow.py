@@ -23,7 +23,7 @@ class MainWindow(QMainWindow):
         MainWindow.setObjectName(u"MainWindow")
         self.setWindowTitle("ChatGPT")
         MainWindow.resize(1024, 720)
-        MainWindow.setMinimumSize(QSize(1024, 720))
+        MainWindow.setMinimumSize(QSize(1920, 1080))
 
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")

@@ -1,7 +1,15 @@
-import { initTerm } from "./term.js"
+import { initTerm, openTerm, placeTerm, globalTermEl } from "./term.js"
 
 const $ = (params) => document.querySelector(params)
 const $$ = (params) => document.querySelectorAll(params)
+const element = (type, attributes=[], options=null) => {
+    const el = document.createElement(type, options)
+    for (const attribute of attributes) {
+        const [attr, val] = attribute
+        el.setAttribute(attr, val)
+    }
+    return el
+}
 
 class ChatPage {
     constructor() {
@@ -10,8 +18,7 @@ class ChatPage {
     }
 
     copyText(text) {
-        const copyText = document.createElement("textarea")
-        copyText.setAttribute("style", "width:1px;border:0;opacity:0;")
+        const copyText = element("textarea", [["style", "width:1px;border:0;opacity:0;"]])
         document.body.appendChild(copyText)
         // copyText.innerHTML = text.trim()
         copyText.value = text.trim()
@@ -27,8 +34,7 @@ class ChatPage {
     }
 
     notification(message, parent) {
-        const notification = document.createElement("div")
-        notification.setAttribute("class", "notification")
+        const notification = element("div", [["class", "notification"]])
         notification.innerText = message
         parent.appendChild(notification)
         setTimeout(() => {
@@ -90,8 +96,7 @@ class ChatPage {
             const buttons = el.querySelector(".message-buttons")
             if (buttons)
                 buttons.parentNode.removeChild(buttons)
-            const newButtons = document.createElement("div")
-            newButtons.setAttribute("class", "message-buttons")
+            const newButtons = element("div", [["class", "message-buttons"]])
             newButtons.innerHTML = `<input type="button" class="message-button" value="⚙️"/>`
             el.prepend(newButtons)
         })
@@ -100,6 +105,25 @@ class ChatPage {
     applyMarkdownButtons() {
         [...$$(".chat-message-msg")].forEach(chatMessageEl => {
             [...chatMessageEl.querySelectorAll("pre code")].forEach((el, i) => {
+
+                // Overlay/Terminal container
+                // const container = el.querySelector(".inline-container")
+                // if (!container) {
+                //     var newContainer = element("div", [["class", "inline-container"]])
+                //     el.prepend(newContainer)
+                // }
+                // const currContainer = container || newContainer
+                // currContainer.addEventListener("mouseenter", (e) => {
+                //     placeTerm(currContainer)
+                //     globalTermEl.style.display = "block"
+                //     currContainer.style.display = "block"
+                // })
+                // currContainer.addEventListener("mouseleave", (e) => {
+                //     // globalTermEl.style.display = "none"
+                //     // currContainer.style.display = "none"
+                // })
+
+                // Buttons container
                 const codeButtons = el.querySelector(".code-buttons")
                 const msg = el.parentElement.parentElement
                 const msgId = msg.getAttribute("x-msg-id")
@@ -107,12 +131,12 @@ class ChatPage {
                 if (codeButtons)
                     codeButtons.parentNode.removeChild(codeButtons)
                 const lang = [...el.classList].find(c => c.includes("language"))?.replace("language-", "")
-                const newButtons = document.createElement("div")
-                newButtons.setAttribute("class", "code-buttons")
+                const newButtons = element("div", [["class", "code-buttons"]])
                 if (["python", "shell", "sh", "bash"].includes(lang)) {
                     newButtons.innerHTML = `<input type="button" class="code-button play-button" value="▶️"/>`
                     newButtons.innerHTML += `<input type="button" class="code-button edit-button" value="✏️"/>`
                 }
+
                 newButtons.innerHTML += `<input type="button" class="code-button save-button" value="💾"/>`
                 newButtons.innerHTML += `<input type="button" class="code-button copy-button" value="📋"/>`
                 el.prepend(newButtons)
@@ -186,5 +210,5 @@ window.onload = function (e) {
         return null
     }
 
-    // initTerm()
+    initTerm()
 }

@@ -4,14 +4,19 @@ import { FitAddon } from "xterm-addon-fit";
 const $ = (params) => document.querySelector(params)
 const $$ = (params) => document.querySelectorAll(params)
 
+const term = new Terminal();
+const fitAddon = new FitAddon();
+export const globalTermEl = document.createElement("div")
+
 export function initTerm() {
-    const term = new Terminal();
-    const fitAddon = new FitAddon();
-    const termEl = $("#terminal")
     window.term = term
     term.loadAddon(fitAddon);
-    term.open(termEl);
-    term.write('Hello from \x1B[1;3;31mxterm.js\x1B[0m $ ')
+
+    globalTermEl.setAttribute("id", "terminal")
+    globalTermEl.setAttribute("style", "display: none;")
+    document.body.appendChild(globalTermEl)
+    window.globalTermEl = globalTermEl
+
 
     term.onResize(function (evt) {
         const terminal_size = {
@@ -22,6 +27,13 @@ export function initTerm() {
         // websocket.send("\x04" + JSON.stringify(terminal_size));
     });
 
+    resizewatch(globalTermEl)
+
+    term.write('Hello from \x1B[1;3;31mxterm.js\x1B[0m $ ')
+    openTerm(globalTermEl)
+}
+
+function resizewatch(element) {
     const xterm_resize_ob = new ResizeObserver(function (entries) {
         try {
             fitAddon && fitAddon.fit();
@@ -29,9 +41,21 @@ export function initTerm() {
             console.log(err);
         }
     });
+    xterm_resize_ob.observe(element);
+}
 
-    // start observing for resize
-    xterm_resize_ob.observe(termEl);
+export function openTerm(element) {
+    term.open(element);
+    fitAddon.fit()
+}
 
-    fitAddon.fit();
+export function placeTerm(element) {
+    // window.globalTermEl.parentNode.removeChild(window.globalTermEl)
+    // element.appendChild(element)
+    // element.insertBefore(globalTermEl, elment.firstChild)
+    if (globalTermEl.parentElement === element)
+        return
+    element.prepend(globalTermEl)
+    fitAddon.fit()
+    // term.write('Hello from \x1B[1;3;31mxterm.js\x1B[0m $ ')
 }

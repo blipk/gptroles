@@ -35,6 +35,7 @@ if [[ "x$CMD" == "xinstall" ]]; then
     # Install locally, but it isnt copying the pyproject web includes
     buildWeb && \
     pip install .
+    # poetry install
     yes | cp -rf src/gptroles/ui/* $(python3 -m site --user-site)/gptroles/ui/
 elif [[ "x$CMD" == "xsysinstall" ]]; then
     buildWeb && \
