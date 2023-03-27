@@ -1,3 +1,5 @@
+import { initTerm } from "./term.js"
+
 const $ = (params) => document.querySelector(params)
 const $$ = (params) => document.querySelectorAll(params)
 
@@ -183,4 +185,6 @@ window.onload = function (e) {
         }
         return null
     }
+
+    initTerm()
 }

@@ -8,3 +8,5 @@ env.toml
 settings.toml
 .pypirc
 *.lock
+node_modules
+.parcel-cache

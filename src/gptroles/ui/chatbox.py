@@ -1,7 +1,7 @@
 import os
 import html
 import threading
-from PyQt6.QtGui import QAction, QGuiApplication, QFontMetrics, QTextCursor
+from PyQt6.QtGui import QAction, QGuiApplication, QFontMetrics, QTextCursor, QDragEnterEvent, QDropEvent
 from PyQt6.QtCore import Qt, QUrl, pyqtSignal, pyqtSlot, QVariant, QObject
 from PyQt6.QtWidgets import QApplication, QVBoxLayout, QHBoxLayout, QWidget, QLineEdit, QMainWindow, QTextEdit
 from PyQt6.QtWebEngineWidgets import QWebEngineView
@@ -16,12 +16,15 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .mainwindow import MainWindow
 
+
 class Bridge(QObject):
     dataChanged = pyqtSignal(QVariant)
     # Define a function that can be called from Javascript
+
     @pyqtSlot(QVariant)
     def setData(self, data):
         self.dataChanged.emit(data)
+
 
 class ChatPage(QWebEnginePage):
     def __init__(self, parent=None):
@@ -33,10 +36,12 @@ class ChatPage(QWebEnginePage):
         self.channel = QWebChannel()
         self.channel.registerObject("bridge", self.bridge)
         self.setWebChannel(self.channel)
-        page_path = os.path.join(os.path.dirname(__file__), "web", "chatpage.html")
+        page_path = os.path.join(os.path.dirname(
+            __file__), "web", "dist", "chatpage.html")
         chatpage_url = QUrl("file://" + page_path)
 
-        self.setFeaturePermission(chatpage_url, QWebEnginePage.Feature.Notifications, QWebEnginePage.PermissionPolicy.PermissionGrantedByUser)
+        self.setFeaturePermission(chatpage_url, QWebEnginePage.Feature.Notifications,
+                                  QWebEnginePage.PermissionPolicy.PermissionGrantedByUser)
         self.setZoomFactor(1.2)
         self.load(chatpage_url)
 
@@ -62,16 +67,67 @@ class ChatPage(QWebEnginePage):
                 msgid, blockindex, lang, code = params
                 from .utils import find_lang_extension
                 file_name = find_lang_extension(lang) or "snippet.txt"
-                res = self.chatbox.mwindow.app.save_file("Save snippet", code, file_name=file_name)
+                res = self.chatbox.mwindow.app.save_file(
+                    "Save snippet", code, file_name=file_name)
+
 
 class InputBox(QTextEdit):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.chatbox: ChatBox = parent
+        self.document().setDefaultStyleSheet("""
+a {
+    border-radius: 2px;
+    border: 6px solid red;
+    text-decoration: none;
+}
+        """)
 
     def focusInEvent(self, e) -> None:
         self.setSize()
         return super().focusInEvent(e)
+
+    def dragEnterEvent(self, e: QDragEnterEvent) -> None:
+        mimedata = e.mimeData()
+        if mimedata.hasUrls():
+            e.acceptProposedAction()
+        return super().dragEnterEvent(e)
+
+    def addFile(self, file_path, contents, position):
+        file_path = '/path/to/file.txt'
+        file_name = os.path.basename(file_path)
+        html_code = f'<a href="file://{file_path}" x-path="{file_path}" title="{file_path}">📁 {file_name}</a>'
+        cursor_pos = self.textCursor().position()
+        tcursor = self.textCursor()
+        self.setTextCursor(self.cursorForPosition(position))
+
+        self.insertHtml(html_code)
+        # set the block and format to read-only
+        block_format = tcursor.blockFormat()
+        block_format.setProperty(Qt.ItemDataRole.EditRole, False)
+        tcursor.mergeBlockFormat(block_format)
+        text_format = tcursor.charFormat()
+        text_format.setProperty(Qt.ItemDataRole.EditRole, False)
+        tcursor.setCharFormat(text_format)
+        tcursor.setBlockFormat(block_format)
+
+        # reset cursor
+        self.textCursor().setPosition(cursor_pos)
+
+        # set the text format back to writable
+        block_format.setProperty(Qt.ItemDataRole.EditRole, True)
+        tcursor.setBlockFormat(block_format)
+        text_format.setProperty(Qt.ItemDataRole.EditRole, True)
+        tcursor.setCharFormat(text_format)
+
+    def dropEvent(self, e: QDropEvent) -> None:
+        mimedata = e.mimeData()
+        if mimedata.hasUrls():
+            for url in mimedata.urls():
+                print("Dropped file:", url.toLocalFile(), self.cursor().pos())
+                self.addFile(url.toLocalFile(), "", e.position().toPoint())
+        else:
+            return super().dropEvent(e)
 
     def setSize(self, lines=None):
         doc = self.document()
@@ -79,7 +135,8 @@ class InputBox(QTextEdit):
         lines = lines or self.toPlainText().count("\n") + 1
         metrics = QFontMetrics(doc.defaultFont())
         margins = self.contentsMargins()
-        lheight = (metrics.lineSpacing() * lines) + ((doc.documentMargin() + self.frameWidth()) * 2) + margins.top() + margins.bottom()
+        lheight = (metrics.lineSpacing() * lines) + ((doc.documentMargin() +
+                                                      self.frameWidth()) * 2) + margins.top() + margins.bottom()
         # print("Setting height:", lines, lheight, self.document().lineCount(), self.document().blockCount())
         height = min([self.chatbox.height()/1.6, lheight])
         self.setMaximumHeight(int(height))
@@ -93,8 +150,10 @@ class InputBox(QTextEdit):
             user_input = self.toPlainText()
             self.chatbox.add_message(ChatMessage("You", user_input))
             self.clear()
-            self.moveCursor(QTextCursor.MoveOperation.Start, QTextCursor.MoveMode.MoveAnchor)
-            thread = threading.Thread(target=self.chatbox.ask, args=(user_input,))
+            self.moveCursor(QTextCursor.MoveOperation.Start,
+                            QTextCursor.MoveMode.MoveAnchor)
+            thread = threading.Thread(
+                target=self.chatbox.ask, args=(user_input,))
             thread.start()
             self.setSize()
 
@@ -120,18 +179,26 @@ class ChatBox(QWidget):
         self.layout: QVBoxLayout = QVBoxLayout(self)
         self.input_box = InputBox(self)
         # self.input_box.returnPressed.connect(self.on_input_entered)
-        self.chatMessageSignal.connect(self.add_message, Qt.ConnectionType.QueuedConnection)
+        self.chatMessageSignal.connect(
+            self.add_message, Qt.ConnectionType.QueuedConnection)
 
         self.webview = QWebEngineView(self)
-        self.webview.settings().setAttribute(QWebEngineSettings.WebAttribute.JavascriptEnabled, True)
-        self.webview.settings().setAttribute(QWebEngineSettings.WebAttribute.JavascriptCanAccessClipboard, True)
-        self.webview.settings().setAttribute(QWebEngineSettings.WebAttribute.JavascriptCanPaste, True)
-        self.webview.settings().setAttribute(QWebEngineSettings.WebAttribute.LocalContentCanAccessRemoteUrls, True)
+        self.webview.settings().setAttribute(
+            QWebEngineSettings.WebAttribute.JavascriptEnabled, True)
+        self.webview.settings().setAttribute(
+            QWebEngineSettings.WebAttribute.JavascriptCanAccessClipboard, True)
+        self.webview.settings().setAttribute(
+            QWebEngineSettings.WebAttribute.JavascriptCanPaste, True)
+        self.webview.settings().setAttribute(
+            QWebEngineSettings.WebAttribute.LocalContentCanAccessRemoteUrls, True)
         # self.webview.settings().setAttribute(QWebEngineSettings.WebAttribute.LocalContentCanAccessFileUrls, True)
-        self.webview.settings().setAttribute(QWebEngineSettings.WebAttribute.ErrorPageEnabled, True)
+        self.webview.settings().setAttribute(
+            QWebEngineSettings.WebAttribute.ErrorPageEnabled, True)
         # self.webview.settings().setAttribute(QWebEngineSettings.WebAttribute.AllowRunningInsecureContent, True)
-        self.webview.settings().setAttribute(QWebEngineSettings.WebAttribute.NavigateOnDropEnabled, False)
-        self.webview.settings().setAttribute(QWebEngineSettings.WebAttribute.PdfViewerEnabled, False)
+        self.webview.settings().setAttribute(
+            QWebEngineSettings.WebAttribute.NavigateOnDropEnabled, False)
+        self.webview.settings().setAttribute(
+            QWebEngineSettings.WebAttribute.PdfViewerEnabled, False)
         self.page = ChatPage(self.webview)
         self.page.setVisible(True)
         self.webview.setPage(self.page)
@@ -181,6 +248,7 @@ class ChatBox(QWidget):
     @pyqtSlot(ChatMessage)
     def add_message(self, chat_message: ChatMessage):
         self.messages.append(chat_message)
-        chat_message_text = chat_message.text.replace('`', '|TICK|').replace("${", "$|{")
+        chat_message_text = chat_message.text.replace(
+            '`', '|TICK|').replace("${", "$|{")
         js = f"window.chatPage.addMessage('{html.escape(chat_message.user)}', `{chat_message_text}`, '{chat_message.time}', '{chat_message.id}')"
         self.page.runJavaScript(js)

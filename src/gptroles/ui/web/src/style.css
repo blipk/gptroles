@@ -89,6 +89,15 @@ body {
     font-size: 82%;
 }
 
+.inline-terminal {
+    position: absolute;
+    width: 80%;
+    height: 100%;
+    margin: 10px;
+    background-color: transparent;
+    height: 50px;
+}
+
 .chat-message-msg pre {
     font-size: 0.89rem;
     background-color: #f5f5f9;

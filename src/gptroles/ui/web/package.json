@@ -1,0 +1,32 @@
+{
+  "name": "gptroles-web",
+  "version": "1.0.0",
+  "description": "",
+  "source": "src/chatpage.html",
+  "scripts": {
+    "start": "./package.sh && rm -rf dist && parcel src/chatpage.html --https --public-url ./ && ./postpackage.sh",
+    "watch": "./package.sh && rm -rf dist && parcel watch src/chatpage.html --public-url ./ && ./postpackage.sh",
+    "build": "./package.sh && rm -rf dist && parcel build src/chatpage.html --dist-dir dist --public-url ./ && cd dist && zip -r ../dist.zip ./* && cd .. && ./postpackage.sh"
+  },
+  "author": "",
+  "license": "",
+  "dependencies": {
+    "dompurify": "^3.0.1",
+    "xterm": "^5.1.0",
+    "xterm-addon-attach": "^0.8.0",
+    "xterm-addon-fit": "^0.7.0",
+    "xterm-addon-web-links": "^0.8.0"
+  },
+  "devDependencies": {
+    "@parcel/config-default": "^2.8.3",
+    "@parcel/core": "^2.8.3",
+    "parcel": "^2.8.3",
+    "parcel-reporter-static-files-copy": "^1.5.0",
+    "typescript": "^5.0.2"
+  },
+  "staticFiles": {
+    "staticPath": "src/static",
+    "staticOutPath": ""
+  },
+  "parcelIgnore": []
+}

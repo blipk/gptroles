@@ -7,10 +7,12 @@
 
     <title>Chat Log</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="static/highlight.min.css">
     <script src="qrc:///qtwebchannel/qwebchannel.js"></script>
-    <script src="static/marked.min.js"></script>
-    <script src="static/highlight.min.js"></script>
+    <script src="~/src/static/marked.min.js"></script>
+    <link rel="stylesheet" href="~/src/static/highlight.min.css">
+    <script src="~/src/static/highlight.min.js"></script>
+    <link rel="stylesheet" href="~/src/../node_modules/xterm/css/xterm.css" />
+    <!-- <script src="node_modules/xterm/lib/xterm.js"></script> -->
 </head>
 
 <body>
@@ -37,7 +39,8 @@
             <div class="chat-message-msg" x-msg-id="ada14365-7f25-4566-9548-6df787f298fd" x-msg-time="1679824364.809487"
                 x-msg-user="GPT">
                 <p>Sure thing, here is some example code in different languages:</p>
-                <pre><code class="hljs language-python" x-block-index="0"><div class="code-buttons"><input type="button" class="code-button edit-button" value="✏️"><input type="button" class="code-button save-button" value="💾"><input type="button" class="code-button copy-button" value="📋"></div><span class="hljs-comment"># Example Python code</span>
+
+    <pre><code class="hljs language-python" x-block-index="0"><div class="inline-terminal"><div id="terminal"></div></div><span class="hljs-comment"># Example Python code</span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">say_hello</span>(<span class="hljs-params">name</span>):
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f"Hello, <span class="hljs-subst">{name}</span>!"</span>)
 
@@ -79,8 +82,7 @@ say_hello(<span class="hljs-string">"World"</span>)
 
         <!-- More chat messages here... -->
     </div>
-
-    <script src="chatpage.js"></script>
+    <script src="~/src/index.js" type="module"></script>
 </body>
 
 </html>

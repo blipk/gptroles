@@ -25,3 +25,15 @@ install_file "./res/gptroles.png" $PNG_ICON_FILE
 xdg-icon-resource install --novendor --context apps --size 256 $PNG_ICON_FILE gptroles
 gtk-update-icon-cache -f ~/.local/share/icons/hicolor --ignore-theme-index
 xdg-desktop-menu install ./res/gptroles.desktop --novendor
+
+# systemctl start sshd.service
+# Required for terminal
+USER="gptroles"
+PASSWD="p4ssw0rd"
+sudo useradd -m -U $USER
+if ! command -v chpasswd &> /dev/null
+then
+    echo "$USER:$PASSWD" | chpasswd
+else
+    echo -e "$PASSWD\n$PASSWD" | passwd gptroles
+fi
