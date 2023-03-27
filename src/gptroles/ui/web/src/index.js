@@ -2,7 +2,7 @@ import { initTerm, openTerm, placeTerm, globalTermEl } from "./term.js"
 
 const $ = (params) => document.querySelector(params)
 const $$ = (params) => document.querySelectorAll(params)
-const element = (type, attributes=[], options=null) => {
+const element = (type, attributes = [], options = null) => {
     const el = document.createElement(type, options)
     for (const attribute of attributes) {
         const [attr, val] = attribute
@@ -63,8 +63,19 @@ class ChatPage {
         this.chatLog.scrollTo(0, this.chatLog.scrollHeight);
     }
 
-    updateMessage(id, text, blockIndex=null, time = (Date.now()/1000)) {
-        const msg = $(`.chat-message-msg[x-msg-id="${id}"]`)
+    updateBlockOutput(msgid, text, blockIndex, time = (Date.now() / 1000)) {
+        const msg = $(`.chat-message-msg[x-msg-id="${msgid}"]`)
+        if (!msg)
+            return
+        const block = msg.querySelectorAll("pre code")[parseInt(blockIndex, 10)]
+        const blockOutput = block.querySelector(".output-container")
+        blockOutput.setAttribute("x-output-updated", time)
+        blockOutput.textContent = text
+        blockOutput.style.display = "block"
+    }
+
+    updateMessage(msgid, text, blockIndex = null, time = (Date.now() / 1000)) {
+        const msg = $(`.chat-message-msg[x-msg-id="${msgid}"]`)
         if (!msg)
             return
         if (blockIndex !== null) {
@@ -107,21 +118,24 @@ class ChatPage {
             [...chatMessageEl.querySelectorAll("pre code")].forEach((el, i) => {
 
                 // Overlay/Terminal container
-                // const container = el.querySelector(".inline-container")
-                // if (!container) {
-                //     var newContainer = element("div", [["class", "inline-container"]])
+                // const termContainer = el.querySelector(".inline-container") || element("div", [["class", "inline-container"]])
+                // if (termContainer.parentElement !== el)
                 //     el.prepend(newContainer)
-                // }
-                // const currContainer = container || newContainer
-                // currContainer.addEventListener("mouseenter", (e) => {
+                //
+                // termContainer.addEventListener("mouseenter", (e) => {
                 //     placeTerm(currContainer)
                 //     globalTermEl.style.display = "block"
-                //     currContainer.style.display = "block"
+                //     termContainer.style.display = "block"
                 // })
-                // currContainer.addEventListener("mouseleave", (e) => {
+                // termContainer.addEventListener("mouseleave", (e) => {
                 //     globalTermEl.style.display = "none"
-                //     currContainer.style.display = "none"
+                //     termContainer.style.display = "none"
                 // })
+
+                // Run output container
+                const outputContainer = el.querySelector(".output-container") || element("div", [["class", "output-container"]])
+                if (outputContainer.parentElement !== el)
+                    el.appendChild(outputContainer)
 
                 // Buttons container
                 const codeButtons = el.querySelector(".code-buttons")
@@ -132,7 +146,7 @@ class ChatPage {
                     codeButtons.parentNode.removeChild(codeButtons)
                 const lang = [...el.classList].find(c => c.includes("language"))?.replace("language-", "")
                 const newButtons = element("div", [["class", "code-buttons"]])
-                if (["python", "shell", "sh", "bash"].includes(lang)) {
+                if (["python", "shell", "sh", "bash", "js", "javascript"].includes(lang)) {
                     newButtons.innerHTML = `<input type="button" class="code-button play-button" value="▶️"/>`
                     newButtons.innerHTML += `<input type="button" class="code-button edit-button" value="✏️"/>`
                 }
@@ -144,18 +158,19 @@ class ChatPage {
                 const editButton = el.querySelector(".edit-button")
                 const saveButton = el.querySelector(".save-button")
                 const copyButton = el.querySelector(".copy-button")
+                const codeText = el.textContent.replace(outputContainer.textContent, "")
                 copyButton?.addEventListener("click", (e) => {
                     e.preventDefault()
-                    this.copyText(el.textContent)
+                    this.copyText(codeText)
                     this.notification("Copied!", copyButton.parentElement)
                 })
                 playButton?.addEventListener("click", (e) => {
                     e.preventDefault()
-                    window.bridge.setData(["run_code", msgId, i, lang, el.textContent])
+                    window.bridge.setData(["run_code", msgId, i, lang, codeText])
                 })
                 saveButton?.addEventListener("click", (e) => {
                     e.preventDefault()
-                    window.bridge.setData(["save", msgId, i, lang, el.textContent])
+                    window.bridge.setData(["save", msgId, i, lang, codeText])
                     //TODO add open in editor icon after saving
                 })
                 editButton?.addEventListener("click", (e) => {

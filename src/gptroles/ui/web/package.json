@@ -4,7 +4,7 @@
   "description": "",
   "source": "src/chatpage.html",
   "scripts": {
-    "start": "./package.sh && rm -rf dist && parcel src/chatpage.html --https --public-url ./ && ./postpackage.sh",
+    "start": "./package.sh && rm -rf dist && parcel src/chatpage.html --https --public-url / && ./postpackage.sh",
     "watch": "./package.sh && rm -rf dist && parcel watch src/chatpage.html --public-url ./ && ./postpackage.sh",
     "build": "./package.sh && rm -rf dist && parcel build src/chatpage.html --dist-dir dist --public-url ./ && ./postpackage.sh"
   },

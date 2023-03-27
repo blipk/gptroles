@@ -12,9 +12,11 @@ from .prompts import system_role, gptroles, role_confirmation
 # for model in models:
 #     print(model)
 
-def run_shell(command, shell="bash", autorun=False):
+def run_shell(command, shell="bash", string_flag=None, autorun=False):
+    if string_flag is None:
+        string_flag = "-c"
     print("#running proc", command)
-    p = subprocess.Popen([shell, "-c", command], shell=False,
+    p = subprocess.Popen([shell, string_flag, command], shell=False,
                          text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     p.communicate()
     try:

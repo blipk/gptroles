@@ -55,13 +55,17 @@ class ChatPage(QWebEnginePage):
             command, *params = data
             if command == "run_code":
                 msgid, blockindex, lang, code = params
-                shell = "python" if lang == "python" else "bash"
-                out, err, rcode = run_shell(code, shell, True)
+                shell = lang if lang in ("bash", "sh", "zsh", "python", "js", "javascript") else "bash"
+                string_flag = None
+                if lang == "javascript":
+                    shell = "node"
+                    string_flag = "-e"
+                out, err, rcode = run_shell(code, shell, string_flag, True)
                 if err or rcode:
                     print("Command failure:", rcode, err)
                 else:
                     print("Command complete:", out)
-                    js = f"window.chatPage.updateMessage('{msgid}', `{out}`, '{blockindex}')"
+                    js = f"window.chatPage.updateBlockOutput('{msgid}', `{out}`, '{blockindex}')"
                     self.runJavaScript(js)
             elif command == "save":
                 msgid, blockindex, lang, code = params
