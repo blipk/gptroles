@@ -186,5 +186,5 @@ window.onload = function (e) {
         return null
     }
 
-    initTerm()
+    // initTerm()
 }
