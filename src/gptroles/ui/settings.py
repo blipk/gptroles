@@ -1,17 +1,21 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QLayout, QWidget, QVBoxLayout, QHBoxLayout, QSpinBox, QDoubleSpinBox, QLabel, QLineEdit, QCheckBox, QListWidget, QGroupBox, QSlider
-
 from ..settings import Settings
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from . import MainWindow
 
 class SettingsWidget(QWidget):
     def __init__(self, settings_instance: Settings, parent=None):
         super().__init__(parent)
-        self.mwindow = parent
+        self.mwindow: MainWindow = parent
         self.settings_instance = settings_instance
         self.data = settings_instance._settings
         self.layout = QVBoxLayout()
-        self.layout.setSpacing(0)
-        self.layout.setContentsMargins(0, 0, 0, 0)
+        self.layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+        self.layout.setSpacing(2)
+        self.layout.setContentsMargins(0, 50, 0, 0)
         self.setLayout(self.layout)
         self.setMaximumWidth(450)
         self.display_dict(self.data, self.layout)
@@ -39,7 +43,7 @@ class SettingsWidget(QWidget):
         self.settings_instance.saveSettings()
         self.mwindow.chatbox.rolegpt.settings = self.settings_instance
 
-    def display_dict(self, data, layout, vertical=False, use_spin_box=True, parent_key=None):
+    def display_dict(self, data, layout, vertical=True, use_spin_box=True, parent_key=None):
         for key, value in data.items():
             hlayout = QVBoxLayout() if vertical else QHBoxLayout()
             l, h, step = self.settings_instance.default_ranges.get(key, (-50.0, 50.0, 1))

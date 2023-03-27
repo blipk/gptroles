@@ -1,7 +1,7 @@
 import sys
 from PyQt6.QtGui import QDragEnterEvent, QDropEvent, QDragLeaveEvent, QDragMoveEvent, QAction, QMouseEvent
 from PyQt6.QtCore import Qt, QTimer, QSize, QRect, QSettings, QByteArray, QEvent, QPoint
-from PyQt6.QtWidgets import QApplication, QVBoxLayout, QHBoxLayout, QWidget, QLayout, QLineEdit, QTextEdit, QMessageBox, QMainWindow, QMenuBar, QPushButton
+from PyQt6.QtWidgets import QApplication, QVBoxLayout, QHBoxLayout, QWidget, QLayout, QLineEdit, QTextEdit, QMessageBox, QMainWindow, QMenuBar, QPushButton, QWidgetAction
 from .widgets.chatbox import ChatBox
 # from .widgets.terminal import SerialPortWidget
 from .widgets.borderlesswindow import BorderlessWindow, BaseWindow
@@ -24,21 +24,39 @@ class CustomMenuBar(QMenuBar):
             QMenuBar::item {
                 color: white;
                 background-color: transparent;
+                cursor: pointer;
             }
         """)
         quit_button = QPushButton("Exit", self)
         quit_button.clicked.connect(self.mwindow.app.quit)
         self.setCornerWidget(quit_button)
+        self.setCursor(Qt.CursorShape.OpenHandCursor)
+
+    def addAction(self, action) -> None:
+        print("AA", action)
+        action.hovered.connect(lambda: self.setCursor(Qt.CursorShape.PointingHandCursor))
+        # action.triggered.connect(lambda: self.hovered(action))
+        return super().addAction(action)
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
         if event.button() == Qt.MouseButton.LeftButton:
+            self.setCursor(Qt.CursorShape.ClosedHandCursor)
             self.dragPosition = event.scenePosition().toPoint() - self.frameGeometry().topLeft()
         return super().mousePressEvent(event)
 
+    def mouseReleaseEvent(self, a0: QMouseEvent) -> None:
+        self.setCursor(Qt.CursorShape.OpenHandCursor)
+        return super().mouseReleaseEvent(a0)
+
     def mouseMoveEvent(self, event: QMouseEvent) -> None:
+        # on_action = next((a for a in self.actions() if a.underMouse()), False)
+        on_action = False # TODO
         if event.buttons() == Qt.MouseButton.LeftButton:
+            self.setCursor(Qt.CursorShape.ClosedHandCursor)
             newPosition = event.globalPosition().toPoint() - self.dragPosition
             self.window().move(newPosition)
+        elif not on_action:
+            self.setCursor(Qt.CursorShape.OpenHandCursor)
         return super().mouseMoveEvent(event)
 
 class MainWindow(QMainWindow, BorderlessWindow):

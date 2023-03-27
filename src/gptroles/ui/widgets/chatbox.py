@@ -3,7 +3,7 @@ import html
 import threading
 from PyQt6.QtGui import QAction, QGuiApplication, QFontMetrics, QTextCursor, QDragEnterEvent, QDropEvent
 from PyQt6.QtCore import Qt, QUrl, pyqtSignal, pyqtSlot, QVariant, QObject
-from PyQt6.QtWidgets import QApplication, QVBoxLayout, QHBoxLayout, QWidget, QLineEdit, QMainWindow, QTextEdit
+from PyQt6.QtWidgets import QApplication, QVBoxLayout, QHBoxLayout, QWidget, QLineEdit, QMainWindow, QTextEdit, QWidgetAction
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWebEngineCore import QWebEnginePage, QWebEngineSettings
 from PyQt6.QtWebChannel import QWebChannel
@@ -218,7 +218,7 @@ class ChatBox(QWidget):
         self.layout.addWidget(self.input_box)
 
         menu = self.parent().menuBar()
-        netaction = QAction("JailBreakChat", self)
+        netaction = QAction("Online Prompts", self)
         netaction.triggered.connect(self.toggleNetPrompts)
         menu.addAction(netaction)
         # Dev view for ChatPage

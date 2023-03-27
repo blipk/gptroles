@@ -73,7 +73,8 @@ class PromptsWindow(BorderlessWindow):
                 background-color: #f5f5f5;
             }
             QListWidget::item:hover{
-                background-color: #f5f5f5;
+                color: black;
+                background-color: #efefef;
             }
             """)
         layout = QVBoxLayout(self)
