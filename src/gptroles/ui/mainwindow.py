@@ -1,7 +1,7 @@
 import sys
 from PyQt6.QtGui import QDragEnterEvent, QDropEvent, QDragLeaveEvent, QDragMoveEvent, QAction, QMouseEvent
 from PyQt6.QtCore import Qt, QTimer, QSize, QRect, QSettings, QByteArray, QEvent, QPoint
-from PyQt6.QtWidgets import QApplication, QVBoxLayout, QHBoxLayout, QWidget, QLayout, QLineEdit, QTextEdit, QMessageBox, QMainWindow, QMenuBar, QPushButton, QWidgetAction
+from PyQt6.QtWidgets import QApplication, QVBoxLayout, QHBoxLayout, QWidget, QLayout, QLabel, QCheckBox, QLineEdit, QTextEdit, QMessageBox, QMainWindow, QMenuBar, QPushButton, QWidgetAction
 from .widgets.chatbox import ChatBox
 # from .widgets.terminal import SerialPortWidget
 from .widgets.borderlesswindow import BorderlessWindow, BaseWindow
@@ -16,6 +16,7 @@ class CustomMenuBar(QMenuBar):
         super().__init__(parent)
         self.mwindow = parent
         self.dragPosition = None
+        self.setNativeMenuBar(False)
         self.setContentsMargins(0, 0, 0, 0)
         self.setStyleSheet("""
             QMenuBar {
@@ -32,29 +33,48 @@ class CustomMenuBar(QMenuBar):
         self.setCornerWidget(quit_button)
         self.setCursor(Qt.CursorShape.OpenHandCursor)
 
-    def addAction(self, action) -> None:
-        action.hovered.connect(lambda: self.setCursor(Qt.CursorShape.PointingHandCursor))
-        # action.triggered.connect(lambda: self.hovered(action))
+    def addAction(self, action: QAction) -> None:
+        # widget_action = QWidgetAction(self)
+        # widget_label = QPushButton(action.text(), self)
+        # widget_label.clicked.connect(action.trigger)
+        # widget_action.setDefaultWidget(widget_label)
+        # widget_label.show()
+        # action.hovered.connect(lambda: self.setCursor(Qt.CursorShape.PointingHandCursor))
         return super().addAction(action)
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
+        on_action = self.activeAction()
         if event.button() == Qt.MouseButton.LeftButton:
-            self.setCursor(Qt.CursorShape.ClosedHandCursor)
+            if on_action:
+                self.setCursor(Qt.CursorShape.PointingHandCursor)
+            else:
+                self.setCursor(Qt.CursorShape.ClosedHandCursor)
             self.dragPosition = event.scenePosition().toPoint() - self.frameGeometry().topLeft()
         return super().mousePressEvent(event)
 
     def mouseReleaseEvent(self, a0: QMouseEvent) -> None:
-        self.setCursor(Qt.CursorShape.OpenHandCursor)
+        on_action = self.activeAction()
+        if on_action:
+            self.setCursor(Qt.CursorShape.PointingHandCursor)
+        else:
+            self.setCursor(Qt.CursorShape.OpenHandCursor)
         return super().mouseReleaseEvent(a0)
 
     def mouseMoveEvent(self, event: QMouseEvent) -> None:
-        # on_action = next((a for a in self.actions() if a.underMouse()), False)
-        on_action = False # TODO
-        if event.buttons() == Qt.MouseButton.LeftButton:
+        on_action = self.activeAction()
+        left_clicking = event.buttons() == Qt.MouseButton.LeftButton
+        if left_clicking and not on_action:
             self.setCursor(Qt.CursorShape.ClosedHandCursor)
             newPosition = event.globalPosition().toPoint() - self.dragPosition
             self.window().move(newPosition)
+        elif on_action:
+            if left_clicking:
+                self.setCursor(Qt.CursorShape.PointingHandCursor)
+            else:
+                self.setCursor(Qt.CursorShape.PointingHandCursor)
         elif not on_action:
+            self.setCursor(Qt.CursorShape.OpenHandCursor)
+        else:
             self.setCursor(Qt.CursorShape.OpenHandCursor)
         return super().mouseMoveEvent(event)
 
@@ -67,6 +87,9 @@ class MainWindow(QMainWindow, BorderlessWindow):
         self.settings = self.app.settings
         self.setAcceptDrops(True)
         self.setupUi()
+        self.setupMenu()
+        self.setupWidgets()
+        self.readSettings()
 
     def setupUi(self):
         # Main Layout
@@ -97,23 +120,34 @@ class MainWindow(QMainWindow, BorderlessWindow):
         self.hLayout.setContentsMargins(0, 0, 0, 0)
         self.hLayout.setSpacing(0)
 
-        # Menu
+        self.setStyleSheet("""
+            color: white;
+            background-color: rgba(50, 50, 50, 0.8);
+        """)
+
+    def setupMenu(self):
         self.cmenuBar = CustomMenuBar(self)
         self.setMenuBar(self.cmenuBar)
-        menu = self.menuBar()
+
+        # w = QWidget(self)
+        # w.setMouseTracking(True)
+        # layout = QHBoxLayout(w)
+        # layout.addWidget(self.cmenuBar)
+        # layout.addStretch(10)
+        # self.setMenuWidget(w)
+        # self.setMenuBar(self.cmenuBar)
         # quit_action = QAction("Exit", self)
         # quit_action.triggered.connect(self.app.quit)
-        # menu.addAction(quit_action)
+        # self.cmenuBar.addAction(quit_action)
 
+    def setupWidgets(self):
+        menu = self.menuBar()
         # Widgets
         self.settingsWidget = SettingsWidget(self.settings, self)
         self.chatbox = ChatBox(self)
         self.hLayout.addWidget(self.chatbox)
         self.hLayout.addWidget(self.settingsWidget)
-        self.setStyleSheet("""
-            color: white;
-            background-color: rgba(50, 50, 50, 0.8);
-        """)
+
         # Terminal
         # self.m_serial_port_widget = SerialPortWidget(self)
         # self.hLayout.addWidget(self.m_serial_port_widget)
@@ -123,9 +157,6 @@ class MainWindow(QMainWindow, BorderlessWindow):
         settings_action = QAction("Config", self)
         settings_action.triggered.connect(self.settingsWidget.toggle)
         menu.addAction(settings_action)
-
-        # Load window QSettings
-        self.readSettings()
 
     def readSettings(self):
         self.app.qsettings.beginGroup("MainWindow");
