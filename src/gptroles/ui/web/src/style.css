@@ -121,7 +121,7 @@ body {
 .output-container::before {
     font-family: monospace, monospace, monospace;
     font-variant: small-caps;
-    content: "[#output] "
+    content: attr(x-output-tag);
 }
 
 .chat-message-msg pre {

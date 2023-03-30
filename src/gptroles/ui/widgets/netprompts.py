@@ -1,3 +1,4 @@
+import threading
 import requests
 from PyQt6.QtGui import *
 from PyQt6.QtCore import *
@@ -17,7 +18,9 @@ class CustomListView(QListWidget):
         self.prompts = []
         self.itemClicked.connect(self.on_item_click)
         self.itemSelectionChanged.connect(self.on_item_select)
-        self.fetch_data()
+        thread = threading.Thread(target=self.fetch_data)
+        thread.start()
+        # self.fetch_data()
 
     def on_item_click(self, item: QListWidgetItem):
         print(f"{item.text()} {item.id} clicked")
@@ -70,6 +73,7 @@ class PromptsWindow(BorderlessWindow):
                 padding: 5px;
             }
             QListWidget::item:selected{
+                color: black;
                 background-color: #f5f5f5;
             }
             QListWidget::item:hover{

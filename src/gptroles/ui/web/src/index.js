@@ -64,13 +64,16 @@ class ChatPage {
         this.chatLog.scrollTo(0, this.chatLog.scrollHeight);
     }
 
-    updateBlockOutput(msgid, text, blockIndex, time = (Date.now() / 1000)) {
+    updateBlockOutput(msgid, text, blockIndex, error_code=null, time = (Date.now() / 1000)) {
         const msg = $(`.chat-message-msg[x-msg-id="${msgid}"]`)
         if (!msg)
             return
         const block = msg.querySelectorAll("pre code")[parseInt(blockIndex, 10)]
         const blockOutput = block.querySelector(".output-container")
         blockOutput.setAttribute("x-output-updated", time)
+        const outputTag = error_code ? `[!error ${error_code}] ` : "[#output] "
+        blockOutput.setAttribute("x-output-tag", outputTag)
+        // window.getComputedStyle(blockOutput, ":before").setProperty("content", outputTag)
         blockOutput.textContent = text
         blockOutput.style.display = "block"
     }
@@ -159,7 +162,7 @@ class ChatPage {
                 const editButton = el.querySelector(".edit-button")
                 const saveButton = el.querySelector(".save-button")
                 const copyButton = el.querySelector(".copy-button")
-                const codeText = el.textContent.replace(outputContainer.textContent, "")
+                const codeText = el.textContent.replace(outputContainer.textContent, "").trim()
                 copyButton?.addEventListener("click", (e) => {
                     e.preventDefault()
                     this.copyText(codeText)

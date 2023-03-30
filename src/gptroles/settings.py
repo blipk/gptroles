@@ -15,7 +15,7 @@ class Settings():
             n=1,
             # stream=None,
             # [] Up to 4 sequences where the API will stop generating further tokens.
-            stop=None,
+            # stop=None,
             max_tokens=1024,
             presence_penalty=0.01,  # -2.0 2.0
             frequency_penalty=0.01,  # -2.0 2.0

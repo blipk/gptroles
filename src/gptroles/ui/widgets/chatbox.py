@@ -2,11 +2,12 @@ import os
 import html
 import threading
 from PyQt6.QtGui import QAction, QGuiApplication, QFontMetrics, QTextCursor, QDragEnterEvent, QDropEvent
-from PyQt6.QtCore import Qt, QUrl, pyqtSignal, pyqtSlot, QVariant, QObject
+from PyQt6.QtCore import Qt, QUrl, pyqtSignal, pyqtSlot, QVariant, QObject, QCoreApplication, QEvent
 from PyQt6.QtWidgets import QApplication, QVBoxLayout, QHBoxLayout, QWidget, QLineEdit, QMainWindow, QTextEdit, QWidgetAction
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWebEngineCore import QWebEnginePage, QWebEngineSettings
 from PyQt6.QtWebChannel import QWebChannel
+from PyQt6.QtTest import QTest
 
 from .chatmsg import ChatMessage
 from .netprompts import PromptsWindow
@@ -63,6 +64,8 @@ class ChatPage(QWebEnginePage):
                 out, err, rcode = run_shell(code, shell, string_flag, True)
                 if err or rcode:
                     print("Command failure:", rcode, err)
+                    js = f"window.chatPage.updateBlockOutput('{msgid}', `{out}{err}`, '{blockindex}', '{rcode}')"
+                    self.runJavaScript(js)
                 else:
                     print("Command complete:", out)
                     js = f"window.chatPage.updateBlockOutput('{msgid}', `{out}`, '{blockindex}')"
@@ -164,6 +167,7 @@ a {
             user_messages = [m for m in self.chatbox.messages if m.user == "You"]
             if len(user_messages):
                 self.setText(user_messages[-1].text)
+                self.setSize()
         # elif event.key() in (Qt.Key.Key_Delete, Qt.Key.Key_Backspace):
         #     super().keyPressEvent(event)
         #     self.setSize()
@@ -189,11 +193,12 @@ class ChatBox(QWidget):
         self.layout.setSpacing(0)
 
         self.input_box = InputBox(self)
-        # self.input_box.returnPressed.connect(self.on_input_entered)
         self.chatMessageSignal.connect(
             self.add_message, Qt.ConnectionType.QueuedConnection)
 
         self.webview = QWebEngineView(self)
+        self.webview.settings().setAttribute(
+            QWebEngineSettings.WebAttribute.FocusOnNavigationEnabled, True)
         self.webview.settings().setAttribute(
             QWebEngineSettings.WebAttribute.JavascriptEnabled, True)
         self.webview.settings().setAttribute(
@@ -249,8 +254,11 @@ class ChatBox(QWidget):
 
     def onLoadFinished(self, ok):
         if ok:
+            print("Page ready")
             chat_user, chat_response = self.rolegpt.confirm_role()
             self.add_message(ChatMessage(chat_user, chat_response))
+            self.input_box.setSize()
+            self.input_box.setFocus()
 
     def ask(self, prompt):
         role, answer = self.rolegpt.ask(prompt)
