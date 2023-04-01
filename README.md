@@ -26,9 +26,9 @@ Not fully implemented
 
 Programming related features:
 
-    - Copy or save markdown blocks to a file
     - Run shell or python code in markdown blocks directly in the chat interface
-    - TODO Edit the markdown blocks in the chat box, or open in external editor
+    - Edit the markdown blocks in the chat box
+    - Copy or save markdown blocks to a file
 
 Additional features:
 

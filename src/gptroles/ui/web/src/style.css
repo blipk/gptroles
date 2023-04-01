@@ -67,6 +67,40 @@ body {
     left: 2px;
 }
 
+.markdown-editor {
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.markdown-editor .textarea-container {
+    margin: 0;
+    padding: 0;
+    position: relative;
+    float: left;
+    /* height: 10ch; */
+}
+
+.markdown-editor textarea {
+    /* min-height: 100%; */
+    width: 95vw;
+    max-width: 95vw;
+    font-size: 100%;
+}
+
+.markdown-editor .editor-buttons {
+    z-index: 14;
+    position: absolute;
+    top: 0;
+    right: 5px;
+    /* margin: 0;
+    padding: 0;
+    min-height: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 4px; */
+}
+
 .chat-message-msg {
     user-select: text;
     padding: 0;

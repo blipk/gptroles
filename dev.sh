@@ -14,7 +14,7 @@ buildWeb() {
 
 watchWeb() {
     START_DIR=$PWD
-    cd ./src/gptroles/ui/web && npm run start & \
+    cd ./src/gptroles/ui/web && npm run start && \
     cd $START_DIR
 }
 
@@ -34,7 +34,7 @@ publish() {
 if [[ "x$CMD" == "xinstall" ]]; then
     # Install locally, but it isnt copying the pyproject web includes
     buildWeb && \
-    pip install .
+    pip install -e .
     # poetry install
     yes | cp -rf src/gptroles/ui/* $(python3 -m site --user-site)/gptroles/ui/
 elif [[ "x$CMD" == "xsysinstall" ]]; then
@@ -45,6 +45,8 @@ elif [[ "x$CMD" == "xrun" ]]; then
     yes | cp -rf src/gptroles/* $(python3 -m site --user-site)/gptroles/ && \
     ./src/gptroles/main.py --debug
     # poetry run main --debug
+elif [[ "x$CMD" == "xwatch" ]]; then
+    watchWeb
 elif [[ "x$CMD" == "xbuild" ]]; then
     build
     if [[ "x$2" == "xpublish" ]]; then
