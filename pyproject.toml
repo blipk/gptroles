@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "gptroles"
-version = "0.1.3"
+version = "0.1.4"
 description = "Interact with chatgpt and assign different roles"
 authors = [
     "Blipk A.D."

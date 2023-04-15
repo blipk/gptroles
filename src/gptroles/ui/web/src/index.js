@@ -232,6 +232,16 @@ class ChatPage {
                     this.applyMarkdownButtons([chatMessageEl])
                 })
         })
+
+        // SVG Display
+        if (lang === "svg" || ((lang === "html" || lang === "xml") && codeText.includes("</svg>"))) {
+            const svgContainer = element("div", [["class", "svg-container"]])
+            svgContainer.innerHTML = codeText
+            const parentChildren = [...codeEl.parentNode.childNodes]
+            const nextNode = parentChildren[parentChildren.indexOf(codeEl)+1]
+            if (nextNode && !([...nextNode.classList].includes("svg-container")))
+                codeEl.parentNode.insertBefore(svgContainer, nextNode)
+        }
     }
 }
 

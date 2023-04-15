@@ -1,9 +1,9 @@
-import subprocess
 import time
 import json
+import requests
+import subprocess
 import openai
 import openai.error
-from os import getenv
 from pprint import pprint
 from .prompts import system_role, gptroles, role_confirmation
 
@@ -190,6 +190,8 @@ class RoleGpt():
         )
         try:
             answer = chatgpt_chain.predict(input=prompt)
+            if "INFO:" in answer:
+                return self.fetch_info(answer, prompt_chain, message_role, assistant_name, trim)
         except openai.error.RateLimitError as e:
             print("Rate limit", e)
             return ("Error", str(e))
@@ -211,6 +213,11 @@ class RoleGpt():
         self.history.add_ai_message(answer)
 
         return (assistant_name, answer)
+
+    def fetch_info(self, answer, prompt_chain, message_role, assistant_name, trim):
+        url = answer.replace("INFO:", "").strip()
+        res = requests.get(url)
+        return self.ask(res.text, prompt_chain, message_role, assistant_name, trim)
 
 
 # rolegpt = RoleGpt(settings, coder_role, "")
