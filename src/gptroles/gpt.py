@@ -204,7 +204,7 @@ class RoleGpt():
         except openai.InvalidRequestError as e:
             print(e)
             if "maximum context length" in e._message:
-                if len(prompt_chain) == 0:
+                if prompt_chain and len(prompt_chain) == 0:
                     return ("Error", str(e))
                 return self.ask(prompt, prompt_chain, message_role, trim=trim+1)
             else:
