@@ -8,6 +8,7 @@ USER_LIB_HOME="$HOME/.local/lib"
 
 
 install_file() {
+    mkdir -p $(dirname $2)
     # if [ -f "$2" ]
     # then
     #     echo "File already installed"

@@ -8,7 +8,7 @@ fi
 
 buildWeb() {
     START_DIR=$PWD
-    cd src/gptroles/ui/web && npm run build && \
+    cd src/gptroles/ui/web && npm run install && npm run build && \
     cd $START_DIR
 }
 
@@ -18,6 +18,7 @@ watchWeb() {
     cd $START_DIR
 }
 
+BUILT="0"
 build() {
     buildWeb && \
     poetry install && \
@@ -25,9 +26,13 @@ build() {
     rm -rf dist && \
     poetry build && \
     poetry -v build --format=wheel
+    BUILT="1"
 }
 
 publish() {
+    if [[ "x$BUILT" == "x0" ]]; then
+        build
+    fi
     poetry publish
 }
 

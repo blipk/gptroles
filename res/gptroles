@@ -1,3 +1,4 @@
+#!/usr/bin/bash
 # echo "launched"
 RBIN="$(python3 -m site --user-site)/gptroles/main.py"
 chmod +x $RBIN

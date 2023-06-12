@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "gptroles"
-version = "0.1.5"
+version = "0.1.6"
 description = "Interact with chatgpt and assign different roles"
 authors = [
     "Blipk A.D."
@@ -36,6 +36,7 @@ appdirs = "^1.4.4"
 pygments = "^2.14.0"
 langchain = "^0.0.126"
 pydantic = "^1.10.7"
+wikipedia = "^1.4.0"
 
 [tool.poetry.scripts]
 main = "gptroles.main:main"
