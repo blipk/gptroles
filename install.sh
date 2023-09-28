@@ -26,6 +26,9 @@ install_file "./res/gptroles.png" $PNG_ICON_FILE
 xdg-icon-resource install --novendor --context apps --size 256 $PNG_ICON_FILE gptroles
 gtk-update-icon-cache -f ~/.local/share/icons/hicolor --ignore-theme-index
 xdg-desktop-menu install ./res/gptroles.desktop --novendor
+xdg-desktop-menu install ./res/gptroles-term.desktop --novendor
+chmod -x "$USER_DATA_HOME/applications/gptroles.desktop"
+chmod +x "$USER_DATA_HOME/applications/gptroles-term.desktop"
 
 # systemctl start sshd.service
 # Required for terminal (Currently not fully implemented)
