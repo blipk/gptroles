@@ -8,7 +8,7 @@ fi
 
 buildWeb() {
     START_DIR=$PWD
-    cd src/gptroles/ui/web && npm run install && npm run build && \
+    cd src/gptroles/ui/web && npm install && npm run build && \
     cd $START_DIR
 }
 
@@ -39,9 +39,9 @@ publish() {
 if [[ "x$CMD" == "xinstall" ]]; then
     # Install locally, but it isnt copying the pyproject web includes
     buildWeb && \
-    pip install -e .
+    pip install -e . --break-system-packages &&
     # poetry install
-    yes | cp -rf src/gptroles/ui/* $(python3 -m site --user-site)/gptroles/ui/
+    yes | cp -rf src/* $(python3 -m site --user-site)
 elif [[ "x$CMD" == "xsysinstall" ]]; then
     buildWeb && \
     ./install.sh

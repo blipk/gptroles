@@ -118,7 +118,7 @@ class RoleGpt():
         answer = response.choices[0].message.content.strip()
         if len(response.choices) > 1:
             pprint(response.choices)
-
+        print(answer)
         return (assistant_name, answer)
 
 
