@@ -7,6 +7,7 @@ from .chatmsg import ChatMessage
 from .borderlesswindow import BorderlessWindow
 
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from .chatbox import ChatBox
     from ...gpt import RoleGpt
@@ -64,7 +65,8 @@ class CustomListView(QListWidget):
 class PromptsWindow(BorderlessWindow):
     def __init__(self, parent=None):
         super().__init__([Qt.WindowType.WindowStaysOnTopHint], parent)
-        self.setStyleSheet("""
+        self.setStyleSheet(
+            """
             QListWidget{
                 border: 1px solid #d9d9d9;
                 outline: none;
@@ -80,7 +82,8 @@ class PromptsWindow(BorderlessWindow):
                 color: black;
                 background-color: #efefef;
             }
-            """)
+            """
+        )
         layout = QVBoxLayout(self)
         self.custom_list_view = CustomListView(self)
         layout.addWidget(self.custom_list_view)

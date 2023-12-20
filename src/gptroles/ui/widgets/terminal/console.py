@@ -3,8 +3,8 @@ from PyQt6.QtGui import QKeyEvent, QMouseEvent, QContextMenuEvent, QPalette, QCo
 from PyQt6.QtWidgets import QScrollBar
 from PyQt6.QtCore import pyqtSignal, QByteArray, Qt
 
-class Console(QPlainTextEdit):
 
+class Console(QPlainTextEdit):
     getData = pyqtSignal(QByteArray)
 
     def __init__(self, parent=None):
@@ -26,7 +26,13 @@ class Console(QPlainTextEdit):
         self.m_localEchoEnabled = set
 
     def keyPressEvent(self, e: QKeyEvent):
-        if e.key() in [Qt.Key.Key_Backspace, Qt.Key.Key_Left, Qt.Key.Key_Right, Qt.Key.Key_Up, Qt.Key.Key_Down]:
+        if e.key() in [
+            Qt.Key.Key_Backspace,
+            Qt.Key.Key_Left,
+            Qt.Key.Key_Right,
+            Qt.Key.Key_Up,
+            Qt.Key.Key_Down,
+        ]:
             pass
         else:
             if self.m_localEchoEnabled:

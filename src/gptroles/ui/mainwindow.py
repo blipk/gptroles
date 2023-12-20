@@ -1,15 +1,40 @@
 import sys
-from PyQt6.QtGui import QDragEnterEvent, QDropEvent, QDragLeaveEvent, QDragMoveEvent, QAction, QMouseEvent
+from PyQt6.QtGui import (
+    QDragEnterEvent,
+    QDropEvent,
+    QDragLeaveEvent,
+    QDragMoveEvent,
+    QAction,
+    QMouseEvent,
+)
 from PyQt6.QtCore import Qt, QTimer, QSize, QRect, QSettings, QByteArray, QEvent, QPoint
-from PyQt6.QtWidgets import QApplication, QVBoxLayout, QHBoxLayout, QWidget, QLayout, QLabel, QCheckBox, QLineEdit, QTextEdit, QMessageBox, QMainWindow, QMenuBar, QPushButton, QWidgetAction
+from PyQt6.QtWidgets import (
+    QApplication,
+    QVBoxLayout,
+    QHBoxLayout,
+    QWidget,
+    QLayout,
+    QLabel,
+    QCheckBox,
+    QLineEdit,
+    QTextEdit,
+    QMessageBox,
+    QMainWindow,
+    QMenuBar,
+    QPushButton,
+    QWidgetAction,
+)
 from .widgets.chatbox import ChatBox
+
 # from .widgets.terminal import SerialPortWidget
 from .widgets.borderlesswindow import BorderlessWindow, BaseWindow
 from .settings import SettingsWidget
 
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from . import RoleChat
+
 
 class CustomMenuBar(QMenuBar):
     def __init__(self, parent: QWidget = None) -> None:
@@ -18,7 +43,8 @@ class CustomMenuBar(QMenuBar):
         self.dragPosition = None
         self.setNativeMenuBar(False)
         self.setContentsMargins(0, 0, 0, 0)
-        self.setStyleSheet("""
+        self.setStyleSheet(
+            """
             QMenuBar {
                 background-color: rgba(50, 50, 50, 0.8);
             }
@@ -27,7 +53,8 @@ class CustomMenuBar(QMenuBar):
                 background-color: transparent;
                 cursor: pointer;
             }
-        """)
+        """
+        )
         quit_button = QPushButton("Exit", self)
         quit_button.clicked.connect(self.mwindow.app.quit)
         self.setCornerWidget(quit_button)
@@ -49,7 +76,9 @@ class CustomMenuBar(QMenuBar):
                 self.setCursor(Qt.CursorShape.PointingHandCursor)
             else:
                 self.setCursor(Qt.CursorShape.ClosedHandCursor)
-            self.dragPosition = event.scenePosition().toPoint() - self.frameGeometry().topLeft()
+            self.dragPosition = (
+                event.scenePosition().toPoint() - self.frameGeometry().topLeft()
+            )
         return super().mousePressEvent(event)
 
     def mouseReleaseEvent(self, a0: QMouseEvent) -> None:
@@ -78,6 +107,7 @@ class CustomMenuBar(QMenuBar):
             self.setCursor(Qt.CursorShape.OpenHandCursor)
         return super().mouseMoveEvent(event)
 
+
 class MainWindow(QMainWindow, BorderlessWindow):
     def __init__(self, app):
         super(BorderlessWindow, self).__init__()
@@ -100,10 +130,10 @@ class MainWindow(QMainWindow, BorderlessWindow):
         self.layout().setContentsMargins(0, 0, 0, 0)
 
         self.centralwidget = QWidget(self)
-        self.centralwidget.setObjectName(u"centralwidget")
+        self.centralwidget.setObjectName("centralwidget")
 
         self.vLayoutWidget = QWidget(self.centralwidget)
-        self.vLayoutWidget.setObjectName(u"vLayoutWidget")
+        self.vLayoutWidget.setObjectName("vLayoutWidget")
         self.vLayoutWidget.setGeometry(self.geometry())
         self.vLayout = QVBoxLayout(self.vLayoutWidget)
         # self.vLayout.setObjectName(u"vLayout")
@@ -120,10 +150,12 @@ class MainWindow(QMainWindow, BorderlessWindow):
         self.hLayout.setContentsMargins(0, 0, 0, 0)
         self.hLayout.setSpacing(0)
 
-        self.setStyleSheet("""
+        self.setStyleSheet(
+            """
             color: white;
             background-color: rgba(50, 50, 50, 0.8);
-        """)
+        """
+        )
 
     def setupMenu(self):
         self.cmenuBar = CustomMenuBar(self)
@@ -159,17 +191,17 @@ class MainWindow(QMainWindow, BorderlessWindow):
         menu.addAction(settings_action)
 
     def readSettings(self):
-        self.app.qsettings.beginGroup("MainWindow");
+        self.app.qsettings.beginGroup("MainWindow")
         geometry = self.app.qsettings.value("geometry", QByteArray())
         if geometry.isEmpty():
             self.center()
         else:
             self.restoreGeometry(geometry)
-        self.app.qsettings.endGroup();
+        self.app.qsettings.endGroup()
 
     def writeSettings(self):
         self.app.qsettings.beginGroup("MainWindow")
-        self.app.qsettings.setValue("geometry", self.saveGeometry());
+        self.app.qsettings.setValue("geometry", self.saveGeometry())
         self.app.qsettings.endGroup()
 
     def dragEnterEvent(self, e: QDragEnterEvent) -> None:

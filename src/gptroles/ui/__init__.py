@@ -11,6 +11,7 @@ APP_ORG = "blipk"
 APP_NAME = "gptroles"
 APP_SETTINGS_FNAME = "gptroles.toml"
 
+
 class RoleChat(QApplication):
     def __init__(self, argv):
         super(QApplication, self).__init__(argv)
@@ -44,9 +45,8 @@ class RoleChat(QApplication):
         parser.addHelpOption()
         parser.addVersionOption()
         self.cli_options = dict(
-            debug_option = QCommandLineOption(
-                ["D", "debug"],
-                "Enable extra debugging features"
+            debug_option=QCommandLineOption(
+                ["D", "debug"], "Enable extra debugging features"
             )
         )
         parser.addOption(self.cli_options["debug_option"])
@@ -60,8 +60,10 @@ class RoleChat(QApplication):
         ddir = ddir or os.path.expanduser("~")
         dpath = os.path.join(ddir, file_name)
         filter = "Text Files (*.txt);;All Files (*)"
-        options = QFileDialog.Option.HideNameFilterDetails # DontUseNativeDialog
-        ofile_name, _ = QFileDialog.getSaveFileName(self.mainWindow, caption, dpath, filter, options=options)
+        options = QFileDialog.Option.HideNameFilterDetails  # DontUseNativeDialog
+        ofile_name, _ = QFileDialog.getSaveFileName(
+            self.mainWindow, caption, dpath, filter, options=options
+        )
         if ofile_name:
             with open(ofile_name, mode) as f:
                 f.write(file_contents)

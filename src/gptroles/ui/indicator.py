@@ -1,4 +1,3 @@
-
 from PyQt6.QtGui import QIcon
 from PyQt6.QtCore import QTimer
 from PyQt6.QtWidgets import QSystemTrayIcon, QMenu
@@ -16,7 +15,7 @@ class QApp_SysTrayIndicator:
 
         self.buildIndicatorMenu()
         temp_info, fan_info = self.getTempInfo(), self.getFanInfo()
-        self.last_update_info = (None, None) # temp_info, fan_info
+        self.last_update_info = (None, None)  # temp_info, fan_info
         self.updateIndicatorMenu(temp_info, fan_info)
         self.icon.setContextMenu(self.menu)
         self.icon.show()
@@ -26,7 +25,6 @@ class QApp_SysTrayIndicator:
         onceTimer.setSingleShot(True)
         onceTimer.timeout.connect(lambda: self.set_menu_visible(False))
         onceTimer.start(1000)
-
 
     def set_menu_visible(self, value):
         self.menu_visible = value
@@ -65,15 +63,19 @@ class QApp_SysTrayIndicator:
         if not temp_info or not fan_info:
             return
 
-        if (temp_info == self.last_update_info[0]
-            and fan_info == self.last_update_info[1]):
+        if (
+            temp_info == self.last_update_info[0]
+            and fan_info == self.last_update_info[1]
+        ):
             return
 
         self.last_update_info = temp_info, fan_info
 
-        actions = {action.text().split(":")[0]: action
-                    for action in self.menu.actions()
-                    if ":" in action.text()}
+        actions = {
+            action.text().split(":")[0]: action
+            for action in self.menu.actions()
+            if ":" in action.text()
+        }
 
         for line in temp_info.split("\n"):
             if not line or not line.strip():

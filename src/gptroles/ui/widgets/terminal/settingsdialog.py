@@ -4,11 +4,11 @@ from PyQt6.QtSerialPort import QSerialPortInfo, QSerialPort
 
 from ui_settingsdialog import Ui_SettingsDialog
 
-class SettingsDialog(QDialog):
 
+class SettingsDialog(QDialog):
     class Settings:
         def __init__(self):
-            self.name = ''
+            self.name = ""
             self.baudRate = QSerialPort.BaudRate.Baud9600
             self.stringBaudRate = str(self.baudRate)
             self.dataBits = QSerialPort.DataBits.Data8
@@ -31,7 +31,9 @@ class SettingsDialog(QDialog):
         self.ui.applyButton.clicked.connect(self.apply)
         self.ui.serialPortInfoListBox.currentIndexChanged.connect(self.showPortInfo)
         self.ui.baudRateBox.currentIndexChanged.connect(self.checkCustomBaudRatePolicy)
-        self.ui.serialPortInfoListBox.currentIndexChanged.connect(self.checkCustomDevicePathPolicy)
+        self.ui.serialPortInfoListBox.currentIndexChanged.connect(
+            self.checkCustomDevicePathPolicy
+        )
 
         self.m_currentSettings = SettingsDialog.Settings()
         self.m_intValidator = QIntValidator(0, 4000000, self)
@@ -58,8 +60,12 @@ class SettingsDialog(QDialog):
         pid = list[6] if len(list) > 6 else blankString
 
         self.ui.descriptionLabel.setText(self.tr("Description: {}").format(description))
-        self.ui.manufacturerLabel.setText(self.tr("Manufacturer: {}").format(manufacturer))
-        self.ui.serialNumberLabel.setText(self.tr("Serial number: {}").format(serialNumber))
+        self.ui.manufacturerLabel.setText(
+            self.tr("Manufacturer: {}").format(manufacturer)
+        )
+        self.ui.serialNumberLabel.setText(
+            self.tr("Serial number: {}").format(serialNumber)
+        )
         self.ui.locationLabel.setText(self.tr("Location: {}").format(location))
         self.ui.vidLabel.setText(self.tr("Vendor Identifier: {}").format(vid))
         self.ui.pidLabel.setText(self.tr("Product Identifier: {}").format(pid))
@@ -103,7 +109,7 @@ class SettingsDialog(QDialog):
 
         self.ui.stopBitsBox.addItem("1", QSerialPort.OneStop)
         # Add 1.5 stop bits option only on Windows
-        if sys.platform.startswith('win'):
+        if sys.platform.startswith("win"):
             self.ui.stopBitsBox.addItem(self.tr("1.5"), QSerialPort.OneAndHalfStop)
         self.ui.stopBitsBox.addItem("2", QSerialPort.TwoStop)
 
@@ -137,11 +143,11 @@ class SettingsDialog(QDialog):
                 list.append("")
             list.append(info.systemLocation())
             if vendorId:
-                list.append('{:04x}'.format(vendorId))
+                list.append("{:04x}".format(vendorId))
             else:
                 list.append("")
             if productId:
-                list.append('{:04x}'.format(productId))
+                list.append("{:04x}".format(productId))
             else:
                 list.append("")
 
@@ -172,7 +178,9 @@ class SettingsDialog(QDialog):
         self.currentSettings.stringStopBits = self.ui.stopBitsBox.currentText()
 
         flowControlData = self.ui.flowControlBox.currentData()
-        self.currentSettings.flowControl = flowControlData.value(QSerialPort.FlowControl)
+        self.currentSettings.flowControl = flowControlData.value(
+            QSerialPort.FlowControl
+        )
         self.currentSettings.stringFlowControl = self.ui.flowControlBox.currentText()
 
         self.currentSettings.localEchoEnabled = self.ui.localEchoCheckBox.isChecked()

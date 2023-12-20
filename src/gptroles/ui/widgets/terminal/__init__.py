@@ -1,5 +1,12 @@
 from PyQt6.QtCore import QIODevice, QIODeviceBase
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QMessageBox
+from PyQt6.QtWidgets import (
+    QWidget,
+    QVBoxLayout,
+    QHBoxLayout,
+    QPushButton,
+    QLabel,
+    QMessageBox,
+)
 from PyQt6.QtSerialPort import QSerialPort
 from .console import Console
 
@@ -40,12 +47,12 @@ class SerialPortWidget(QWidget):
         # p = self.m_settings.settings()
         settings = dict(
             name="localhost",
-            baudRate = 9600,#QSerialPort.BaudRate.Baud9600,
-            dataBits = QSerialPort.DataBits.Data8,
-            parity = QSerialPort.Parity.NoParity,
-            stopBits = QSerialPort.StopBits.OneStop,
-            flowControl = QSerialPort.FlowControl.NoFlowControl,
-            localEchoEnabled = False,
+            baudRate=9600,  # QSerialPort.BaudRate.Baud9600,
+            dataBits=QSerialPort.DataBits.Data8,
+            parity=QSerialPort.Parity.NoParity,
+            stopBits=QSerialPort.StopBits.OneStop,
+            flowControl=QSerialPort.FlowControl.NoFlowControl,
+            localEchoEnabled=False,
         )
         print(settings)
         # s_settings = {f"string{k.capitalize()}": str(v)
@@ -68,7 +75,9 @@ class SerialPortWidget(QWidget):
             # self.parent().ui.actionConnect.setEnabled(False)
             # self.parent().ui.actionDisconnect.setEnabled(True)
             # self.parent().ui.actionConfigure.setEnabled(False)
-            self.showStatusMessage(f"""Connected to {p["name"]}: {p["baudRate"]}, {p["dataBits"]}, {p["parity"]}, {p["stopBits"]}, {p["flowControl"]}""")
+            self.showStatusMessage(
+                f"""Connected to {p["name"]}: {p["baudRate"]}, {p["dataBits"]}, {p["parity"]}, {p["stopBits"]}, {p["flowControl"]}"""
+            )
         else:
             QMessageBox.critical(self, "Error", self.m_serial.errorString())
             self.showStatusMessage("Open error")

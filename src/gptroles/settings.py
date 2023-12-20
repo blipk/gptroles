@@ -5,13 +5,13 @@ from appdirs import AppDirs
 from .utils import repr_
 
 
-class Settings():
+class Settings:
     default_settings = dict(
         OPENAI_API_KEY="",
         chatcompletion=dict(
             model="gpt-3.5-turbo",
             temperature=0.7,  # 0.0 - 2.0
-            top_p=1.0,    # 0.0 - 1.0
+            top_p=1.0,  # 0.0 - 1.0
             n=1,
             # stream=None,
             # [] Up to 4 sequences where the API will stop generating further tokens.
@@ -21,9 +21,10 @@ class Settings():
             frequency_penalty=0.01,  # -2.0 2.0
             # logit_bias=None,
             # user="None",
-        ))
+        ),
+    )
     default_ranges = dict(
-        temperature=(0.0, 2.0, 0.01), # Min, Max, Step
+        temperature=(0.0, 2.0, 0.01),  # Min, Max, Step
         top_p=(0.0, 1.0, 0.01),
         n=(1, 12, 1),
         max_tokens=(-1, 10240, 256),
@@ -37,8 +38,7 @@ class Settings():
         self.dirs = AppDirs(app_name, app_author)
         self.config_dir = self.dirs.user_config_dir
         os.makedirs(self.config_dir, exist_ok=True)
-        self.settings_fpath = os.path.join(
-            self.config_dir, self.settings_fname)
+        self.settings_fpath = os.path.join(self.config_dir, self.settings_fname)
 
         if not os.path.exists(self.settings_fpath):
             self.saveSettings(self.default_settings)
@@ -80,5 +80,6 @@ class Settings():
 
     def __repr__(self) -> str:
         return repr_(self, ignore_keys=["_settings", "default_settings"])
+
 
 # settings = Settings()

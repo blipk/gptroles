@@ -2,6 +2,7 @@ from PyQt6.QtGui import *
 from PyQt6.QtCore import *
 from PyQt6.QtWidgets import *
 
+
 class BaseWindow:
     def toggleAppear(self: QMainWindow):
         if self.isVisible():
@@ -18,10 +19,8 @@ class BaseWindow:
         qr = self.window().frameGeometry()
         # print("Centering", qr, QApplication.instance().primaryScreen().availableGeometry().center())
         qr.moveCenter(
-            QApplication.instance()
-            .primaryScreen()
-            .availableGeometry()
-            .center())
+            QApplication.instance().primaryScreen().availableGeometry().center()
+        )
         self.window().move(qr.topLeft())
         # wh = self.window().windowHandle()
         # if wh:
@@ -48,10 +47,12 @@ class BorderlessWindow(QWidget, BaseWindow):
             flags |= flag
         self.setWindowFlags(flags)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-        self.setStyleSheet('''
+        self.setStyleSheet(
+            """
             BorderlessWindow{
                  background-color: rgba(255, 255, 255, 255);
                  margin: 0;
                  padding: 0;
             }
-            ''')
+            """
+        )

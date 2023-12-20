@@ -1,6 +1,7 @@
 import time
 import uuid
 
+
 class ChatMessage:
     def __init__(self, user, text, mtime=None, id=None) -> None:
         self.user = user

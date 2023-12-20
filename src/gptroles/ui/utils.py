@@ -1,6 +1,7 @@
 from pygments.lexers import get_lexer_by_name
 from pygments.util import ClassNotFound
 
+
 def find_lang_extension(language):
     try:
         lexer = get_lexer_by_name(language)

@@ -4,6 +4,7 @@ from PyQt6.QtWidgets import QLayout, QGraphicsAnchorLayout, QScrollBar, QWidget
 
 from simpleterminal import SimpleTerminal
 
+
 class QLightTerminal(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -28,7 +29,7 @@ class QLightTerminal(QWidget):
             "vPadding": 10,
             "hPadding": 8.42,
             "scrollMultiplier": 0,
-            "histi": 8
+            "histi": 8,
         }
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         self.setFontSize(10, 500)
@@ -44,10 +45,14 @@ class QLightTerminal(QWidget):
         self.win["viewPortHeight"] = self.win["height"] / self.win["lineheight"]
         self.setupScrollbar()
 
-        self.st.s_error.connect(lambda error: self.s_error.emit(f"Error from st: {error}"))
+        self.st.s_error.connect(
+            lambda error: self.s_error.emit(f"Error from st: {error}")
+        )
         self.st.s_updateView.connect(self.updateTerminal)
 
-        self.cursorTimer.timeout.connect(lambda: self.updateCursor(not self.cursorVisible))
+        self.cursorTimer.timeout.connect(
+            lambda: self.updateCursor(not self.cursorVisible)
+        )
         self.cursorTimer.start(750)
 
         self.selectionTimer.timeout.connect(self.updateSelection)
@@ -83,7 +88,11 @@ class QLightTerminal(QWidget):
         self.update()
 
     def scrollX(self, n):
-        scroll = self.st.term.scr - (self.scrollbar.maximum() - self.scrollbar.value()) / self.win["scrollMultiplier"]
+        scroll = (
+            self.st.term.scr
+            - (self.scrollbar.maximum() - self.scrollbar.value())
+            / self.win["scrollMultiplier"]
+        )
         if scroll < 0:
             self.st.kscrollup(-scroll)
         else:
@@ -129,7 +138,9 @@ class QLightTerminal(QWidget):
 
     def setupScrollbar(self):
         self.win["scrollMultiplier"] = 1
-        self.scrollbar.setPageStep(int(self.win["viewPortHeight"] * self.win["scrollMultiplier"]))
+        self.scrollbar.setPageStep(
+            int(self.win["viewPortHeight"] * self.win["scrollMultiplier"])
+        )
         self.scrollbar.setSingleStep(1)
 
     def paintEvent(self, event):
@@ -161,10 +172,20 @@ class QLightTerminal(QWidget):
         for i, cell in enumerate(line):
             if cell.bg != self.defaultBackground or cell.fg != 7:
                 painter.setPen(self.colors[cell.fg])
-                painter.fillRect(x, y, self.win["charWith"], self.win["lineheight"], self.colors[cell.bg])
-                painter.drawText(x, y + self.win["lineheight"] - self.win["charHeight"] - 1, cell.c)
+                painter.fillRect(
+                    x,
+                    y,
+                    self.win["charWith"],
+                    self.win["lineheight"],
+                    self.colors[cell.bg],
+                )
+                painter.drawText(
+                    x, y + self.win["lineheight"] - self.win["charHeight"] - 1, cell.c
+                )
             else:
-                painter.drawText(x, y + self.win["lineheight"] - self.win["charHeight"] - 1, cell.c)
+                painter.drawText(
+                    x, y + self.win["lineheight"] - self.win["charHeight"] - 1, cell.c
+                )
 
             x += self.win["charWith"]
 
@@ -175,9 +196,15 @@ class QLightTerminal(QWidget):
         x = self.win["hPadding"] + self.st.term.c.x * self.win["charWith"]
         y = self.st.term.c.y * self.win["lineheight"] - self.scrollbar.value()
 
-        painter.fillRect(x, y, self.win["charWith"], self.win["charHeight"], self.colors[7])
+        painter.fillRect(
+            x, y, self.win["charWith"], self.win["charHeight"], self.colors[7]
+        )
         painter.setPen(self.colors[self.defaultBackground])
-        painter.drawText(x, y + self.win["lineheight"] - self.win["charHeight"] - 1, self.st.term.line[self.st.term.c.y][self.st.term.c.x].c)
+        painter.drawText(
+            x,
+            y + self.win["lineheight"] - self.win["charHeight"] - 1,
+            self.st.term.line[self.st.term.c.y][self.st.term.c.x].c,
+        )
 
     def resize(self):
         self.win["width"] = self.width()
@@ -189,7 +216,10 @@ class QLightTerminal(QWidget):
         self.update()
 
     def keyPressEvent(self, event):
-        if event.key() == Qt.Key.Key_C and event.modifiers() & Qt.KeyboardModifier.ControlModifier:
+        if (
+            event.key() == Qt.Key.Key_C
+            and event.modifiers() & Qt.KeyboardModifier.ControlModifier
+        ):
             clipboard = QGuiApplication.clipboard()
             clipboard.setText(self.st.selectionText())
         else:
