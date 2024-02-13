@@ -38,6 +38,18 @@ langchain = "^0.0.126"
 pydantic = "^1.10.7"
 wikipedia = "^1.4.0"
 
+[dependencies]
+python = ">=3.10,<4.0"
+openai = ">=0.27.2"
+pyqt6 = ">=6.4.2"
+pyqt6-webengine = ">=6.4.0"
+toml = "^0.10.2"
+appdirs = "^1.4.4"
+pygments = "^2.14.0"
+langchain = "^0.0.126"
+pydantic = "^1.10.7"
+wikipedia = "^1.4.0"
+
 [tool.poetry.scripts]
 main = "gptroles.main:main"
 devtest = { callable = "mypackage:test.run_tests", extras = ["test"] }

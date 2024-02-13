@@ -47,7 +47,7 @@ Chat related features:
 ###### From pip
 Install the module and install desktop launcher integration:
 
-`pip install gptroles && ./install.sh`
+`pip install --no-cache-dir --upgrade --break-system-packages gptroles && ./install.sh`
 
 You can now run `GPTRoles Chat` from your sytem applications menu.
 

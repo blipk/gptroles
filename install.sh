@@ -18,6 +18,8 @@ install_file() {
     # fi
 }
 
+pip install -r requirements.txt --break-system-packages
+
 install_file "./res/gptroles" $USER_BIN_HOME
 PNG_ICON_FILE="$USER_DATA_HOME/icons/hicolor/256x256/apps/gptroles.png"
 SVG_ICON_FILE="$USER_DATA_HOME/icons/hicolor/scalable/apps/gptroles.svg"
@@ -27,8 +29,9 @@ xdg-icon-resource install --novendor --context apps --size 256 $PNG_ICON_FILE gp
 gtk-update-icon-cache -f ~/.local/share/icons/hicolor --ignore-theme-index
 xdg-desktop-menu install ./res/gptroles.desktop --novendor
 xdg-desktop-menu install ./res/gptroles-term.desktop --novendor
-chmod -x "$USER_DATA_HOME/applications/gptroles.desktop"
+chmod +x "$USER_DATA_HOME/applications/gptroles.desktop"
 chmod +x "$USER_DATA_HOME/applications/gptroles-term.desktop"
+chmod +x "$(python3 -m site --user-site)/gptroles/main.py"
 
 # systemctl start sshd.service
 # Required for terminal (Currently not fully implemented)
