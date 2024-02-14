@@ -1,6 +1,8 @@
 import { initTerm, openTerm, placeTerm, globalTermEl } from "./term.js"
 import * as DOMPurify from 'dompurify';
 
+import hljs from "./static/highlight.min.js";
+
 const $ = (params) => document.querySelector(params)
 const $$ = (params) => document.querySelectorAll(params)
 const element = (type, attributes = [], options = null) => {
