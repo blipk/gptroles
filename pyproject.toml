@@ -28,7 +28,7 @@ include = [
 [tool.poetry.dependencies]
 # Compatible Python versions
 python = ">=3.10,<4.0"
-openai = ">=0.27.2"
+openai = "1.13.3"
 pyqt6 = ">=6.4.2"
 pyqt6-webengine = ">=6.4.0"
 toml = "^0.10.2"
