@@ -23,6 +23,8 @@ from PyQt6.QtWidgets import (
     QMenuBar,
     QPushButton,
     QWidgetAction,
+    QSpacerItem,
+    QSizePolicy
 )
 from .widgets.chatbox import ChatBox
 
@@ -30,13 +32,34 @@ from .widgets.chatbox import ChatBox
 from .widgets.borderlesswindow import BorderlessWindow, BaseWindow
 from .settings import SettingsWidget
 
+from ..gpt import RoleGpt, RoleGptDI, system_role, gptroles, run_shell
+
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from . import RoleChat
 
 
-class CustomMenuBar(QMenuBar):
+class HLayout(QWidget):
+    def __init__(self, parent: QWidget = None) -> None:
+        super().__init__(parent)
+        self.hLayoutComponent = HLayoutComponent()
+        self.lay = HLayoutComponent()
+        # if parent:
+        #     self.setGeometry(parent.geometry())
+        self.setContentsMargins(0, 0, 0, 0)
+
+class HLayoutComponent(QHBoxLayout):
+    def __init__(self, parent: QWidget = None) -> None:
+        super().__init__(parent)
+        # self.hLayout.setObjectName(u"hLayout")
+        self.setSizeConstraint(QLayout.SizeConstraint.SetMaximumSize)
+        self.setContentsMargins(0, 0, 0, 0)
+        self.setSpacing(0)
+
+
+
+class CustomMenuBar(QMenuBar, RoleGptDI):
     def __init__(self, parent: QWidget = None) -> None:
         super().__init__(parent)
         self.mwindow = parent
@@ -55,10 +78,20 @@ class CustomMenuBar(QMenuBar):
             }
         """
         )
+        # menuBar = HLayout()
+        # clearContext_button = QPushButton("Clear Context", self)
+        # clearContext_button.clicked.connect(self.clearContext)
         quit_button = QPushButton("Exit", self)
         quit_button.clicked.connect(self.mwindow.app.quit)
+
+        # menuBar.lay.addWidget(clearContext_button, 1, alignment=Qt.AlignmentFlag.AlignRight)
+        # menuBar.lay.addWidget(quit_button, 1, alignment=Qt.AlignmentFlag.AlignRight)
+        # self.setCornerWidget(menuBar, Qt.Corner.TopRightCorner)
         self.setCornerWidget(quit_button)
         self.setCursor(Qt.CursorShape.OpenHandCursor)
+
+    def clearContext(self):
+        self.rolegpt.clear_context()
 
     def addAction(self, action: QAction) -> None:
         # widget_action = QWidgetAction(self)
@@ -115,6 +148,7 @@ class MainWindow(QMainWindow, BorderlessWindow):
         self.app: RoleChat = app
         self.qsettings = self.app.qsettings
         self.settings = self.app.settings
+        self.rolegpt = RoleGpt(self.settings, gptroles)
         self.setAcceptDrops(True)
         self.setupUi()
         self.setupMenu()

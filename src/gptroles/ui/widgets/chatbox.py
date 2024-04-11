@@ -36,7 +36,7 @@ from PyQt6.QtTest import QTest
 
 from .chatmsg import ChatMessage
 from .netprompts import PromptsWindow
-from ...gpt import RoleGpt, system_role, gptroles, run_shell
+from ...gpt import run_shell, RoleGptDI
 
 from typing import TYPE_CHECKING
 
@@ -220,13 +220,13 @@ a {
         # Call the base class implementation to handle other keys
 
 
-class ChatBox(QWidget):
+class ChatBox(QWidget, RoleGptDI):
     chatMessageSignal = pyqtSignal(ChatMessage)
 
     def __init__(self, parent=None):
         super(ChatBox, self).__init__(parent)
+        super()
         self.mwindow: MainWindow = parent
-        self.rolegpt = RoleGpt(parent.settings, gptroles)
         self.messages: ChatMessage = []
         self.setContentsMargins(0, 0, 0, 0)
 

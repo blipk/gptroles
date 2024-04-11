@@ -41,10 +41,10 @@ publish() {
     poetry publish
 }
 
-poetry export -f requirements.txt > requirements.txt
+# poetry export -f requirements.txt > requirements.txt
 
 if [[ "x$CMD" == "xinstall" ]]; then
-    # Install locally, but it isnt copying the pyproject web includes
+    # Install locally, but it isnt copyingdev the pyproject web includes
     buildWeb && \
     pip install . --no-cache-dir --no-binary=gptroles --upgrade --break-system-packages &&
     # pip install -e . --no-cache-dir --no-binary=gptroles --upgrade --break-system-packages &&
