@@ -14,6 +14,11 @@ const element = (type, attributes = [], options = null) => {
     return el
 }
 
+const sanitize = (text) => {
+    return text
+    return DOMPurify.sanitize(text)
+}
+
 class ChatPage {
     constructor() {
         this.username = "You"
@@ -49,7 +54,8 @@ class ChatPage {
     addMessage(username, text, time, id) {
         const chatMessageClasses = username === this.username ? ["chat-message-self"] : []
         const chatNameClasses = username === this.username ? ["chat-message-username-self"] : []
-        const msg = marked.parse(DOMPurify.sanitize(text.replaceAll("|TICK|", "`").replaceAll('$|{', '${')))
+        const adjustedText = text.replaceAll("|TICK|", "`").replaceAll('$|{', '${')
+        const msg = marked.parse(sanitize(adjustedText))
         const newMsgEl = `<div class="chat-message-msg" x-msg-id="${id}" x-msg-time="${time}" x-msg-user="${username}">${msg}</div>`
         if (username === this.lastMessage?.username) {
             this.lastMessage.lastMessageEl.innerHTML += newMsgEl
@@ -88,7 +94,7 @@ class ChatPage {
             const block = msg.querySelectorAll("pre code")[parseInt(blockIndex, 10)]
             block.textContent = text
         } else {
-            msg.innerHTML = marked.parse(DOMPurify.sanitize(text))
+            msg.innerHTML = marked.parse(sanitize(text))
         }
         msg.setAttribute("x-msg-updated", time)
     }

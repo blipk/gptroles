@@ -13,6 +13,7 @@ from PyQt6.QtWidgets import QWidget
 
 from openai.types.chat.chat_completion_chunk import ChoiceDelta as ChatMessage
 
+
 def run_shell(command, shell="bash", string_flag=None, autorun=False):
     if string_flag is None:
         string_flag = "-c"

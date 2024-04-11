@@ -24,7 +24,7 @@ from PyQt6.QtWidgets import (
     QPushButton,
     QWidgetAction,
     QSpacerItem,
-    QSizePolicy
+    QSizePolicy,
 )
 from .widgets.chatbox import ChatBox
 
@@ -49,6 +49,7 @@ class HLayout(QWidget):
         #     self.setGeometry(parent.geometry())
         self.setContentsMargins(0, 0, 0, 0)
 
+
 class HLayoutComponent(QHBoxLayout):
     def __init__(self, parent: QWidget = None) -> None:
         super().__init__(parent)
@@ -56,7 +57,6 @@ class HLayoutComponent(QHBoxLayout):
         self.setSizeConstraint(QLayout.SizeConstraint.SetMaximumSize)
         self.setContentsMargins(0, 0, 0, 0)
         self.setSpacing(0)
-
 
 
 class CustomMenuBar(QMenuBar, RoleGptDI):
