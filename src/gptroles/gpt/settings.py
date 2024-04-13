@@ -2,7 +2,7 @@ import os
 import toml
 
 from appdirs import AppDirs
-from .utils import repr_
+from gptroles.utils import repr_
 
 
 class Settings:

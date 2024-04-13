@@ -54,8 +54,11 @@ elif [[ "x$CMD" == "xsysinstall" ]]; then
     buildWeb && \
     ./install.sh
 elif [[ "x$CMD" == "xrun" ]]; then
+    DIST_FOLDER="$(python3 -m site --user-site)/gptroles/"
+    mkdir -p "$DIST_FOLDER"
     buildWeb && \
-    yes | cp -rf src/gptroles/* "$(python3 -m site --user-site)/gptroles/" && \
+    yes | rm -rf "src/gptroles/$DIST_FOLDER/" && \
+    yes | cp -rf src/gptroles/* "$DIST_FOLDER" && \
     ./src/gptroles/main.py --debug
     # poetry run main --debug
 elif [[ "x$CMD" == "xwatch" ]]; then

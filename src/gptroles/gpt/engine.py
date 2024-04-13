@@ -4,8 +4,11 @@ import json
 import openai
 from os import getenv
 from pprint import pprint
-from .prompts import system_role, gptroles, role_confirmation
+from gpt.engines.prompts.root import system_role, root_roles, role_confirmation
 from PyQt6.QtWidgets import QWidget
+
+from gptroles.interfaces.ui_to_gpt.DI import RoleGptDI
+
 
 # models = sorted(openai.Model.list().data, key=lambda x: x.id)
 # for model in models:
@@ -35,20 +38,11 @@ def run_shell(command, shell="bash", string_flag=None, autorun=False):
     return stdout, stderr, p.returncode
 
 
-class RoleGptDI:
-    def __init__(self) -> None:
-        parent = self.parent()
-        print("INITIALIZE GPTDI", self, parent)
-        self.rolegpt = None
-        if hasattr(parent, "rolegpt"):
-            self.rolegpt = parent.rolegpt
-
-
 class RoleGpt:
     prompt_chain: list[ChatMessage] = []
 
     def __init__(
-        self, settings, sub_roles, system_role=system_role, prompt_chain=None
+        self, settings, sub_roles=root_roles, system_role=system_role, prompt_chain=None
     ) -> None:
         self._settings = None
         self.settings = settings
@@ -146,4 +140,4 @@ class RoleGpt:
         return (assistant_name, answer)
 
 
-# rolegpt = RoleGpt(settings, coder_role, "")
+# rolegpt = RoleGpt(settings, root_roles, "")

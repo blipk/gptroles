@@ -15,7 +15,6 @@ const element = (type, attributes = [], options = null) => {
 }
 
 const sanitize = (text) => {
-    return text
     return DOMPurify.sanitize(text)
 }
 
@@ -55,7 +54,7 @@ class ChatPage {
         const chatMessageClasses = username === this.username ? ["chat-message-self"] : []
         const chatNameClasses = username === this.username ? ["chat-message-username-self"] : []
         const adjustedText = text.replaceAll("|TICK|", "`").replaceAll('$|{', '${')
-        const msg = marked.parse(sanitize(adjustedText))
+        const msg = sanitize(marked.parse(adjustedText))
         const newMsgEl = `<div class="chat-message-msg" x-msg-id="${id}" x-msg-time="${time}" x-msg-user="${username}">${msg}</div>`
         if (username === this.lastMessage?.username) {
             this.lastMessage.lastMessageEl.innerHTML += newMsgEl
@@ -94,7 +93,7 @@ class ChatPage {
             const block = msg.querySelectorAll("pre code")[parseInt(blockIndex, 10)]
             block.textContent = text
         } else {
-            msg.innerHTML = marked.parse(sanitize(text))
+            msg.innerHTML = sanitize(marked.parse(text))
         }
         msg.setAttribute("x-msg-updated", time)
     }

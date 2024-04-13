@@ -34,14 +34,15 @@ from PyQt6.QtWebEngineCore import QWebEnginePage, QWebEngineSettings
 from PyQt6.QtWebChannel import QWebChannel
 from PyQt6.QtTest import QTest
 
-from .chatmsg import ChatMessage
-from .netprompts import PromptsWindow
-from ...gpt import run_shell, RoleGptDI
+from gptroles.ui.widgets.chatmsg import ChatMessage
+from gptroles.ui.widgets.netprompts import PromptsWindow
+
+from gptroles.gpt.engine import run_shell, RoleGptDI
 
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from ..mainwindow import MainWindow
+    from gptroles.ui.mainwindow import MainWindow
 
 
 class Bridge(QObject):
@@ -106,7 +107,7 @@ class ChatPage(QWebEnginePage):
                     self.runJavaScript(js)
             elif command == "save":
                 msgid, blockindex, lang, code = params
-                from ..utils import find_lang_extension
+                from gptroles.ui.utils import find_lang_extension
 
                 file_name = find_lang_extension(lang) or "snippet.txt"
                 res = self.chatbox.mwindow.app.save_file(

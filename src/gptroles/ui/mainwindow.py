@@ -26,18 +26,20 @@ from PyQt6.QtWidgets import (
     QSpacerItem,
     QSizePolicy,
 )
-from .widgets.chatbox import ChatBox
 
-# from .widgets.terminal import SerialPortWidget
-from .widgets.borderlesswindow import BorderlessWindow, BaseWindow
-from .settings import SettingsWidget
 
-from ..gpt import RoleGpt, RoleGptDI, system_role, gptroles, run_shell
+# from gptroles.ui.widgets.terminal import SerialPortWidget
+from gptroles.ui.widgets.chatbox import ChatBox
+from gptroles.ui.widgets.borderlesswindow import BorderlessWindow, BaseWindow
+from gptroles.ui.settings import SettingsWidget
+
+from gptroles.gpt.engine import RoleGpt
+from gptroles.interfaces.ui_to_gpt.DI import RoleGptDI
 
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from . import RoleChat
+    from gptroles.ui import RoleChat
 
 
 class HLayout(QWidget):
@@ -148,7 +150,7 @@ class MainWindow(QMainWindow, BorderlessWindow):
         self.app: RoleChat = app
         self.qsettings = self.app.qsettings
         self.settings = self.app.settings
-        self.rolegpt = RoleGpt(self.settings, gptroles)
+        self.rolegpt = RoleGpt(self.settings)
         self.setAcceptDrops(True)
         self.setupUi()
         self.setupMenu()

@@ -8,7 +8,7 @@ from PyQt6.QtWidgets import (
     QMessageBox,
 )
 from PyQt6.QtSerialPort import QSerialPort
-from .console import Console
+from gptroles.ui.widgets.terminal.console import Console
 
 
 class SerialPortWidget(QWidget):

@@ -3,14 +3,14 @@ import requests
 from PyQt6.QtGui import *
 from PyQt6.QtCore import *
 from PyQt6.QtWidgets import *
-from .chatmsg import ChatMessage
-from .borderlesswindow import BorderlessWindow
+from gptroles.ui.widgets.chatmsg import ChatMessage
+from gptroles.ui.widgets.borderlesswindow import BorderlessWindow
 
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from .chatbox import ChatBox
-    from ...gpt import RoleGpt
+    from gptroles.ui.widgets.chatbox import ChatBox
+    from gptroles.gpt.engine import RoleGpt
 
 
 class CustomListView(QListWidget):

@@ -13,12 +13,12 @@ from PyQt6.QtWidgets import (
     QGroupBox,
     QSlider,
 )
-from ..settings import Settings
+from gptroles.gpt.settings import Settings
 
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from . import MainWindow
+    from gptroles.ui.mainwindow import MainWindow
 
 
 class SettingsWidget(QWidget):
