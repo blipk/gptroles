@@ -1,0 +1,3 @@
+- Autosave snippets
+- Autosave and restore contexts
+- Image uploads

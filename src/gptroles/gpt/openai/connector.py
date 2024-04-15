@@ -4,7 +4,7 @@ import json
 import openai
 from os import getenv
 from pprint import pprint
-from gpt.engines.prompts.root import system_role, root_roles, role_confirmation
+from gptroles.gpt.engines.prompts.root import system_role, root_roles, role_confirmation
 from PyQt6.QtWidgets import QWidget
 
 from gptroles.interfaces.ui_to_gpt.DI import RoleGptDI
@@ -96,6 +96,7 @@ class RoleGpt:
         system_roles = [{"role": "system", "content": self.system_role}] + [
             {"role": "system", "content": role} for role in self.sub_roles
         ]
+        print("AAA", len(system_roles))
         # pprint(system_roles)
         input_prompt_chain = [
             m for m in prompt_chain if m.role in ("system", "assistant", "user")

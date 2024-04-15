@@ -13,7 +13,7 @@ from PyQt6.QtWidgets import (
     QGroupBox,
     QSlider,
 )
-from gptroles.gpt.settings import Settings
+from gptroles.gpt.openai.settings import Settings
 
 from typing import TYPE_CHECKING
 

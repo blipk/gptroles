@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from gptroles.ui.widgets.chatbox import ChatBox
-    from gptroles.gpt.engine import RoleGpt
+    from gptroles.gpt.openai_connector import RoleGpt
 
 
 class CustomListView(QListWidget):

@@ -33,7 +33,7 @@ from gptroles.ui.widgets.chatbox import ChatBox
 from gptroles.ui.widgets.borderlesswindow import BorderlessWindow, BaseWindow
 from gptroles.ui.settings import SettingsWidget
 
-from gptroles.gpt.engine import RoleGpt
+from gptroles.gpt.openai.connector import RoleGpt
 from gptroles.interfaces.ui_to_gpt.DI import RoleGptDI
 
 from typing import TYPE_CHECKING

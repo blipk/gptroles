@@ -3,7 +3,7 @@ import sys
 from PyQt6.QtCore import QTimer, QSettings, QCommandLineOption, QCommandLineParser
 from PyQt6.QtWidgets import QApplication, QFileDialog
 from gptroles.ui.mainwindow import MainWindow
-from gptroles.gpt.settings import Settings
+from gptroles.gpt.openai.settings import Settings
 
 
 APP_VERSION = "v0.1"  # TODO read from package

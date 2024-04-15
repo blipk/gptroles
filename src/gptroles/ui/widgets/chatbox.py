@@ -37,7 +37,7 @@ from PyQt6.QtTest import QTest
 from gptroles.ui.widgets.chatmsg import ChatMessage
 from gptroles.ui.widgets.netprompts import PromptsWindow
 
-from gptroles.gpt.engine import run_shell, RoleGptDI
+from gptroles.gpt.openai.connector import run_shell, RoleGptDI
 
 from typing import TYPE_CHECKING
 
