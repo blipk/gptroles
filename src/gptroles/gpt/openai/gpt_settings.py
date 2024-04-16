@@ -5,11 +5,11 @@ from appdirs import AppDirs
 from gptroles.utils import repr_
 
 
-class Settings:
+class GPTSettings:
     default_settings = dict(
         OPENAI_API_KEY="",
         chatcompletion=dict(
-            model="gpt-3.5-turbo",
+            model="gpt-4",
             temperature=0.7,  # 0.0 - 2.0
             top_p=1.0,  # 0.0 - 1.0
             n=1,
@@ -33,21 +33,21 @@ class Settings:
     )
 
     def __init__(self, settings_fname, app_name, app_author) -> None:
-        self.settings_fname = settings_fname
+        self.gpt_settings_fname = settings_fname
         self._settings = self.default_settings.copy()
         self.dirs = AppDirs(app_name, app_author)
         self.config_dir = self.dirs.user_config_dir
         os.makedirs(self.config_dir, exist_ok=True)
-        self.settings_fpath = os.path.join(self.config_dir, self.settings_fname)
+        self.gpt_settings_fpath = os.path.join(self.config_dir, self.gpt_settings_fname)
 
-        if not os.path.exists(self.settings_fpath):
+        if not os.path.exists(self.gpt_settings_fpath):
             self.saveSettings(self.default_settings)
 
         self.loadSettings()
 
     def loadSettings(self, settings_fpath=None):
         if not settings_fpath:
-            settings_fpath = self.settings_fpath
+            settings_fpath = self.gpt_settings_fpath
         if os.path.exists(settings_fpath):
             with open(settings_fpath, "r") as f:
                 l_settings = toml.load(f)
@@ -70,7 +70,7 @@ class Settings:
 
     def saveSettings(self, settings=None, settings_fpath=None):
         if not settings_fpath:
-            settings_fpath = self.settings_fpath
+            settings_fpath = self.gpt_settings_fpath
 
         if not settings:
             settings = self._settings

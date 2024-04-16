@@ -37,7 +37,9 @@ from PyQt6.QtTest import QTest
 from gptroles.ui.widgets.chatmsg import ChatMessage
 from gptroles.ui.widgets.netprompts import PromptsWindow
 
-from gptroles.gpt.openai.connector import run_shell, RoleGptDI
+from gptroles.gpt.openai.connector import run_shell
+from gptroles.interfaces.ui_to_gpt.DI import RoleGptDI
+
 
 from typing import TYPE_CHECKING
 
@@ -221,12 +223,12 @@ a {
         # Call the base class implementation to handle other keys
 
 
-class ChatBox(QWidget, RoleGptDI):
+class ChatBox(QWidget):
     chatMessageSignal = pyqtSignal(ChatMessage)
 
     def __init__(self, parent=None):
         super(ChatBox, self).__init__(parent)
-        super()
+        RoleGptDI(self)
         self.mwindow: MainWindow = parent
         self.messages: ChatMessage = []
         self.setContentsMargins(0, 0, 0, 0)
@@ -307,13 +309,13 @@ class ChatBox(QWidget, RoleGptDI):
     def onLoadFinished(self, ok):
         if ok:
             print("Page ready")
-            chat_user, chat_response = self.rolegpt.confirm_role()
+            chat_user, chat_response = self.role_gpt.confirm_role()
             self.add_message(ChatMessage(chat_user, chat_response))
             self.input_box.setSize()
             self.input_box.setFocus()
 
     def ask(self, prompt):
-        role, answer = self.rolegpt.ask(prompt)
+        role, answer = self.role_gpt.ask(prompt)
         self.chatMessageSignal.emit(ChatMessage(role, answer))
 
     @pyqtSlot(ChatMessage)

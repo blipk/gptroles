@@ -1,8 +1,4 @@
-
-
-
-
-tool_template = f"""/||SECTION ~#TEXTSNIPPET<TOOL.prototypes> | this text snippet section contains the prototypes for various tools used in this app
+tool_template = """/||SECTION ~#TEXTSNIPPET<TOOL.prototypes> | this text snippet section contains the prototypes for various tools used in this app
 
 
 TOOLs are used to genrate MEMORY which contains FRAMES (with an INQUIRY and RESOURCES) operations on SNIPPETS,
@@ -73,7 +69,6 @@ type tool = {{
 #         - code storage
 #         - offline storage (notepad, calculator etc) //
 # 		- Scrolling through a context window on any tool that resolves to a data source
-
 
 
 ## TOOL FRAME // this generates a TOOL FRAME { } template
@@ -168,31 +163,31 @@ tool_prototypes = """
 tool_metadata, usage_spec = "", ""
 
 
-def tool_builder(tool_template, usage_spec, tool_header, tool_metadata, *args, **kwargs):
-    # tool_template(tool_header, tool_metadata, usage_spec, *args, **kwargs)
-    return lambda \
-         		tool_header =  tool_header, \
-    			tool_metadata = tool_metadata, \
-    			tool_template = tool_template, *args, **kwargs: (
-         f"""{tool_header}\n{tool_metadata}\n\n{tool_template}"""
-	)
+# def tool_builder(tool_template, usage_spec, tool_header, tool_metadata, *args, **kwargs):
+#     # tool_template(tool_header, tool_metadata, usage_spec, *args, **kwargs)
+#     return lambda \
+#          		tool_header =  tool_header, \
+#     			tool_metadata = tool_metadata, \
+#     			tool_template = tool_template, *args, **kwargs: (
+#          f"""{tool_header}\n{tool_metadata}\n\n{tool_template}"""
+# 	)
 
-this_builder = tool_builder(tool_template, usage_spec)
+# this_builder = tool_builder(tool_template, usage_spec)
 
-def header_builder(tool_name, tool_path: list[str], *args, **kwargs):
-    params = args
-    kwparams = kwargs
-    return f"""
-    /^/ |SECTION ~(@TOOL) | orto://tool.command.orto/ENGINE/TOOLS/{tool_name}@{"/".join(f"{path}" for path in tool_path)}/{":".join(f"{arg}" for arg in args)}?{"&".join(f"{key}={value}" for key, value in kwargs.items())}
-    """
+# def header_builder(tool_name, tool_path: list[str], *args, **kwargs):
+#     params = args
+#     kwparams = kwargs
+#     return f"""
+#     /^/ |SECTION ~(@TOOL) | orto://tool.command.orto/ENGINE/TOOLS/{tool_name}@{"/".join(f"{path}" for path in tool_path)}/{":".join(f"{arg}" for arg in args)}?{"&".join(f"{key}={value}" for key, value in kwargs.items())}
+#     """
 
-def metadata_builder(*args, **kwargs):
-    newline = "\n"
-    params = args
-    kwparams = kwargs
-    return f"""
-    {newline.join(f"{key}: {value}" for key, value in kwargs.items())}
-    """
+# def metadata_builder(*args, **kwargs):
+#     newline = "\n"
+#     params = args
+#     kwparams = kwargs
+#     return f"""
+#     {newline.join(f"{key}: {value}" for key, value in kwargs.items())}
+#     """
 
 
-this_builder(header_builder, metadata_builder)
+# header_builder(header_builder, metadata_builder)

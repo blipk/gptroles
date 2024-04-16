@@ -1,3 +1,16 @@
 - Autosave snippets
 - Autosave and restore contexts
 - Image uploads
+
+
+
+
+# UI Tools
+- transform lists, tables etc in blocks to JSON or other data formats
+- create memory to a: files, link, scrollable context of a large document
+
+
+# UX Tools:
+- datablock extracter:	markdown or other data structures found in a text content
+- datablocks refiner: e.g. pass block to programming language text processor and refine the code until no errors
+

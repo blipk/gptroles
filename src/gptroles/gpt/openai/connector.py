@@ -4,10 +4,10 @@ import json
 import openai
 from os import getenv
 from pprint import pprint
-from gptroles.gpt.engines.prompts.root import system_role, root_roles, role_confirmation
+from gptroles.gpt.engines.root.engine_root import root_roles, role_confirmation
 from PyQt6.QtWidgets import QWidget
 
-from gptroles.interfaces.ui_to_gpt.DI import RoleGptDI
+from gptroles.gpt.openai.gpt_settings import GPTSettings
 
 
 # models = sorted(openai.Model.list().data, key=lambda x: x.id)
@@ -41,26 +41,24 @@ def run_shell(command, shell="bash", string_flag=None, autorun=False):
 class RoleGpt:
     prompt_chain: list[ChatMessage] = []
 
-    def __init__(
-        self, settings, sub_roles=root_roles, system_role=system_role, prompt_chain=None
-    ) -> None:
+    def __init__(self, settings, roles: dict = root_roles, prompt_chain=None) -> None:
         self._settings = None
-        self.settings = settings
+        self.gpt_settings = settings
         self.api_key = settings.OPENAI_API_KEY
-        if isinstance(sub_roles, str):
-            sub_roles = [sub_roles]
-        self.sub_roles = sub_roles
-        self.system_role = system_role
-        if prompt_chain:
-            self.prompt_chain = prompt_chain
         self.client = openai.OpenAI(api_key=self.api_key)
 
+        self.system_role = roles["system"]
+        self.other_roles = roles["other"]
+
+        if prompt_chain:
+            self.prompt_chain = prompt_chain
+
     @property
-    def settings(self):
+    def gpt_settings(self):
         return self._settings
 
-    @settings.setter
-    def settings(self, value):
+    @gpt_settings.setter
+    def gpt_settings(self, value):
         self._settings = value
         openai.api_key = value.OPENAI_API_KEY
         print("GPT Settings Updated")
@@ -84,28 +82,36 @@ class RoleGpt:
         self.prompt_chain = []
 
     def ask(
-        self, prompt, prompt_chain=None, message_role=None, assistant_name="GPT", trim=1
+        self,
+        inquiry,
+        prompt_chain=None,
+        message_role="user",
+        assistant_name="GPT",
+        trim=1,
     ):
-        if not message_role:
-            message_role = "user"
-
-        prompt_chain = prompt_chain or self.prompt_chain
-        prompt_chain.append(ChatMessage(**{"role": message_role, "content": prompt}))
-        print(f"{message_role}: {prompt[:200]}")
-        # print(prompt_chain[1:])
+        # Root System Roles
         system_roles = [{"role": "system", "content": self.system_role}] + [
-            {"role": "system", "content": role} for role in self.sub_roles
+            {"role": "system", "content": other_role} for other_role in self.other_roles
         ]
-        print("AAA", len(system_roles))
-        # pprint(system_roles)
-        input_prompt_chain = [
+
+        # Filter Prompt Chain
+        prompt_chain = prompt_chain or self.prompt_chain
+        prompt_chain = [
             m for m in prompt_chain if m.role in ("system", "assistant", "user")
         ]
-        messages = system_roles + input_prompt_chain
+
+        # Build messages from Prompt Chain
+        messages = (
+            system_roles
+            + prompt_chain
+            + [ChatMessage(**{"role": message_role, "content": inquiry})]
+        )
+
+        pprint(messages)
 
         try:
             response = self.client.chat.completions.create(
-                **(self.settings.chatcompletion | dict(messages=messages)),
+                **(self.gpt_settings.chatcompletion | dict(messages=messages)),
             )
         except openai.RateLimitError as e:
             print("Rate limit", e)
@@ -139,6 +145,3 @@ class RoleGpt:
             pprint(response.choices)
         print(answer)
         return (assistant_name, answer)
-
-
-# rolegpt = RoleGpt(settings, root_roles, "")

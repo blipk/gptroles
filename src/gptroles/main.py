@@ -3,7 +3,7 @@ import os
 import sys
 import signal
 
-from gptroles.ui import RoleChat
+from gptroles.ui.application import RoleChat
 
 
 os.environ["QT_QPA_PLATFORM"] = "xcb"  # Required for Qt to move windows on wayland

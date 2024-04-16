@@ -132,8 +132,6 @@ $$$$*COMMANDORTO
 """
 
 
-
-
 # Sections
 
 section_stack = """/||SECTION ~(#TEXTSNIPPET) | this text snippet contains information on how the SECTIONS work
@@ -160,9 +158,16 @@ A more accurate and generalised example section header for this current section 
 @IMPERATIVE when reading examples of section headers, do not consider them as actual section headers, just an example
 """
 
-# from gptroles.gpt.engines.orto.roles.tools import tool_prototypes, ortos_tools
-# from gptroles.gpt.engines.orto.roles.memory import memory_description, scrollable_memory
+from gptroles.gpt.engines.orto.roles.tools import tool_prototypes  # noqa: F401, E402
+from gptroles.gpt.engines.orto.roles.memory import (
+    memory_description,
+    scrollable_memory,
+)  # noqa: F401, E402
 
 orto_engine = f"""{orto_core}{footer}{orto_main}"""
-orto_render = """{orto_engine}"""
-orto_roles = [orto_render]
+orto_render = f"""{orto_engine}"""
+
+
+orto_system = f"""{orto_render}"""
+
+orto_roles = [tool_prototypes]

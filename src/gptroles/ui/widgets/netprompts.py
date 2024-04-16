@@ -28,7 +28,7 @@ class CustomListView(QListWidget):
         prompt = item.toolTip()
         # print("Setting prompt:", prompt)
         chatbox: ChatBox = self.parent().parent()
-        rolegpt: RoleGpt = chatbox.rolegpt
+        rolegpt: RoleGpt = chatbox.role_gpt
         rolegpt.system_role = prompt
         rolegpt.sub_role = ""
         rolegpt.prompt_chain = []

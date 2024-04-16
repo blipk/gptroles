@@ -57,8 +57,9 @@ elif [[ "x$CMD" == "xrun" ]]; then
     DIST_FOLDER="$(python3 -m site --user-site)/gptroles/"
     mkdir -p "$DIST_FOLDER"
     buildWeb && \
-    yes | rm -rf "src/gptroles/$DIST_FOLDER/" && \
-    yes | cp -rf src/gptroles/* "$DIST_FOLDER" && \
+    yes | rm -rf "$DIST_FOLDER" &&
+    mkdir -p  "$DIST_FOLDER" &&
+    yes | cp -rf src/gptroles/* "$DIST_FOLDER" &&
     ./src/gptroles/main.py --debug
     # poetry run main --debug
 elif [[ "x$CMD" == "xwatch" ]]; then

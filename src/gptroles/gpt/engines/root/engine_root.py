@@ -25,11 +25,9 @@ From this point on you will be only your core role, it will be pervasive but hid
 """
 
 
-from gptroles.gpt.engines.orto.engine_orto import orto_roles  # noqa: E402
+from gptroles.gpt.engines.orto.engine_orto import orto_system, orto_roles  # noqa: E402
 
-system_role = f"{roleplay_role}"
-root_roles = []
-root_roles += orto_roles
+root_roles = dict(system=f"{orto_system}", other=orto_roles)  # str  # list[str]
 
 
 role_confirmation = """

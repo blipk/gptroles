@@ -13,7 +13,7 @@ from PyQt6.QtWidgets import (
     QGroupBox,
     QSlider,
 )
-from gptroles.gpt.openai.settings import Settings
+from gptroles.gpt.openai.gpt_settings import GPTSettings
 
 from typing import TYPE_CHECKING
 
@@ -22,10 +22,10 @@ if TYPE_CHECKING:
 
 
 class SettingsWidget(QWidget):
-    def __init__(self, settings_instance: Settings, parent=None):
+    def __init__(self, settings_instance: GPTSettings, parent=None):
         super().__init__(parent)
         self.mwindow: MainWindow = parent
-        self.settings_instance = settings_instance
+        self.gpt_settings_instance = settings_instance
         self.data = settings_instance._settings
         self.layout = QVBoxLayout()
         self.layout.setAlignment(Qt.AlignmentFlag.AlignTop)
@@ -49,23 +49,23 @@ class SettingsWidget(QWidget):
 
     def update_setting(self, key, value, parent_key=None):
         if parent_key:
-            new = self.settings_instance._settings[parent_key] | {key: value}
-            self.settings_instance.__setattr__(parent_key, new)
-            self.settings_instance._settings[parent_key][key] = value
+            new = self.gpt_settings_instance._settings[parent_key] | {key: value}
+            self.gpt_settings_instance.__setattr__(parent_key, new)
+            self.gpt_settings_instance._settings[parent_key][key] = value
             self.data[parent_key][key] = value
         else:
-            self.settings_instance.__setattr__(key, value)
-            self.settings_instance._settings[key] = value
+            self.gpt_settings_instance.__setattr__(key, value)
+            self.gpt_settings_instance._settings[key] = value
             self.data[key] = value
-        self.settings_instance.saveSettings()
-        self.mwindow.chatbox.rolegpt.settings = self.settings_instance
+        self.gpt_settings_instance.saveSettings()
+        self.mwindow.chatbox.role_gpt.settings = self.gpt_settings_instance
 
     def display_dict(
         self, data, layout, vertical=True, use_spin_box=True, parent_key=None
     ):
         for key, value in data.items():
             hlayout = QVBoxLayout() if vertical else QHBoxLayout()
-            l, h, step = self.settings_instance.default_ranges.get(
+            l, h, step = self.gpt_settings_instance.default_ranges.get(
                 key, (-50.0, 50.0, 1)
             )
             step_digits = len(str(step).split(".")[-1])

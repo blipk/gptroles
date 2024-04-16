@@ -33,13 +33,12 @@ from gptroles.ui.widgets.chatbox import ChatBox
 from gptroles.ui.widgets.borderlesswindow import BorderlessWindow, BaseWindow
 from gptroles.ui.settings import SettingsWidget
 
-from gptroles.gpt.openai.connector import RoleGpt
 from gptroles.interfaces.ui_to_gpt.DI import RoleGptDI
 
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from gptroles.ui import RoleChat
+    from gptroles.ui.application import RoleChat
 
 
 class HLayout(QWidget):
@@ -61,9 +60,10 @@ class HLayoutComponent(QHBoxLayout):
         self.setSpacing(0)
 
 
-class CustomMenuBar(QMenuBar, RoleGptDI):
+class CustomMenuBar(QMenuBar):
     def __init__(self, parent: QWidget = None) -> None:
         super().__init__(parent)
+        RoleGptDI(self)
         self.mwindow = parent
         self.dragPosition = None
         self.setNativeMenuBar(False)
@@ -93,7 +93,7 @@ class CustomMenuBar(QMenuBar, RoleGptDI):
         self.setCursor(Qt.CursorShape.OpenHandCursor)
 
     def clearContext(self):
-        self.rolegpt.clear_context()
+        self.role_gpt.clear_context()
 
     def addAction(self, action: QAction) -> None:
         # widget_action = QWidgetAction(self)
@@ -147,10 +147,9 @@ class MainWindow(QMainWindow, BorderlessWindow):
     def __init__(self, app):
         super(BorderlessWindow, self).__init__()
         super(QMainWindow, self).__init__()
+        RoleGptDI(self, app)
         self.app: RoleChat = app
         self.qsettings = self.app.qsettings
-        self.settings = self.app.settings
-        self.rolegpt = RoleGpt(self.settings)
         self.setAcceptDrops(True)
         self.setupUi()
         self.setupMenu()
@@ -211,7 +210,7 @@ class MainWindow(QMainWindow, BorderlessWindow):
     def setupWidgets(self):
         menu = self.menuBar()
         # Widgets
-        self.settingsWidget = SettingsWidget(self.settings, self)
+        self.settingsWidget = SettingsWidget(self.gpt_settings, self)
         self.chatbox = ChatBox(self)
         self.hLayout.addWidget(self.chatbox)
         self.hLayout.addWidget(self.settingsWidget)
