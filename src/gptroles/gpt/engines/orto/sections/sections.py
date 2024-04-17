@@ -1,7 +1,10 @@
+from dataclasses import dataclass
 from enum import Enum
+from typing import Any
 
-from gptroles.gpt.engines.orto.sections.params import params_maker, orto_params_maker
+from gptroles.gpt.engines.orto.sections.params import ParamsMakerType, ParamsPropertiesType, ListParams, UriParams, UriParamsProperties, OrtoUriParamsProperties
 
+# Should also provide these class defs to the engine
 
 class SectionType(Enum, str):
     REQUEST = "~"
@@ -20,20 +23,46 @@ class SectionResponseCommand(Enum, str):
     TOOL_CALL = "TOOL_CALL"
 
 
+@dataclass
+class SectionProperties:
+    """Class that wraps a SECTIONs properties"""
+    type: SectionType
+    section_command: SectionRequestCommand | SectionResponseCommand
+    params: ParamsPropertiesType
+    content: str
+
+class Section:
+    """Class full of static methods for operating on SECTIONs with their properties"""
+    properties: SectionProperties
+    params_maker: ParamsMakerType = UriParams
+
+    def __init__(self, properties, params_maker = None) -> None:
+        self.properties = properties
+        self.params_maker = params_maker or self.params_maker
+
+    def __call__(self, *args: Any, **kwds: Any) -> str:
+        return self.section_maker(self, **self.properties)
+
+    def section_maker(
+        self,
+        type: SectionType,
+        section_command: str,
+        params: ParamsPropertiesType,
+        content: str,
+
+        params_maker = ParamsMakerType | None,
+    ):
+        params_maker = params_maker or self.params_maker
+        return f"//|SH{SectionType(type)} {section_command} | {params_maker()(params)}{{ \n\n{content} }}"
+
+
 class TOOLS(Enum):
     memory_request = "memory_request"
     memory_store = "memory_store"
     data_store = "data_store"
 
 
-def section_maker(
-    type: SectionType,
-    section_command: str,
-    params: str,
-    content: str,
-    params_maker=orto_params_maker,
-):
-    return f"//|SH{SectionType(type)} {section_command} | {orto_params_maker(params)}{{ \n\n{content} }}"
+
 
 
 header_template_spec = "//|SH[~|@] <section_command> | <params>{ \n\n<content> }"
@@ -84,12 +113,15 @@ The SECTION HEADER is ABSOLUTELY EXCLUSIVELY AND ALWAYS the FIRST LINE of any in
 Here is an example of a response section with its signifying header, inside a markdown code block:
 
 ```example
-{section_maker(
-    SectionType.RESPONSE,
-    SectionResponseCommand.TOOL_CALL,
-    orto_params_maker("engine.tools", ["APPLICATION", "open_links"], {'link': 'website.com'}),
-    "// this content only contains a comment, but would usually contain a payload for the command or tool"
-)}
+{
+Section(
+    SectionProperties(
+        SectionType.RESPONSE,
+        SectionResponseCommand.TOOL_CALL,
+        OrtoUriParamsProperties(host="engine.tools", path_parts=["APPLICATION", "open_links"], params={'link': 'website.com'}),
+        "// this content only contains a comment, but would usually contain a payload for the command or tool"
+))()
+}
 ```
 
 The above example section and header signifies a tool section to follow, along with params that point to the tool and followed by a newline and then its content.
@@ -97,19 +129,24 @@ The above example section and header signifies a tool section to follow, along w
 Here is an example of a request section for a user inquiry with its signifying header, inside a markdown code block:
 
 ```example
-{section_maker(
-    SectionType.REQUEST,
-    SectionRequestCommand.INQUIRY,
-    "",
-    "How could we control when it rains?"
-)}
+{
+Section(
+    SectionProperties(
+        SectionType.REQUEST,
+        SectionRequestCommand.INQUIRY,
+        OrtoUriParamsProperties(),
+        "How could we control when it rains?"
+))()
+}
 ```
 """
 
 
-section_sections = section_maker(
-    SectionType.REQUEST,
-    SectionRequestCommand.DETAILS,
-    "orto://developer.command.orto/en/docs/ENGINE/SECTION/index ",
-    content,
-)
+section_docs_sections = Section(
+    SectionProperties(
+        SectionType.REQUEST,
+        SectionRequestCommand.DETAILS,
+        OrtoUriParamsProperties(host="developer.command.orto", path_parts=["/en/docs/ENGINE/SECTION/index"]),
+        content,
+    )
+)()

@@ -1,8 +1,8 @@
 # Coding roles
 codeproj_role = """
 A programming/coding Role to play when providing answers to questions about programming or coding, provide complete projects where possible, with each files source code in it's own markdown block tagged with the file path and name, relative to the project root.
-
 """.lstrip()
+
 repl_role = """
 A Command Role to play when you don't know an exact answer to some information, but know a resource where it could be found, there are various commands you can use to get the information from those resources.
 To use a command, you must send the user a message in the format "COMMAND_NAME: command_parameters" where COMMAND_NAME is the name of one of the commands below.

@@ -1,4 +1,4 @@
-from gptroles.gpt.engines.orto.sections.index import (
+from gptroles.gpt.engines.orto.sections.sections import (
     section_maker,
     orto_params_maker,
     SectionRequestCommand,
@@ -25,10 +25,6 @@ user_inquiry_text_sample = "How can I draw with quaternions?"
 
 def inquiry_maker(user_inquiry_text: str = user_inquiry_text_sample):
     orto_user_content_template = f"""
-		// This is a hinting format for helping to direct and guide the request/inquiry process to the correct answer,
-		// by generating deltas and following paths to find an answer to the directive.
-		// The inquiry
-
 		@CONSIDER THIS USER INQUIRY: {user_inquiry_text}
 
 		{alternators if False else ""}

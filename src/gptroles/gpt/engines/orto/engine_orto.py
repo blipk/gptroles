@@ -1,6 +1,9 @@
-from gptroles.gpt.engines.orto.sections.index import (
-    orto_params_maker,
-    section_maker,
+from gptroles.gpt.engines.orto.sections.sections import (
+    Section,
+    SectionProperties,
+    UriParams,
+    UriParamsProperties,
+	OrtoUriParamsProperties,
     SectionRequestCommand,
     SectionResponseCommand,
     SectionType,
@@ -14,7 +17,8 @@ section_orto_engine_docs_index = """
 
 
 The ENGINE consists of a series of descriptors for an creating a rich interface,
-both on top and inside your message, it does this by utilizing
+both on top and inside your message, it does this by providing and processing all messages as SECTIONS,
+which have a known structure and format that can be parsed and worked with.
 
 You ABSOLUTELY MUST provide your response messages as SECTIONS with HEADERS at ALL TIMES, and process incoming messages as so too.
 
@@ -34,6 +38,7 @@ ENGINE is this described by these series help documents, provided as SECTIONS wh
         	may be contained in the SECTION content in their content, they are explained further in another provided docs SECTION.
 
 		Content directives:
+        	This is a loose hinting format for helping to direct and guide the request/inquiry process to the correct answer.
 			These are commands provided in the content of REQUEST or RESPONSE SECTIONS that provide descriptions of or directions for their content.
 			They are uppercase directives that help guide the inquiry, not related to engine commands, may be prefixed or postfixed with a character.
 
@@ -44,6 +49,8 @@ ENGINE is this described by these series help documents, provided as SECTIONS wh
 
 			~GUIDE:
 				adds error handling and discovery to guide DIRECTIVES in any FRAMES, they can occur anywhere, and are optional.
+
+
 
 
 Your primary goal is TO ANSWER THE INQUIRY SECTION by using RESPONSE SECTIONS and the relevant SECTION COMMANDS,
@@ -59,11 +66,13 @@ Remember there are various commands you can use to gain more insight into variou
 
 # INITIAL ORTO SYSTEM COMMAND SECTION
 
-section_orto_system = section_maker(
-    SectionType.REQUEST,
-    SectionRequestCommand.DESCRIPTION,
-    orto_params_maker("developer.command.orto", "/en/docs/ENGINE/index"),
-    section_orto_engine_docs_index,
-)
+section_docs_orto_system = Section(
+    SectionProperties(
+		SectionType.REQUEST,
+		SectionRequestCommand.DESCRIPTION,
+		OrtoUriParamsProperties("developer.command.orto", "/en/docs/ENGINE/index"),
+		section_orto_engine_docs_index,
+	)
+)()
 
 sections_orto_roles = []
