@@ -13,16 +13,16 @@ from PyQt6.QtWidgets import (
     QGroupBox,
     QSlider,
 )
-from gptroles.gpt.openai.gpt_settings import GPTSettings
+from gptroles.gpt.ai.engines.OpenAISettings import OpenAISettings
 
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from gptroles.ui.mainwindow import MainWindow
+    from gptroles.ui.w_mainwindow import MainWindow
 
 
 class SettingsWidget(QWidget):
-    def __init__(self, settings_instance: GPTSettings, parent=None):
+    def __init__(self, settings_instance: OpenAISettings, parent=None):
         super().__init__(parent)
         self.mwindow: MainWindow = parent
         self.gpt_settings_instance = settings_instance

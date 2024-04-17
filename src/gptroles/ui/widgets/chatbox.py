@@ -37,14 +37,14 @@ from PyQt6.QtTest import QTest
 from gptroles.ui.widgets.chatmsg import ChatMessage
 from gptroles.ui.widgets.netprompts import PromptsWindow
 
-from gptroles.gpt.openai.connector import run_shell
+from gptroles.gpt.ai.engines.connector import run_shell
 from gptroles.interfaces.ui_to_gpt.DI import RoleGptDI
 
 
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from gptroles.ui.mainwindow import MainWindow
+    from gptroles.ui.w_mainwindow import MainWindow
 
 
 class Bridge(QObject):

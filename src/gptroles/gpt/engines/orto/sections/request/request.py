@@ -1,8 +1,10 @@
+from gptroles.gpt.engines.orto.sections.params import OrtoUriParamsProperties
 from gptroles.gpt.engines.orto.sections.sections import (
-    section_maker,
-    orto_params_maker,
+    Section,
+    SectionProperties,
     SectionRequestCommand,
     SectionResponseCommand,
+    SectionText,
     SectionType,
 )
 
@@ -23,7 +25,7 @@ disablers = """
 user_inquiry_text_sample = "How can I draw with quaternions?"
 
 
-def inquiry_maker(user_inquiry_text: str = user_inquiry_text_sample):
+def inquiry_maker(user_inquiry_text: str = user_inquiry_text_sample) -> SectionText:
     orto_user_content_template = f"""
 		@CONSIDER THIS USER INQUIRY: {user_inquiry_text}
 
@@ -39,9 +41,13 @@ def inquiry_maker(user_inquiry_text: str = user_inquiry_text_sample):
 				instead let me know specifically what is erroring through responding with a question to the user.
 	"""
 
-    return section_maker(
-        SectionType.REQUEST,
-        SectionRequestCommand.INQUIRY,
-        orto_params_maker("user.request.orto", ["inquiry"]),
-        orto_user_content_template,
-    )
+    return Section(
+        SectionProperties(
+            type=SectionType.REQUEST,
+            command=SectionRequestCommand.INQUIRY,
+            params=OrtoUriParamsProperties(
+                host="user.request.orto", path_parts=["inquiry"]
+            ),
+            content=orto_user_content_template,
+        )
+    )()

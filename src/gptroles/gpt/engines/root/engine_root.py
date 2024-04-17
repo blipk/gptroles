@@ -1,6 +1,6 @@
-from gptroles.gpt.engines.orto.engine_orto import orto_system, orto_roles  # noqa: E402
+from gptroles.gpt.engines.orto.engine_orto import sections_orto_roles  # noqa: E402
 
-root_roles = dict(system=f"{orto_system}", other=orto_roles)  # str  # list[str]
+root_roles = sections_orto_roles  # str  # list[str]
 
 
 role_confirmation = """

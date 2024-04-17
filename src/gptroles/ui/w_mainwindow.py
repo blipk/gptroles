@@ -31,7 +31,7 @@ from PyQt6.QtWidgets import (
 # from gptroles.ui.widgets.terminal import SerialPortWidget
 from gptroles.ui.widgets.chatbox import ChatBox
 from gptroles.ui.widgets.borderlesswindow import BorderlessWindow, BaseWindow
-from gptroles.ui.settings import SettingsWidget
+from gptroles.ui.w_settings import SettingsWidget
 
 from gptroles.interfaces.ui_to_gpt.DI import RoleGptDI
 

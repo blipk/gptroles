@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from typing import Any
 
 
@@ -22,59 +22,78 @@ here is a fully specced example for the URI in the above annotion:
 # class ParamProperties:
 # 	maker: callable
 
-@dataclass
-class ListParamsProperties():
-	"""Class that wraps a pipe list type paramaters properties"""
-	seperator: str
-	values: list
-
 
 @dataclass
-class UriParamsProperties():
-	"""Class that wraps a uri type paramaters properties"""
-	scheme: str
-	host: str
-	path_parts: list[str]
-	params: dict
-	anchor: str
+class ListParamsProperties:
+    """Class that wraps a pipe list type paramaters properties"""
 
-def OrtoUriParamsProperties(**kwargs) -> UriParamsProperties:
-	return UriParamsProperties(**{kwargs | dict(scheme="orto")})
+    seperator: str
+    values: list
+
+
+@dataclass
+class UriParamsProperties:
+    """Class that wraps a uri type paramaters properties"""
+
+    scheme: str
+    host: str
+    path_parts: list[str]
+    uriparams: dict | None = None
+    anchor: str | None = None
+
+
+def OrtoUriParamsProperties(**kwargs: dict) -> UriParamsProperties:
+    return UriParamsProperties(**(kwargs | {"scheme": "orto"}))
+
+
+default_seperator: str = "|"
+
 
 class ListParams:
-	"""Class full of static methods for operating on UriParams"""
-	default_seperator: str = "|"
-	properties: ListParamsProperties
+    """Class full of static methods for operating on UriParams"""
 
-	def __init__(self, properties: ListParamsProperties) -> None:
-		self.properties = properties
+    properties: ListParamsProperties
 
-	def __call__(self, *args: Any, **kwds: Any) -> Any:
-		return self.piped_list_maker(self, **self.properties)
+    def __init__(self, properties: ListParamsProperties) -> None:
+        self.properties = properties
 
-	def piped_list_maker(self, values, seperator):
-		values = values or []
-		seperator = seperator or self.default_seperator
-		params_str = seperator.join(values)
-		return params_str
+    def __call__(self, *args: Any, **kwds: Any) -> Any:
+        return self.piped_list_maker(**asdict(self.properties))
+
+    @classmethod
+    def piped_list_maker(cls, values=None, seperator=None):
+        values = values or []
+        seperator = seperator or default_seperator
+        params_str = seperator.join(values)
+        return params_str
 
 
 class UriParams:
-	"""Class full of static methods for operating on UriParams"""
-	properties: UriParamsProperties
+    """Class full of static methods for operating on UriParams"""
 
-	def __init__(self, properties: UriParamsProperties) -> None:
-		self.properties = properties
+    properties: UriParamsProperties
 
-	def __call__(self, *args: Any, **kwds: Any) -> Any:
-		return self.uri_params_maker(self, **self.properties)
+    def __init__(self, properties: UriParamsProperties) -> None:
+        self.properties = properties
 
-	def uri_params_maker(self, scheme, host, path_parts: list[str], params: dict = None, anchor: str = None):
-		params = params or {}
-		anchor = anchor or ""
-		path_str = "/".join(path_parts)
-		params_str = "&".join([f"{k}={v}" for k, v in params])
-		return f"{scheme}://{host}{path_str}/?{params_str}#{anchor}"
+    def __call__(self, *args: Any, **kwds: Any) -> Any:
+        return self.uri_params_maker(**asdict(self.properties))
+
+    def uri_params_maker(
+        cls,
+        scheme,
+        host,
+        path_parts: list[str],
+        uriparams: dict = None,
+        anchor: str = None,
+    ) -> str:
+        uriparams = uriparams or {}
+        print("XX", uriparams)
+        anchor = anchor or ""
+        path_str = "/".join(path_parts)
+        params_str = "&".join([f"{k}={v}" for k, v in uriparams.items()])
+        return f"{scheme}://{host}{path_str}/?{params_str}#{anchor}"
+
 
 ParamsPropertiesType = UriParamsProperties | ListParamsProperties
 ParamsMakerType = UriParams | ListParams

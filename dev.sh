@@ -56,7 +56,7 @@ elif [[ "x$CMD" == "xsysinstall" ]]; then
 elif [[ "x$CMD" == "xrun" ]]; then
     DIST_FOLDER="$(python3 -m site --user-site)/gptroles/"
     mkdir -p "$DIST_FOLDER"
-    buildWeb && \
+    # buildWeb && \
     yes | rm -rf "$DIST_FOLDER" &&
     mkdir -p  "$DIST_FOLDER" &&
     yes | cp -rf src/gptroles/* "$DIST_FOLDER" &&
