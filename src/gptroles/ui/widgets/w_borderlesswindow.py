@@ -1,4 +1,5 @@
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QPointF, QRectF, QSizeF
+from PyQt6.QtGui import QPainter, QBrush, QColor, QPainterPath
 from PyQt6.QtWidgets import (
     QApplication,
     QVBoxLayout,
@@ -74,3 +75,35 @@ class BorderlessWindow(QWidget, BaseWindow):
             }
             """
         )
+
+class RoundedCornerWindow(QWidget, BaseWindow):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        painter.setBrush(QBrush(QColor("#f0f0f0")))  # Set the background color
+        painter.setPen(Qt.PenStyle.NoPen)
+
+        painter.drawRoundedRect(self.rect(), 12, 12)
+        # rect = self.rect()
+        # radius_top_left = 50
+        # radius_top_right = 100
+        # radius_bottom_left = 75
+        # radius_bottom_right = 25
+
+        # path = QPainterPath()
+        # path.moveTo(QPointF(rect.topRight()) - QPointF(0, radius_top_right))
+        # path.arcTo(QRectF(QPointF(rect.topRight()) - QPointF(radius_top_right, radius_top_right), QSizeF(radius_top_right * 2, radius_top_right * 2)), 0.0, 90.0)
+
+        # path.lineTo(QPointF(rect.bottomRight()) - QPointF(radius_bottom_right, 0))
+        # path.arcTo(QRectF(QPointF(rect.bottomRight()) - QPointF(radius_bottom_right, radius_bottom_right), QSizeF(radius_bottom_right * 2, radius_bottom_right * 2)), 90.0, 90.0)
+
+        # path.lineTo(QPointF(rect.bottomLeft()) + QPointF(radius_bottom_left, 0))
+        # path.arcTo(QRectF(QPointF(rect.bottomLeft()), QSizeF(radius_bottom_left * 2, radius_bottom_left * 2)), 180.0, 90.0)
+
+        # path.lineTo(QPointF(rect.topLeft()) + QPointF(0, radius_top_left))
+        # path.arcTo(QRectF(QPointF(rect.topLeft()), QSizeF(radius_top_left * 2, radius_top_left * 2)), 270.0, 90.0)
+
+        # painter.drawPath(path)
