@@ -12,8 +12,8 @@ from streamlitextras.utils import repr_
 
 from core.models import TokenUse
 from ai.parsers.inputs import InputParser
-from ai.engines.TokenHelper import TokenHelper
-from ai.engines.schemas import EngineError, Jurisdictions, jurisdiction_nationalities
+from ai.connectors.TokenHelper import TokenHelper
+from ai.connectors.schemas import EngineError, Jurisdictions, jurisdiction_nationalities
 from ai.prompts.manager import (
     prompt_manager,
     Role,

@@ -7,21 +7,21 @@ from typing import Any
 import openai
 from os import getenv
 from pprint import pprint
-from gptroles.gpt.engines.orto.sections.params import (
+from gptroles.ai.engines.orto.sections.params import (
     OrtoUriParamsProperties,
     UriParams,
     UriParamsProperties,
 )
-from gptroles.gpt.engines.orto.sections.sections import (
+from gptroles.ai.engines.orto.sections.sections import (
     Section,
     SectionProperties,
-    SectionRequestCommand,
-    SectionType,
+    SectionFormat,
+    SectionProvider,
 )
-from gptroles.gpt.engines.root.engine_root import root_roles, role_confirmation
+from gptroles.ai.engines.root.engine_root import root_roles, role_confirmation
 from PyQt6.QtWidgets import QWidget
 
-from gptroles.gpt.ai.engines.OpenAISettings import OpenAISettings
+from gptroles.ai.connectors.OpenAISettings import OpenAISettings
 
 
 # models = sorted(openai.Model.list().data, key=lambda x: x.id)
@@ -117,8 +117,8 @@ class MemoryManager:
 
         memory_index_section = Section(
             SectionProperties(
-                type=SectionType.REQUEST,
-                command=SectionRequestCommand.DESCRIPTION,
+                provider=SectionProvider.AI,
+                format=SectionFormat.DESCRIPTION,
                 params=OrtoUriParamsProperties(
                     host="app.orto.context", path_parts=["/context/memory/index"]
                 ),
@@ -160,8 +160,8 @@ class MemoryManager:
         sections_texts_for_key_paths = [
             Section(
                 SectionProperties(
-                    type=SectionType.RESPONSE,
-                    command=SectionRequestCommand.MEMORY,
+                    provider=SectionProvider.USER,
+                    format=SectionFormat.MEMORY,
                     params=OrtoUriParamsProperties(
                         host="app.orto.context",
                         path_parts=[
@@ -216,8 +216,8 @@ class Connector:
         self.api_key = settings.OPENAI_API_KEY
         self.client = openai.OpenAI(api_key=self.api_key)
 
+        self.prompt_chain = prompt_chain or []
         self.root_system_messages = root_system_messages
-        self.prompt_chain = prompt_chain or prompt_chain
         self.memory_manager = self.memory_manager or memory_manager
 
     @property
@@ -281,6 +281,7 @@ class Connector:
         memories = self.memory_manager.memory_index + self.memory_manager.current_memory
 
         # Add in Working Prompt Chain for Inquiry
+
         prompt_chain = prompt_chain or self.prompt_chain
         prompt_chain = [
             m for m in prompt_chain if m.role in ("system", "assistant", "user")

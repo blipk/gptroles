@@ -88,7 +88,6 @@ class UriParams:
         anchor: str = None,
     ) -> str:
         uriparams = uriparams or {}
-        print("XX", uriparams)
         anchor = anchor or ""
         path_str = "/".join(path_parts)
         params_str = "&".join([f"{k}={v}" for k, v in uriparams.items()])

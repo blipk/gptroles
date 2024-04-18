@@ -8,7 +8,7 @@ from cryptography.fernet import Fernet, InvalidToken
 
 from streamlitextras.logger import log, bind_log
 
-from appconfig import settings
+from gptroles.appsettings import settings
 
 import streamlit as st
 

@@ -13,7 +13,7 @@ from PyQt6.QtWidgets import (
     QGroupBox,
     QSlider,
 )
-from gptroles.gpt.ai.engines.OpenAISettings import OpenAISettings
+from gptroles.ai.connectors.OpenAISettings import OpenAISettings
 
 from typing import TYPE_CHECKING
 
@@ -92,7 +92,7 @@ class SettingsWidget(QWidget):
             elif isinstance(value, int):
                 if use_spin_box:
                     widget = QSpinBox()
-                    widget.setRange(l, h)
+                    widget.setRange(int(l), int(h))
                     widget.setSingleStep(step)
                 else:
                     widget = QSlider(Qt.Orientation.Horizontal)

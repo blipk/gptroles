@@ -1,8 +1,12 @@
+import os
 import toml
 from pathlib import Path
 from dataclasses import dataclass
 
+from appdirs import AppDirs
+
 from utils import repr_
+
 
 from ai.prompts.schemas import default_openai_model
 
@@ -46,16 +50,26 @@ class OpenAISettings:
         frequency_penalty=(-2.0, 2.0, 0.05),
     )
 
-    def __init__(self, settings_dict: dict | None = None) -> None:
+    def __init__(self, app_dirs: AppDirs) -> None:
+        self.settings_fname = "gptroles.openai.toml"
         self._settings = self.default_settings.copy()
-        if settings_dict:
-            self._settings |= settings_dict
-        self.loadSettings()
+
+        self.dirs = app_dirs
+        self.config_dir = self.dirs.user_config_dir
+        os.makedirs(self.config_dir, exist_ok=True)
+
+        self.settings_fpath = os.path.join(self.config_dir, self.settings_fname)
+
+        if not os.path.exists(self.settings_fpath):
+            self.saveSettings(self.default_settings)
+
+        self.loadSettings(self.loadSettingsFile(self.settings_fpath))
 
     def loadSettingsFile(self, file_path: str) -> dict:
         with open(file_path) as f:
             settings_toml = toml.load(f)
             self.setSettings(settings_toml)
+
         return settings_toml
 
     def loadSettings(self, settings_toml: dict | None = None) -> None:
@@ -75,6 +89,19 @@ class OpenAISettings:
         self._settings = settings
         for key in settings:
             setattr(self, key, settings[key])
+
+    def saveSettings(self, settings=None, settings_fpath=None):
+        if not settings_fpath:
+            settings_fpath = self.settings_fpath
+
+        if not settings:
+            settings = self._settings
+
+        with open(settings_fpath, "w") as f:
+            toml.dump(settings, f)
+
+    def __repr__(self) -> str:
+        return repr_(self, ignore_keys=["_settings", "default_settings"])
 
     def __repr__(self) -> str:
         return repr_(self, ignore_keys=["_settings", "default_settings"])

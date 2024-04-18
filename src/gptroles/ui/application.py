@@ -2,21 +2,17 @@ import os
 import sys
 from PyQt6.QtCore import QTimer, QSettings, QCommandLineOption, QCommandLineParser
 from PyQt6.QtWidgets import QApplication, QFileDialog
-from gptroles.gpt.ai.engines.connector import Connector
+from gptroles.ai.connectors.connector import Connector
 from gptroles.ui.w_mainwindow import MainWindow
-from gptroles.gpt.ai.engines.OpenAISettings import OpenAISettings
+from gptroles.ai.connectors.OpenAISettings import OpenAISettings
 
-
-APP_VERSION = "v0.1"  # TODO read from package
-APP_ORG = "blipk"
-APP_NAME = "gptroles"
-APP_SETTINGS_FNAME = "gptroles.toml"
+from gptroles.appsettings import APP_AUTHOR, APP_NAME, APP_VERSION, AppSettings
 
 
 class RoleChat(QApplication):
     def __init__(self, argv):
         super(QApplication, self).__init__(argv)
-        self.setOrganizationName(APP_ORG)
+        self.setOrganizationName(APP_AUTHOR)
         self.setApplicationName(APP_NAME)
         self.setApplicationVersion(APP_VERSION)
         self.setApplicationDisplayName(APP_NAME)
@@ -26,7 +22,9 @@ class RoleChat(QApplication):
 
         # RoleGptDIProvider(self)
         self.qsettings = QSettings(self)
-        self.gpt_settings = OpenAISettings(APP_SETTINGS_FNAME, APP_NAME, APP_ORG)
+
+        self.settings = AppSettings(APP_NAME, APP_AUTHOR)
+        self.gpt_settings = OpenAISettings(self.settings.app_dirs)
         self.role_gpt = Connector(self.gpt_settings)
 
         self.mainWindow = MainWindow(self)

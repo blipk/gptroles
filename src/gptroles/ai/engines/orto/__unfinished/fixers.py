@@ -1,9 +1,8 @@
-from gptroles.gpt.engines.orto.sections.sections import (
+from gptroles.ai.engines.orto.sections.sections import (
     Section,
     SectionProperties,
-    SectionType,
-    SectionRequestCommand,
-    SectionResponseCommand,
+    SectionProvider,
+    SectionFormat,
     UriParams,
     OrtoUriParamsProperties,
 )
@@ -25,8 +24,8 @@ def header_fixer(response_section_props: SectionProperties) -> list[Section]:
     fixer_sections: list[Section] = [
         Section(
             SectionProperties(
-                type=SectionType.REQUEST,
-                command=SectionRequestCommand.INQUIRY,
+                provider=SectionProvider.AI,
+                format=SectionFormat.INQUIRY,
                 params=OrtoUriParamsProperties(
                     host="developer.command.orto", path_parts=["/en/helpers/fixer"]
                 ),

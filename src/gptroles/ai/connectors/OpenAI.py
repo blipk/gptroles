@@ -13,7 +13,7 @@ import backoff
 import pydantic_core
 from streamlitextras.logger import log, bind_log
 
-from ai.engines.schemas import EngineError
+from ai.connectors.schemas import EngineError
 from config.prompts.task_functions import task_funtions
 from ai.prompts.autoprompt import AutoPrompt, AutoPromptChunk
 from ai.prompts.manager import (
@@ -21,13 +21,13 @@ from ai.prompts.manager import (
     Role,
     RoleTask,
 )
-from ai.engines.OpenAISettings import OpenAISettings, openai_settings
+from ai.connectors.OpenAISettings import OpenAISettings, openai_settings
 
 # from ai.engines.OpenAICustom import CustomChatCompletion
 
 from utils import timeit
 
-from appconfig import get_secret
+from gptroles.appsettings import get_secret
 
 # models = sorted(openai.Model.list().data, key=lambda x: x.id)
 # for model in models:

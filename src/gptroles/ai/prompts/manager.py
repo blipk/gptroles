@@ -9,7 +9,7 @@ from pydantic import BaseModel, field_validator, model_validator
 
 from streamlitextras.logger import log
 
-from appconfig import settings
+from gptroles.appsettings import settings
 from ai.prompts.typing import TasksDictT
 from ai.parsers.inputs import (
     DocxExtractionMethods,

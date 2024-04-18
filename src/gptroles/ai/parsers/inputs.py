@@ -17,9 +17,9 @@ from bs4 import BeautifulSoup
 from streamlit.runtime.uploaded_file_manager import UploadedFile
 
 from streamlitextras.logger import log
-from ai.engines.TokenHelper import TokenHelper
+from ai.connectors.TokenHelper import TokenHelper
 
-from appconfig import settings
+from gptroles.appsettings import settings
 from utils import methodclass
 
 

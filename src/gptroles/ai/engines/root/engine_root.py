@@ -1,4 +1,4 @@
-from gptroles.gpt.engines.orto.engine_orto import sections_orto_roles  # noqa: E402
+from gptroles.ai.engines.orto.engine_orto import sections_orto_roles  # noqa: E402
 
 root_roles = sections_orto_roles  # str  # list[str]
 
