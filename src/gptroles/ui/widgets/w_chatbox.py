@@ -35,7 +35,7 @@ from PyQt6.QtWebChannel import QWebChannel
 from PyQt6.QtTest import QTest
 
 from gptroles.ui.widgets.chatmsg import ChatMessage
-from gptroles.ui.widgets.netprompts import PromptsWindow
+from gptroles.ui.widgets.w_netprompts import PromptsWindow
 
 from gptroles.ai.connectors.connector import run_shell
 from gptroles.interfaces.ui_to_gpt.DI import RoleGptDI

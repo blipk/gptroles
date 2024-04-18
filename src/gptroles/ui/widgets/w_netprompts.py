@@ -4,13 +4,14 @@ from PyQt6.QtGui import *
 from PyQt6.QtCore import *
 from PyQt6.QtWidgets import *
 from gptroles.ui.widgets.chatmsg import ChatMessage
-from gptroles.ui.widgets.borderlesswindow import BorderlessWindow
+from gptroles.ui.widgets.w_borderlesswindow import BorderlessWindow
 
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from gptroles.ui.widgets.chatbox import ChatBox
-    from gptroles.ai.openai_connector import RoleGpt
+    from gptroles.ui.widgets.w_chatbox import ChatBox
+
+from gptroles.interfaces.ui_to_gpt.DI import RoleGptDI
 
 
 class CustomListView(QListWidget):
@@ -28,7 +29,8 @@ class CustomListView(QListWidget):
         prompt = item.toolTip()
         # print("Setting prompt:", prompt)
         chatbox: ChatBox = self.parent().parent()
-        rolegpt: RoleGpt = chatbox.role_gpt
+
+        rolegpt, gpt_settings = RoleGptDI(self)()
         rolegpt.system_role = prompt
         rolegpt.sub_role = ""
         rolegpt.prompt_chain = []

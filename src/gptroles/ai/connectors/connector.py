@@ -201,7 +201,7 @@ class Connector:
     This connects openai and the orto engine
     """
 
-    working_message: list[ChatMessage] = []
+    working_messages: list[ChatMessage] = []
     memory_manager: MemoryManager = MemoryManager()
 
     def __init__(
@@ -216,7 +216,7 @@ class Connector:
         self.api_key = settings.OPENAI_API_KEY
         self.client = openai.OpenAI(api_key=self.api_key)
 
-        self.working_message = working_message or []
+        self.working_messages = working_message or []
         self.root_system_messages = root_system_messages
         self.memory_manager = self.memory_manager or memory_manager
 
@@ -243,10 +243,10 @@ class Connector:
         openai.api_key = api_key
 
     def confirm_role(self):
-        return self.ask(role_confirmation, working_message=[], assistant_name="System")
+        return self.ask(role_confirmation, working_messages=[], assistant_name="System")
 
     def clear_context(self):
-        self.working_message = []
+        self.working_messages = []
 
     def trim_error_handler(
         self, e: BaseException, inquiry, working_message, message_role, trim
@@ -266,7 +266,7 @@ class Connector:
     def ask(
         self,
         inquiry,
-        working_message=None,
+        working_messages=None,
         message_role="user",
         assistant_name="GPT",
         trim=1,
@@ -278,13 +278,15 @@ class Connector:
         ]
 
         # Memory from indexes
-        memories = self.memory_manager.memory_index + self.memory_manager.current_memory
+        memories = (
+            []
+        )  # self.memory_manager.memory_index + self.memory_manager.current_memory
 
         # Add in working messages for Inquiry
 
-        working_message = working_message or self.working_message
-        working_message = [
-            m for m in working_message if m.role in ("system", "assistant", "user")
+        working_messages = working_messages or self.working_messages
+        working_messages = [
+            m for m in working_messages if m.role in ("system", "assistant", "user")
         ]
 
         # Build REQUEST section
@@ -292,7 +294,7 @@ class Connector:
         request_message = [ChatMessage(**{"role": message_role, "content": inquiry})]
 
         # Build messages from Prompt Chain with appended Inquiry
-        messages = root_system_messages + memories + working_message + request_message
+        messages = root_system_messages + memories + working_messages + request_message
 
         # pprint(messages)
 
@@ -331,14 +333,24 @@ class Connector:
         ## ---- TODO ------
 
         # Update the chain
-        working_message.append(response.choices[0].message)
 
         # Default fallback for debugging
         answer = response_text
 
         print(
-            len(root_system_messages), len(working_message), "MESSAGE COUNT root + user"
+            [
+                len(message_set)
+                for message_set in [
+                    root_system_messages,
+                    memories,
+                    working_messages,
+                    request_message,
+                ]
+            ],
+            "root_system_messages, memories, working_messages, request_message",
         )
+
+        working_messages.append(response.choices[0].message)
 
         return (assistant_name, answer)
 

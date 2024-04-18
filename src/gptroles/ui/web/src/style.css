@@ -71,6 +71,7 @@ body {
     margin: 0;
     padding: 0;
     display: flex;
+    cursor: text;
 }
 
 .markdown-editor .textarea-container {

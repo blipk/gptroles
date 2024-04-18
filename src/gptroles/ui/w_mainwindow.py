@@ -7,7 +7,17 @@ from PyQt6.QtGui import (
     QAction,
     QMouseEvent,
 )
-from PyQt6.QtCore import Qt, QTimer, QSize, QRect, QSettings, QByteArray, QEvent, QPoint
+from PyQt6.QtCore import (
+    Qt,
+    QTimer,
+    QSize,
+    QRect,
+    QSettings,
+    QByteArray,
+    QEvent,
+    QPoint,
+    QPropertyAnimation,
+)
 from PyQt6.QtWidgets import (
     QApplication,
     QVBoxLayout,
@@ -25,122 +35,25 @@ from PyQt6.QtWidgets import (
     QWidgetAction,
     QSpacerItem,
     QSizePolicy,
+    QFrame,
+    QGraphicsOpacityEffect,
 )
+from gptroles.ui.w_drawer import DrawerWidget
+from gptroles.ui.w_menubar import CustomMenuBar
+from gptroles.ui.w_tools import LayoutType, QHBoxWidget
 
 
 # from gptroles.ui.widgets.terminal import SerialPortWidget
-from gptroles.ui.widgets.chatbox import ChatBox
-from gptroles.ui.widgets.borderlesswindow import BorderlessWindow, BaseWindow
+from gptroles.ui.widgets.w_chatbox import ChatBox
+from gptroles.ui.widgets.w_borderlesswindow import BorderlessWindow, BaseWindow
 from gptroles.ui.w_settings import SettingsWidget
 
 from gptroles.interfaces.ui_to_gpt.DI import RoleGptDI
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from gptroles.ui.application import RoleChat
-
-
-class HLayout(QWidget):
-    def __init__(self, parent: QWidget = None) -> None:
-        super().__init__(parent)
-        self.hLayoutComponent = HLayoutComponent()
-        self.lay = HLayoutComponent()
-        # if parent:
-        #     self.setGeometry(parent.geometry())
-        self.setContentsMargins(0, 0, 0, 0)
-
-
-class HLayoutComponent(QHBoxLayout):
-    def __init__(self, parent: QWidget = None) -> None:
-        super().__init__(parent)
-        # self.hLayout.setObjectName(u"hLayout")
-        self.setSizeConstraint(QLayout.SizeConstraint.SetMaximumSize)
-        self.setContentsMargins(0, 0, 0, 0)
-        self.setSpacing(0)
-
-
-class CustomMenuBar(QMenuBar):
-    def __init__(self, parent: QWidget = None) -> None:
-        super().__init__(parent)
-        RoleGptDI(self)
-        self.mwindow = parent
-        self.dragPosition = None
-        self.setNativeMenuBar(False)
-        self.setContentsMargins(0, 0, 0, 0)
-        self.setStyleSheet(
-            """
-            QMenuBar {
-                background-color: rgba(50, 50, 50, 0.8);
-            }
-            QMenuBar::item {
-                color: white;
-                background-color: transparent;
-                cursor: pointer;
-            }
-        """
-        )
-        # menuBar = HLayout()
-        # clearContext_button = QPushButton("Clear Context", self)
-        # clearContext_button.clicked.connect(self.clearContext)
-        quit_button = QPushButton("Exit", self)
-        quit_button.clicked.connect(self.mwindow.app.quit)
-
-        # menuBar.lay.addWidget(clearContext_button, 1, alignment=Qt.AlignmentFlag.AlignRight)
-        # menuBar.lay.addWidget(quit_button, 1, alignment=Qt.AlignmentFlag.AlignRight)
-        # self.setCornerWidget(menuBar, Qt.Corner.TopRightCorner)
-        self.setCornerWidget(quit_button)
-        self.setCursor(Qt.CursorShape.OpenHandCursor)
-
-    def clearContext(self):
-        self.role_gpt.clear_context()
-
-    def addAction(self, action: QAction) -> None:
-        # widget_action = QWidgetAction(self)
-        # widget_label = QPushButton(action.text(), self)
-        # widget_label.clicked.connect(action.trigger)
-        # widget_action.setDefaultWidget(widget_label)
-        # widget_label.show()
-        # action.hovered.connect(lambda: self.setCursor(Qt.CursorShape.PointingHandCursor))
-        return super().addAction(action)
-
-    def mousePressEvent(self, event: QMouseEvent) -> None:
-        on_action = self.activeAction()
-        if event.button() == Qt.MouseButton.LeftButton:
-            if on_action:
-                self.setCursor(Qt.CursorShape.PointingHandCursor)
-            else:
-                self.setCursor(Qt.CursorShape.ClosedHandCursor)
-            self.dragPosition = (
-                event.scenePosition().toPoint() - self.frameGeometry().topLeft()
-            )
-        return super().mousePressEvent(event)
-
-    def mouseReleaseEvent(self, a0: QMouseEvent) -> None:
-        on_action = self.activeAction()
-        if on_action:
-            self.setCursor(Qt.CursorShape.PointingHandCursor)
-        else:
-            self.setCursor(Qt.CursorShape.OpenHandCursor)
-        return super().mouseReleaseEvent(a0)
-
-    def mouseMoveEvent(self, event: QMouseEvent) -> None:
-        on_action = self.activeAction()
-        left_clicking = event.buttons() == Qt.MouseButton.LeftButton
-        if left_clicking and not on_action:
-            self.setCursor(Qt.CursorShape.ClosedHandCursor)
-            newPosition = event.globalPosition().toPoint() - self.dragPosition
-            self.window().move(newPosition)
-        elif on_action:
-            if left_clicking:
-                self.setCursor(Qt.CursorShape.PointingHandCursor)
-            else:
-                self.setCursor(Qt.CursorShape.PointingHandCursor)
-        elif not on_action:
-            self.setCursor(Qt.CursorShape.OpenHandCursor)
-        else:
-            self.setCursor(Qt.CursorShape.OpenHandCursor)
-        return super().mouseMoveEvent(event)
 
 
 class MainWindow(QMainWindow, BorderlessWindow):
@@ -164,26 +77,23 @@ class MainWindow(QMainWindow, BorderlessWindow):
         self.setMinimumSize(QSize(1024, 768))
         self.layout().setContentsMargins(0, 0, 0, 0)
 
-        self.centralwidget = QWidget(self)
+        self.centralwidget = QHBoxWidget()
         self.centralwidget.setObjectName("centralwidget")
+        self.setCentralWidget(self.centralwidget)
 
-        self.vLayoutWidget = QWidget(self.centralwidget)
-        self.vLayoutWidget.setObjectName("vLayoutWidget")
-        self.vLayoutWidget.setGeometry(self.geometry())
-        self.vLayout = QVBoxLayout(self.vLayoutWidget)
-        # self.vLayout.setObjectName(u"vLayout")
-        self.vLayout.setSizeConstraint(QLayout.SizeConstraint.SetMaximumSize)
-        self.vLayout.setContentsMargins(0, 0, 0, 0)
-        self.vLayout.setSpacing(0)
+        self.hLayoutWidget = QHBoxWidget(self.centralwidget)
+        self.centralwidget.boxLayout.addWidget(self.hLayoutWidget)
 
-        self.hLayoutWidget = QWidget(self.vLayoutWidget)
-        # self.hLayoutWidget.setObjectName(u"hLayoutWidget")
-        self.hLayoutWidget.setGeometry(self.vLayoutWidget.geometry())
-        self.hLayout = QHBoxLayout(self.hLayoutWidget)
-        # self.hLayout.setObjectName(u"hLayout")
-        self.hLayout.setSizeConstraint(QLayout.SizeConstraint.SetMaximumSize)
-        self.hLayout.setContentsMargins(0, 0, 0, 0)
-        self.hLayout.setSpacing(0)
+        # self.drawerWidget = DrawerWidget()
+        # self.hLayoutWidget.boxLayout.addWidget(self.drawerWidget)
+
+        self.vLayoutWidget = QHBoxWidget(
+            self.hLayoutWidget, layout_type=LayoutType.Vertical
+        )
+        self.hLayoutWidget.boxLayout.addWidget(self.vLayoutWidget)
+
+        self.vLayout = self.vLayoutWidget.boxLayout
+        self.hLayout = self.hLayoutWidget.boxLayout
 
         self.setStyleSheet(
             """
@@ -218,7 +128,6 @@ class MainWindow(QMainWindow, BorderlessWindow):
         # Terminal
         # self.m_serial_port_widget = SerialPortWidget(self)
         # self.hLayout.addWidget(self.m_serial_port_widget)
-        self.setCentralWidget(self.hLayoutWidget)
 
         # Actions
         settings_action = QAction("Config", self)
