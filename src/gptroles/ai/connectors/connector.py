@@ -201,14 +201,14 @@ class Connector:
     This connects openai and the orto engine
     """
 
-    prompt_chain: list[ChatMessage] = []
+    working_message: list[ChatMessage] = []
     memory_manager: MemoryManager = MemoryManager()
 
     def __init__(
         self,
         settings,
         root_system_messages: list[Section] = root_roles,
-        prompt_chain=None,
+        working_message=None,
         memory_manager=None,
     ) -> None:
         self._settings = None
@@ -216,7 +216,7 @@ class Connector:
         self.api_key = settings.OPENAI_API_KEY
         self.client = openai.OpenAI(api_key=self.api_key)
 
-        self.prompt_chain = prompt_chain or []
+        self.working_message = working_message or []
         self.root_system_messages = root_system_messages
         self.memory_manager = self.memory_manager or memory_manager
 
@@ -243,22 +243,22 @@ class Connector:
         openai.api_key = api_key
 
     def confirm_role(self):
-        return self.ask(role_confirmation, prompt_chain=[], assistant_name="System")
+        return self.ask(role_confirmation, working_message=[], assistant_name="System")
 
     def clear_context(self):
-        self.prompt_chain = []
+        self.working_message = []
 
     def trim_error_handler(
-        self, e: BaseException, inquiry, prompt_chain, message_role, trim
+        self, e: BaseException, inquiry, working_message, message_role, trim
     ):
         print(e)
         if "maximum context length" in e._message:
-            print("Trimming prompt", trim, len(prompt_chain))
+            print("Trimming prompt", trim, len(working_message))
             time.sleep(1.1)
-            prompt_chain = prompt_chain[trim:-1]
-            if len(prompt_chain) == 0:
+            working_message = working_message[trim:-1]
+            if len(working_message) == 0:
                 return ("Error", str(e))
-            return self.ask(inquiry, prompt_chain, message_role, trim=trim + 1)
+            return self.ask(inquiry, working_message, message_role, trim=trim + 1)
         else:
             print(e)
             return ("Error", str(e))
@@ -266,7 +266,7 @@ class Connector:
     def ask(
         self,
         inquiry,
-        prompt_chain=None,
+        working_message=None,
         message_role="user",
         assistant_name="GPT",
         trim=1,
@@ -280,11 +280,11 @@ class Connector:
         # Memory from indexes
         memories = self.memory_manager.memory_index + self.memory_manager.current_memory
 
-        # Add in Working Prompt Chain for Inquiry
+        # Add in working messages for Inquiry
 
-        prompt_chain = prompt_chain or self.prompt_chain
-        prompt_chain = [
-            m for m in prompt_chain if m.role in ("system", "assistant", "user")
+        working_message = working_message or self.working_message
+        working_message = [
+            m for m in working_message if m.role in ("system", "assistant", "user")
         ]
 
         # Build REQUEST section
@@ -292,7 +292,7 @@ class Connector:
         request_message = [ChatMessage(**{"role": message_role, "content": inquiry})]
 
         # Build messages from Prompt Chain with appended Inquiry
-        messages = root_system_messages + memories + prompt_chain + request_message
+        messages = root_system_messages + memories + working_message + request_message
 
         # pprint(messages)
 
@@ -310,7 +310,7 @@ class Connector:
             print("API", e)
             return ("Error", str(e))
         # except openai.InvalidRequestError as e:
-        #     return self.trim_error_handler(e, inquiry, prompt_chain, message_role, trim)
+        #     return self.trim_error_handler(e, inquiry, working_message, message_role, trim)
 
         # pprint(response)
         response_text = response.choices[0].message.content.strip()
@@ -324,19 +324,21 @@ class Connector:
 
         # # Process the ResponseSection
         # answer_request_section: Section = response_section.process(
-        #     prompt_chain, response_text
+        #     working_message, memory, response_text
         # )
 
         # answer = answer_request_section.properties.content or response_text
         ## ---- TODO ------
 
         # Update the chain
-        prompt_chain.append(response.choices[0].message)
+        working_message.append(response.choices[0].message)
 
         # Default fallback for debugging
         answer = response_text
 
-        print(len(root_system_messages), len(prompt_chain), "MESSAGE COUNT root + user")
+        print(
+            len(root_system_messages), len(working_message), "MESSAGE COUNT root + user"
+        )
 
         return (assistant_name, answer)
 
