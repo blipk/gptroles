@@ -1,0 +1,920 @@
+[
+    {
+        "name": "acme",
+        "version": "2.8.0",
+        "latest_version": "2.10.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "aiohttp",
+        "version": "3.9.3",
+        "latest_version": "3.9.5",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "aiortc",
+        "version": "1.7.0",
+        "latest_version": "1.8.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "altair",
+        "version": "4.2.2",
+        "latest_version": "5.3.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "anthropic",
+        "version": "0.19.2",
+        "latest_version": "0.25.9",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "anyio",
+        "version": "3.7.1",
+        "latest_version": "4.3.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "argcomplete",
+        "version": "1.10.3",
+        "latest_version": "3.3.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "async-timeout",
+        "version": "4.0.2",
+        "latest_version": "4.0.3",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "attrs",
+        "version": "22.2.0",
+        "latest_version": "23.2.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "av",
+        "version": "11.0.0",
+        "latest_version": "12.0.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "Babel",
+        "version": "2.14.0",
+        "latest_version": "2.15.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "bcrypt",
+        "version": "4.1.2",
+        "latest_version": "4.1.3",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "beautifulsoup4",
+        "version": "4.8.2",
+        "latest_version": "4.12.3",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "black",
+        "version": "23.12.0",
+        "latest_version": "24.4.2",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "blinker",
+        "version": "1.7.0",
+        "latest_version": "1.8.2",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "boto3",
+        "version": "1.26.102",
+        "latest_version": "1.34.106",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "botocore",
+        "version": "1.29.102",
+        "latest_version": "1.34.106",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "cachetools",
+        "version": "5.3.2",
+        "latest_version": "5.3.3",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "certbot",
+        "version": "2.8.0",
+        "latest_version": "2.10.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "certbot-nginx",
+        "version": "2.8.0",
+        "latest_version": "2.10.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "certifi",
+        "version": "2022.12.7",
+        "latest_version": "2024.2.2",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "chardet",
+        "version": "3.0.4",
+        "latest_version": "5.2.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "charset-normalizer",
+        "version": "2.0.12",
+        "latest_version": "3.3.2",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "ConfigArgParse",
+        "version": "1.5.5",
+        "latest_version": "1.7",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "cryptography",
+        "version": "42.0.2",
+        "latest_version": "42.0.7",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "cssutils",
+        "version": "2.10.2",
+        "latest_version": "2.11.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "dataclasses-json",
+        "version": "0.5.7",
+        "latest_version": "0.6.6",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "dnspython",
+        "version": "2.5.0",
+        "latest_version": "2.6.1",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "docstring-parser",
+        "version": "0.15",
+        "latest_version": "0.16",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "docutils",
+        "version": "0.16",
+        "latest_version": "0.21.2",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "duplicity",
+        "version": "2.1.4",
+        "latest_version": "2.2.3",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "emoji",
+        "version": "2.5.0",
+        "latest_version": "2.11.1",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "evdev",
+        "version": "1.7.0",
+        "latest_version": "1.7.1",
+        "latest_filetype": "sdist"
+    },
+    {
+        "name": "extra-streamlit-components",
+        "version": "0.1.56",
+        "latest_version": "0.1.71",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "extract-msg",
+        "version": "0.28.7",
+        "latest_version": "0.48.5",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "filelock",
+        "version": "3.13.3",
+        "latest_version": "3.14.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "firebase-admin",
+        "version": "6.1.0",
+        "latest_version": "6.5.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "firedantic",
+        "version": "0.5.0",
+        "latest_version": "0.7.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "frozenlist",
+        "version": "1.3.3",
+        "latest_version": "1.4.1",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "fsspec",
+        "version": "2024.2.0",
+        "latest_version": "2024.5.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "geojson",
+        "version": "2.5.0",
+        "latest_version": "3.1.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "GitPython",
+        "version": "3.1.41",
+        "latest_version": "3.1.43",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "google-api-core",
+        "version": "2.18.0",
+        "latest_version": "2.19.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "google-api-python-client",
+        "version": "2.123.0",
+        "latest_version": "2.129.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "google-cloud-firestore",
+        "version": "2.14.0",
+        "latest_version": "2.16.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "google-cloud-storage",
+        "version": "2.7.0",
+        "latest_version": "2.16.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "gptroles",
+        "version": "0.0.0",
+        "latest_version": "0.1.5",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "graphviz",
+        "version": "0.20.1",
+        "latest_version": "0.20.3",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "greenlet",
+        "version": "2.0.2",
+        "latest_version": "3.0.3",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "grpcio",
+        "version": "1.60.1",
+        "latest_version": "1.63.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "grpcio-status",
+        "version": "1.60.1",
+        "latest_version": "1.63.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "httpcore",
+        "version": "1.0.2",
+        "latest_version": "1.0.5",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "httpx",
+        "version": "0.26.0",
+        "latest_version": "0.27.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "huggingface-hub",
+        "version": "0.20.3",
+        "latest_version": "0.23.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "idna",
+        "version": "3.4",
+        "latest_version": "3.7",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "IMAPClient",
+        "version": "2.1.0",
+        "latest_version": "3.0.1",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "importlib_metadata",
+        "version": "5.1.0",
+        "latest_version": "7.1.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "instructor",
+        "version": "0.6.4",
+        "latest_version": "1.2.6",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "jaraco.collections",
+        "version": "5.0.0",
+        "latest_version": "5.0.1",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "jaraco.context",
+        "version": "4.3.0",
+        "latest_version": "5.3.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "Jinja2",
+        "version": "3.1.3",
+        "latest_version": "3.1.4",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "jsonfixer",
+        "version": "0.2.0",
+        "latest_version": "0.2.2",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "jsonschema",
+        "version": "4.21.1",
+        "latest_version": "4.22.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "jwcrypto",
+        "version": "1.5.4",
+        "latest_version": "1.5.6",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "keyring",
+        "version": "25.2.0",
+        "latest_version": "25.2.1",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "langchain",
+        "version": "0.0.126",
+        "latest_version": "0.1.20",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "lit",
+        "version": "17.0.6.dev0",
+        "latest_version": "18.1.4",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "loguru",
+        "version": "0.6.0",
+        "latest_version": "0.7.2",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "lxml",
+        "version": "5.1.0",
+        "latest_version": "5.2.2",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "Mako",
+        "version": "1.3.3",
+        "latest_version": "1.3.5",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "marshmallow",
+        "version": "3.19.0",
+        "latest_version": "3.21.2",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "matplotlib",
+        "version": "3.8.3",
+        "latest_version": "3.9.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "nh3",
+        "version": "0.2.15",
+        "latest_version": "0.2.17",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "numpy",
+        "version": "1.24.2",
+        "latest_version": "1.26.4",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "openai",
+        "version": "1.13.3",
+        "latest_version": "1.30.1",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "packaging",
+        "version": "23.0",
+        "latest_version": "24.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "pandas",
+        "version": "2.2.1",
+        "latest_version": "2.2.2",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "pdfminer.six",
+        "version": "20191110",
+        "latest_version": "20231228",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "pdfplumber",
+        "version": "0.9.0",
+        "latest_version": "0.11.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "Pillow",
+        "version": "9.5.0",
+        "latest_version": "10.3.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "platformdirs",
+        "version": "4.2.0",
+        "latest_version": "4.2.2",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "plotly",
+        "version": "5.20.0",
+        "latest_version": "5.22.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "pluggy",
+        "version": "1.4.0",
+        "latest_version": "1.5.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "plumbum",
+        "version": "1.8.2",
+        "latest_version": "1.8.3",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "poetry",
+        "version": "1.8.2",
+        "latest_version": "1.8.3",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "poetry-plugin-export",
+        "version": "1.7.1",
+        "latest_version": "1.8.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "protobuf",
+        "version": "4.25.3",
+        "latest_version": "5.26.1",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "pyaml",
+        "version": "23.12.0",
+        "latest_version": "24.4.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "pyarrow",
+        "version": "15.0.0",
+        "latest_version": "16.1.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "pyasn1",
+        "version": "0.5.1",
+        "latest_version": "0.6.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "pyasn1_modules",
+        "version": "0.3.0",
+        "latest_version": "0.4.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "pycurl",
+        "version": "7.45.2",
+        "latest_version": "7.45.3",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "pydantic",
+        "version": "1.10.15",
+        "latest_version": "2.7.1",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "pydantic-settings",
+        "version": "2.0.3",
+        "latest_version": "2.2.1",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "pydeck",
+        "version": "0.8.1b0",
+        "latest_version": "0.9.1",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "Pygments",
+        "version": "2.14.0",
+        "latest_version": "2.18.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "pynput",
+        "version": "1.7.6",
+        "latest_version": "1.7.7",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "pyOpenSSL",
+        "version": "24.0.0",
+        "latest_version": "24.1.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "PyQt6",
+        "version": "6.4.2",
+        "latest_version": "6.7.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "PyQt6-Qt6",
+        "version": "6.4.3",
+        "latest_version": "6.7.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "PyQt6-WebEngine",
+        "version": "6.4.0",
+        "latest_version": "6.7.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "PyQt6-WebEngine-Qt6",
+        "version": "6.4.3",
+        "latest_version": "6.7.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "Pyrebase4",
+        "version": "4.7.1",
+        "latest_version": "4.8.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "pyrsistent",
+        "version": "0.19.3",
+        "latest_version": "0.20.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "pytest",
+        "version": "8.1.2",
+        "latest_version": "8.2.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "python-dateutil",
+        "version": "2.9.0",
+        "latest_version": "2.9.0.post0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "python-dotenv",
+        "version": "1.0.0",
+        "latest_version": "1.0.1",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "python-pptx",
+        "version": "0.6.21",
+        "latest_version": "0.6.23",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "pyudev",
+        "version": "0.24.1",
+        "latest_version": "0.24.3",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "PyYAML",
+        "version": "6.0",
+        "latest_version": "6.0.1",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "rapidfuzz",
+        "version": "3.6.2",
+        "latest_version": "3.9.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "readme-renderer",
+        "version": "42.0",
+        "latest_version": "43.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "referencing",
+        "version": "0.33.0",
+        "latest_version": "0.35.1",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "regex",
+        "version": "2024.4.28",
+        "latest_version": "2024.5.15",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "reportlab",
+        "version": "4.1.0",
+        "latest_version": "4.2.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "requests",
+        "version": "2.27.1",
+        "latest_version": "2.31.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "requests-file",
+        "version": "1.5.1",
+        "latest_version": "2.0.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "requests-toolbelt",
+        "version": "0.10.1",
+        "latest_version": "1.0.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "rich",
+        "version": "13.7.0",
+        "latest_version": "13.7.1",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "rpds-py",
+        "version": "0.17.1",
+        "latest_version": "0.18.1",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "s3transfer",
+        "version": "0.6.0",
+        "latest_version": "0.10.1",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "setuptools",
+        "version": "69.0.3",
+        "latest_version": "69.5.1",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "setuptools-scm",
+        "version": "8.0.4",
+        "latest_version": "8.1.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "six",
+        "version": "1.12.0",
+        "latest_version": "1.16.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "sniffio",
+        "version": "1.3.0",
+        "latest_version": "1.3.1",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "solaar",
+        "version": "1.1.12",
+        "latest_version": "1.1.13",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "soupsieve",
+        "version": "2.4.1",
+        "latest_version": "2.5",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "SpeechRecognition",
+        "version": "3.8.1",
+        "latest_version": "3.10.4",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "Sphinx",
+        "version": "5.2.3",
+        "latest_version": "7.3.7",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "sphinx-autobuild",
+        "version": "2021.3.14",
+        "latest_version": "2024.4.16",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "sphinx-rtd-theme",
+        "version": "1.0.0",
+        "latest_version": "2.0.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "SQLAlchemy",
+        "version": "1.4.47",
+        "latest_version": "2.0.30",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "streamlit",
+        "version": "1.33.0",
+        "latest_version": "1.34.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "streamlit-base-extras",
+        "version": "0.2.44",
+        "latest_version": "0.2.45",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "streamlit-webrtc",
+        "version": "0.45.1",
+        "latest_version": "0.47.6",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "stripe",
+        "version": "5.4.0",
+        "latest_version": "9.6.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "TBB",
+        "version": "0.2",
+        "latest_version": "2021.12.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "tenacity",
+        "version": "8.2.3",
+        "latest_version": "8.3.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "tiktoken",
+        "version": "0.4.0",
+        "latest_version": "0.7.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "tokenizers",
+        "version": "0.15.2",
+        "latest_version": "0.19.1",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "tomlkit",
+        "version": "0.12.4",
+        "latest_version": "0.12.5",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "tqdm",
+        "version": "4.65.0",
+        "latest_version": "4.66.4",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "typer",
+        "version": "0.9.0",
+        "latest_version": "0.12.3",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "typing_extensions",
+        "version": "4.9.0",
+        "latest_version": "4.11.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "typing-inspect",
+        "version": "0.8.0",
+        "latest_version": "0.9.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "tzlocal",
+        "version": "4.3.1",
+        "latest_version": "5.2",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "urllib3",
+        "version": "1.26.15",
+        "latest_version": "2.2.1",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "validate-pyproject",
+        "version": "0.16",
+        "latest_version": "0.17",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "validators",
+        "version": "0.22.0",
+        "latest_version": "0.28.1",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "virtualenv",
+        "version": "20.25.0",
+        "latest_version": "20.26.2",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "xlrd",
+        "version": "1.2.0",
+        "latest_version": "2.0.1",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "XlsxWriter",
+        "version": "3.1.9",
+        "latest_version": "3.2.0",
+        "latest_filetype": "wheel"
+    },
+    {
+        "name": "yarl",
+        "version": "1.8.2",
+        "latest_version": "1.9.4",
+        "latest_filetype": "wheel"
+    }
+]

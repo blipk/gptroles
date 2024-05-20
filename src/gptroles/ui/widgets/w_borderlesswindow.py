@@ -76,6 +76,7 @@ class BorderlessWindow(QWidget, BaseWindow):
             """
         )
 
+
 class RoundedCornerWindow(QWidget, BaseWindow):
     def __init__(self, parent=None):
         super().__init__(parent)

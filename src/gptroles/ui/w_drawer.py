@@ -39,7 +39,6 @@ class DrawerWidget(QWidget):
             button.clicked.connect(lambda checked, i=i: self.toggleDrawer(i))
             layout.addWidget(button)
 
-
         self.drawer_frame = QFrame()
         drawerEffect = QGraphicsOpacityEffect()
         self.drawer_frame.setGraphicsEffect(drawerEffect)

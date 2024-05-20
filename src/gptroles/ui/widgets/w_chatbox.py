@@ -1,5 +1,7 @@
 import os
 import html
+import base64
+import requests
 import threading
 from PyQt6.QtGui import (
     QAction,
@@ -35,6 +37,7 @@ from PyQt6.QtWebChannel import QWebChannel
 from PyQt6.QtTest import QTest
 
 from gptroles.ui.widgets.chatmsg import ChatMessage
+from gptroles.ui.widgets.w_input_toolbar import InputToolbar
 from gptroles.ui.widgets.w_netprompts import PromptsWindow
 
 from gptroles.ai.connectors.connector import run_shell
@@ -42,6 +45,8 @@ from gptroles.interfaces.ui_to_gpt.DI import RoleGptDI
 
 
 from typing import TYPE_CHECKING
+
+from gptroles.utils import convert_image_to_base64
 
 if TYPE_CHECKING:
     from gptroles.ui.w_mainwindow import MainWindow
@@ -274,6 +279,11 @@ class ChatBox(QWidget):
         self.webview.setPage(self.page)
 
         self.layout.addWidget(self.webview)
+
+        self.input_toolbar = InputToolbar()
+        # self.addToolBar(Qt.ToolBarArea.BottomToolBarArea, toolbar)
+        self.layout.addWidget(self.input_toolbar)
+
         self.layout.addWidget(self.input_box)
 
         menu = self.parent().menuBar()
@@ -315,7 +325,12 @@ class ChatBox(QWidget):
             self.input_box.setFocus()
 
     def ask(self, prompt):
-        role, answer = self.role_gpt.ask(prompt)
+        fn = (
+            self.role_gpt.ask_image
+            if self.input_toolbar.photo_button_pressed
+            else self.role_gpt.ask
+        )
+        role, answer = fn(prompt)
         self.chatMessageSignal.emit(ChatMessage(role, answer))
 
     @pyqtSlot(ChatMessage)
@@ -324,5 +339,10 @@ class ChatBox(QWidget):
         chat_message_text = chat_message.text.replace("`", "|TICK|").replace(
             "${", "$|{"
         )
+
+        if "dall-e" in chat_message.user:
+            data_url = convert_image_to_base64(chat_message_text)
+            chat_message_text = f"<image src='{data_url}' width='80%' height='80%'/>"
+
         js = f"window.chatPage.addMessage('{html.escape(chat_message.user)}', `{chat_message_text}`, '{chat_message.time}', '{chat_message.id}')"
         self.page.runJavaScript(js)

@@ -1,3 +1,16 @@
+import base64
+import requests
+
+
+def convert_image_to_base64(image_url):
+    response = requests.get(image_url)
+    response.raise_for_status()
+    image_base64 = base64.b64encode(response.content).decode("utf-8")
+    data_url = f"data:image/jpeg;base64,{image_base64}"
+
+    return data_url
+
+
 def repr_(
     cls, ignore_keys: list[str] | None = None, only_keys: list[str] | None = None
 ) -> str:

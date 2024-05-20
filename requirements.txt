@@ -1,0 +1,9 @@
+appdirs
+langchain
+openai
+pydantic
+pygments
+pyqt6
+pyqt6-webengine
+toml
+wikipedia

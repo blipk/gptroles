@@ -78,8 +78,9 @@ class OpenAIEngine:
     def handle_openai(
         self,
         error_slot: dict[str, None | EngineError],
-        error_handlers: dict[openai.OpenAIError, Callable[[EngineError], Any]]
-        | None = None,
+        error_handlers: (
+            dict[openai.OpenAIError, Callable[[EngineError], Any]] | None
+        ) = None,
     ) -> EngineError | None:
         error = None
         try:

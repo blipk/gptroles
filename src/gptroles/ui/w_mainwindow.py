@@ -45,12 +45,18 @@ from gptroles.ui.w_tools import LayoutType, QHBoxWidget
 
 # from gptroles.ui.widgets.terminal import SerialPortWidget
 from gptroles.ui.widgets.w_chatbox import ChatBox
-from gptroles.ui.widgets.w_borderlesswindow import BorderlessWindow, BaseWindow, RoundedCornerWindow
+from gptroles.ui.widgets.w_borderlesswindow import (
+    BorderlessWindow,
+    BaseWindow,
+    RoundedCornerWindow,
+)
 from gptroles.ui.w_settings import SettingsWidget
 
 from gptroles.interfaces.ui_to_gpt.DI import RoleGptDI
 
 from typing import TYPE_CHECKING, Any
+
+from gptroles.ui.widgets.w_input_toolbar import InputToolbar
 
 if TYPE_CHECKING:
     from gptroles.ui.application import RoleChat
@@ -122,6 +128,7 @@ class MainWindow(QMainWindow, BorderlessWindow, RoundedCornerWindow):
         # Widgets
         self.settingsWidget = SettingsWidget(self.gpt_settings, self)
         self.chatbox = ChatBox(self)
+
         self.hLayout.addWidget(self.chatbox)
         self.hLayout.addWidget(self.settingsWidget)
 

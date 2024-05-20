@@ -62,9 +62,9 @@ class AutoPrompt(BaseModel):
     role: Role | RoleGroup
     task: RoleTask
     input_text: str | list | dict  # TODO Create a setter for this that handles the dict
-    extra_inputs: list[
-        TaskExtraInput
-    ] | None = None  # These are applied to input_text_dict
+    extra_inputs: list[TaskExtraInput] | None = (
+        None  # These are applied to input_text_dict
+    )
     output_language: str = "English"
     jurisdiction: Jurisdictions | None = None  # Is set on mainpage
 
@@ -96,11 +96,13 @@ class AutoPrompt(BaseModel):
         return (
             self.created_at.timestamp(),
             self.role.model_dump(include={"role_name", "prompt", "model"}),
-            self.task.model_dump(
-                include={"task_name", "task_info", "task_model", "prompt"}
-            )
-            if self.task
-            else None,
+            (
+                self.task.model_dump(
+                    include={"task_name", "task_info", "task_model", "prompt"}
+                )
+                if self.task
+                else None
+            ),
             self.output_language,
             Jurisdictions(self.jurisdiction).value if self.jurisdiction else None,
             {
@@ -686,9 +688,11 @@ class AutoPrompt(BaseModel):
 
         input_prompt = input_prompt.replace(
             "{last_answer}",
-            last_answered.answer[:500]
-            if last_answered and last_answered.answer
-            else "",
+            (
+                last_answered.answer[:500]
+                if last_answered and last_answered.answer
+                else ""
+            ),
         )
 
         input_prompt = input_prompt.replace(
@@ -738,9 +742,11 @@ class AutoPrompt(BaseModel):
 
                 input_prompt = re.sub(
                     "{item}",
-                    prompt_chain.target_extra_input.name.replace(" ", "")
-                    if prompt_chain.target_extra_input
-                    else "{item}",
+                    (
+                        prompt_chain.target_extra_input.name.replace(" ", "")
+                        if prompt_chain.target_extra_input
+                        else "{item}"
+                    ),
                     input_prompt,
                 )
 
@@ -795,9 +801,9 @@ class AutoPrompt(BaseModel):
 class AutoPromptChunk(AutoPrompt):
     """This is a chunk in the AutoPrompt chain, i.e. not the first"""
 
-    previous: Union[
-        "AutoPrompt", "AutoPromptChunk", None
-    ] = None  # None allowed in serialization
+    previous: Union["AutoPrompt", "AutoPromptChunk", None] = (
+        None  # None allowed in serialization
+    )
 
     # def __init__(self, **data: dict) -> dict:
     #     data["auto"] = False

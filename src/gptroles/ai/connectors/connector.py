@@ -198,7 +198,7 @@ class MemoryIndexBuilder:
 
 class Connector:
     """
-    This connects openai and the orto engine
+    This connects openai and the UI
     """
 
     working_messages: list[ChatMessage] = []
@@ -207,7 +207,7 @@ class Connector:
     def __init__(
         self,
         settings,
-        root_system_messages: list[Section] = root_roles,
+        root_system_messages: list[str] | None = None,
         working_message=None,
         memory_manager=None,
     ) -> None:
@@ -217,7 +217,7 @@ class Connector:
         self.client = openai.OpenAI(api_key=self.api_key)
 
         self.working_messages = working_message or []
-        self.root_system_messages = root_system_messages
+        self.root_system_messages = root_system_messages or []  # or root_roles
         self.memory_manager = self.memory_manager or memory_manager
 
     @property
@@ -262,6 +262,36 @@ class Connector:
         else:
             print(e)
             return ("Error", str(e))
+
+    def ask_image(
+        self, inquiry, size=None, quality=None, assistant_name="dall-e"
+    ) -> str:
+        size = size or "1792x1024"  # 1024x1024, 1024x1792 or 1792x1024
+        quality = quality or "standard"  # or "hd"
+
+        try:
+            response = self.client.images.generate(
+                model="dall-e-3",
+                prompt=inquiry,
+                size=size,
+                quality=quality,
+                n=1,
+            )
+        except openai.RateLimitError as e:
+            print("Rate limit", e)
+            return ("Error", str(e))
+        except openai.AuthenticationError as e:
+            print("Auth Error", e)
+            return ("Error", str(e))
+        except openai.BadRequestError as e:
+            print("API", e)
+            return ("Error", str(e))
+        except openai.APIError as e:
+            print("API", e)
+            return ("Error", str(e))
+
+        image_url = response.data[0].url
+        return (assistant_name, image_url)
 
     def ask(
         self,
@@ -311,7 +341,7 @@ class Connector:
         except openai.APIError as e:
             print("API", e)
             return ("Error", str(e))
-        # except openai.InvalidRequestError as e:
+        # except openai.BadRequestError as e:
         #     return self.trim_error_handler(e, inquiry, working_message, message_role, trim)
 
         # pprint(response)
@@ -350,7 +380,7 @@ class Connector:
             "root_system_messages, memories, working_messages, request_message",
         )
 
-        working_messages.append(response.choices[0].message)
+        self.working_messages.append(response.choices[0].message)
 
         return (assistant_name, answer)
 
