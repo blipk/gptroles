@@ -1,8 +1,9 @@
 import re
+import uuid
 import requests
 
 from openai.types.chat.chat_completion_chunk import ChoiceDelta as ChatMessage
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from io import BytesIO
 
@@ -26,6 +27,10 @@ class Memory:
     description: str = ""  # Short description of the memory for the index
 
     active: bool = False
+    uid: uuid.UUID = field(init=False)
+
+    def __post_init__(self):
+        self.uid = uuid.uuid4()
 
     @property
     def resource_uri_string(self):
@@ -36,6 +41,13 @@ class Memory:
         if not self._content:
             self._content = self.load_resource()
         return self._content
+
+    def as_message(self, memory: type["Memory"] | None = None) -> ChatMessage:
+        memory = memory or self
+        memory_str = f"""```Memory{{{memory.resource_uri_string}}}
+{memory.content}```"""
+        message = ChatMessage(**{"role": "user", "content": memory_str})
+        return message
 
     def load_resource(
         self, resource_uri: UriParamsProperties | None = None
@@ -75,6 +87,10 @@ class MemoryManager:
     memories: list[Memory] = []
     open_memories_uris: list[str] = []
 
+    @property
+    def active_memories(self) -> list[Memory]:
+        return [m for m in self.memories if m.active]
+
     def add_memory(self, memory: Memory) -> list[Memory]:
         """
         Adds a new memory.
@@ -82,25 +98,49 @@ class MemoryManager:
         Checks for duplicate resource paths, updating the memory if its the same
         """
         if memory not in self.memories and not [
-            m for m in self.memories if m.resource_uri == memory.resource_uri
+            m
+            for m in self.memories
+            if m.resource_uri == memory.resource_uri or m.uid == memory.uid
         ]:
             self.memories.append(memory)
-            print(f"Added memory {memory}")
-            self.memories = list(self.keyed_memories.values())  # Force sort
+            # print(f"Added memory {memory}")
+            self.memories = list(self.memories_by_uid.values())  # Force sort
 
         return self.memories
 
+    def remove_memory(self, memory: Memory) -> list[Memory]:
+        try:
+            self.memories.remove(self.memories.index(memory))
+        except (IndexError, KeyError) as e:
+            pass
+        self.remove_memory_by_uid(memory.uid)
+        return self.memories
+
+    def remove_memory_by_uid(self, uid: Memory) -> list[Memory]:
+        self.memories = [m for m in self.memories if m.uid != uid]
+        return self.memories
+
     @property
-    def keyed_memories(self) -> dict[str, Memory]:
+    def memories_by_uid(self) -> dict[uuid.UUID, Memory]:
+        """
+        Returns the memories list keyed by their unique id from when they were created
+        """
+        memories_by_uid = {memory.uid: memory for memory in self.memories}
+        # Sort by key path
+        memories_by_uid = dict(sorted(memories_by_uid.items()))
+        return memories_by_uid
+
+    @property
+    def memories_by_uri_string(self) -> dict[str, Memory]:
         """
         Returns the memories list keyed by their resource represented as a string
         """
-        keyed_memories = {
+        memories_by_uri_string = {
             memory.resource_uri_string: memory for memory in self.memories
         }
         # Sort by key path
-        keyed_memories = dict(sorted(keyed_memories.items()))
-        return keyed_memories
+        memories_by_uri_string = dict(sorted(memories_by_uri_string.items()))
+        return memories_by_uri_string
 
     @property
     def resource_paths(self) -> list[str]:
@@ -110,7 +150,7 @@ class MemoryManager:
         # Rebuild from the string
         resource_paths = [
             memory.resource_uri_string
-            for key_path, memory in self.keyed_memories.items()
+            for key_path, memory in self.memories_by_uri_string.items()
         ]
         resource_paths = list(sorted(resource_paths))
         return resource_paths
@@ -140,20 +180,6 @@ class MemoryManager:
 
         return [ChatMessage(**{"role": "system", "content": memory_index_section})]
 
-    def get_memory_from_uri(self, resource_uri_string: str):
-        memory = None
-        keyed_memories = self.keyed_memories
-        if resource_uri_string in keyed_memories:
-            memory = self.keyed_memories[resource_uri_string]
-        return memory
-
-    # def memory_to_section(self, memory: str):
-    #     return Section()()
-
-    @property
-    def current_memory(self) -> list[ChatMessage]:
-        return self.memory()
-
     def memory(self, for_uris: list[str] | None = None) -> list[ChatMessage]:
         """
         This returns a list of ChatMessage with Section text for current open memory uris
@@ -174,7 +200,7 @@ class MemoryManager:
                     content=memory.content,
                 )
             )()
-            for memory_key_path, memory in self.keyed_memories.items()
+            for memory_key_path, memory in self.memories_by_uri_string.items()
             if memory_key_path in for_uris
         ]
 
@@ -185,13 +211,18 @@ class MemoryManager:
 
         return messages_for_sections
 
+    def ai_scratchpad(self):
+        """this function should maintain a memory that AI can use as a scratchpad,
+        to save snippets from memories as it traverses the index and memories contents
+        """
+
     def openai_memory_function_open_close_uri(self, resouce_uri_str: str):
         """this is the function call that openai can use to open memory contents that it selects from the index"""
 
 
 class MemoryIndexBuilder:
     """
-    This should contain functions to build the memory_index_dict in MemoryManader,
+    This should contain functions to build the memory_index_dict in MemoryManager,
     from files etc that are loaded in via the UI
     """
 

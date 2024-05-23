@@ -23,8 +23,8 @@ class InputToolbar(QToolBar):
         # Create a custom QToolButton
         self.photo_button = QToolButton(self)
         self.photo_button.setIcon(icon)
-        self.photo_button.setToolTip("Photo")
-        self.photo_button.setStatusTip("Image Generation")
+        self.photo_button.setToolTip("Toggle Image Generation Mode")
+        self.photo_button.setStatusTip("Toggle Image Generation Mode")
         self.photo_button.setIconSize(QSize(12, 12))
         self.photo_button.setStyleSheet(
             """

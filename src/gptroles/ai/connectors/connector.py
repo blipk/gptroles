@@ -6,7 +6,7 @@ from typing import Any
 import openai
 from os import getenv
 from pprint import pprint
-from gptroles.ai.engines.orto.memory import MemoryManager
+from gptroles.ai.engines.orto.memory import Memory, MemoryManager
 
 from gptroles.ai.engines.root.engine_root import root_roles, role_confirmation
 from PyQt6.QtWidgets import QWidget
@@ -154,9 +154,12 @@ class Connector:
         ]
 
         # Memory from indexes
-        memories = (
-            []
-        )  # self.memory_manager.memory_index + self.memory_manager.current_memory
+        memories = [
+            m.as_message() for m in self.memory_manager.active_memories
+        ]  #  + self.memory_manager.current_memory
+
+        # TODO: Provide the memory index and a tool to let the AI search memory
+        # memories += self.memory_manager.memory_index
 
         # Add in working messages for Inquiry
 
@@ -165,8 +168,6 @@ class Connector:
             m for m in working_messages if m.role in ("system", "assistant", "user")
         ]
 
-        # Build REQUEST section
-        # request_section =
         request_message = [ChatMessage(**{"role": message_role, "content": inquiry})]
 
         # Build messages from Prompt Chain with appended Inquiry

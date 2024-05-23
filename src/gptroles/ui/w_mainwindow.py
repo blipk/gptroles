@@ -168,7 +168,9 @@ class MainWindow(QMainWindow, BorderlessWindow, RoundedCornerWindow):
         for url in mimedata.urls():
             print("Dropped file:", url.toLocalFile(), url.url())
             memory = Memory(
-                resource_uri=UriParamsProperties.from_string(url.url()), description=""
+                resource_uri=UriParamsProperties.from_string(url.url()),
+                description="",
+                active=True,
             )
             self.app.memory_manager.add_memory(memory)
             self.chatbox.memory_toolbar.update_memory_buttons(

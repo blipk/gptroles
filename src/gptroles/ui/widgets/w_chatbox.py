@@ -281,7 +281,7 @@ class ChatBox(QWidget):
 
         self.layout.addWidget(self.webview)
 
-        self.memory_toolbar = MemoryToolbar()
+        self.memory_toolbar = MemoryToolbar(self)
         self.layout.addWidget(self.memory_toolbar)
 
         self.input_toolbar = InputToolbar()

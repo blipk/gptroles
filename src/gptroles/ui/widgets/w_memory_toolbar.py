@@ -1,12 +1,13 @@
 import os
-from PyQt6.QtWidgets import QToolBar, QToolButton, QWidgetAction
+from PyQt6.QtWidgets import QToolBar, QToolButton, QWidgetAction, QMenu, QWidget
 from PyQt6.QtGui import QIcon, QPixmap
-from PyQt6.QtCore import Qt, QSize
+from PyQt6.QtCore import Qt, QSize, QEvent
 from dataclasses import dataclass
 import requests
 from io import BytesIO
 
-from gptroles.ai.engines.orto.memory import Memory
+from gptroles.ai.engines.orto.memory import Memory, MemoryManager
+from gptroles.interfaces.ui_to_gpt.DI import RoleGptDI
 
 # Define a more extensive mapping of file extensions to theme icons
 icon_mapping = {
@@ -107,25 +108,34 @@ class MemoryButton(QToolButton):
         self.setToolTip(memory_info)
         self.setStatusTip(memory_info)
 
-        self.setStyleSheet(
-            """
-            QToolButton {
-                border: none;
-                background: none;
-            }
-            QToolButton:hover {
-                background-color: rgba(155, 144, 144, 0.9);
-            }
-            """
-        )
-
         # Connect button click to toggle function
         self.clicked.connect(self.on_button_click)
+        self.update_style()
+
+    def mousePressEvent(self, event: QEvent):
+        if event.button() == Qt.MouseButton.RightButton:
+            self.show_context_menu(event.pos())
+        else:
+            super().mousePressEvent(event)
+
+    def show_context_menu(self, position):
+        context_menu = QMenu(self)
+        action1 = context_menu.addAction("Store")
+        action2 = context_menu.addAction("Delete")
+
+        # Connect actions to slots if needed
+        parent: MemoryToolbar = self.parent()
+        action1.triggered.connect(lambda: print("Action 1 selected"))
+        action2.triggered.connect(lambda: parent.remove_memory(self.memory))
+
+        context_menu.exec(self.mapToGlobal(position))
 
     def on_button_click(self, checked):
         # Toggle the state of the button
         self.memory.active = not self.memory.active
+        self.update_style()
 
+    def update_style(self):
         # Update the button's style based on its state
         if self.memory.active:
             self.setStyleSheet(
@@ -154,15 +164,20 @@ class MemoryButton(QToolButton):
 
 
 class MemoryToolbar(QToolBar):
-    def __init__(self):
-        super().__init__("Input Toolbar")
-
+    def __init__(self, parent: QWidget = None):
+        super().__init__(parent)
+        RoleGptDI(self)
+        self.memory_manager: MemoryManager = self.role_gpt.memory_manager
         self.setMovable(False)
         self.setContentsMargins(0, 0, 0, 0)
         self.layout().setSpacing(0)
         self.setIconSize(QSize(64, 64))
 
         self.memory_buttons = []
+
+    def remove_memory(self, memory: Memory):
+        memories = self.memory_manager.remove_memory_by_uid(memory.uid)
+        self.update_memory_buttons(memories)
 
     def update_memory_buttons(self, memories):
         # Clear current buttons and their state
@@ -174,6 +189,7 @@ class MemoryToolbar(QToolBar):
         self.memory_buttons = []
 
         # Create new buttons for each memory and add them to the layout
+        # print(f"Adding {len(memories)} memories")
         for memory in memories:
             button = MemoryButton(memory)
 
@@ -184,5 +200,3 @@ class MemoryToolbar(QToolBar):
 
             self.memory_buttons.append(button)
             self.addAction(action)
-
-        print("Updated memory buttons")
