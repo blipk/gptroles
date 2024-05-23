@@ -1,4 +1,4 @@
-from gptroles.ai.engines.orto.sections.sections import (
+from gptroles.ai.engines.orto.sections import (
     Section,
     SectionProperties,
     SectionProvider,

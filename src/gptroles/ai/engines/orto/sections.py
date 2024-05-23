@@ -2,7 +2,7 @@ from dataclasses import asdict, dataclass
 from enum import Enum
 from typing import Any
 
-from gptroles.ai.engines.orto.sections.params import (
+from gptroles.ai.engines.orto.params import (
     ParamsMakerType,
     ParamsPropertiesType,
     ListParams,

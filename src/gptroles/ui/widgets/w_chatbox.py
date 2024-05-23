@@ -38,6 +38,7 @@ from PyQt6.QtTest import QTest
 
 from gptroles.ui.widgets.chatmsg import ChatMessage
 from gptroles.ui.widgets.w_input_toolbar import InputToolbar
+from gptroles.ui.widgets.w_memory_toolbar import MemoryToolbar
 from gptroles.ui.widgets.w_netprompts import PromptsWindow
 
 from gptroles.ai.connectors.connector import run_shell
@@ -280,8 +281,10 @@ class ChatBox(QWidget):
 
         self.layout.addWidget(self.webview)
 
+        self.memory_toolbar = MemoryToolbar()
+        self.layout.addWidget(self.memory_toolbar)
+
         self.input_toolbar = InputToolbar()
-        # self.addToolBar(Qt.ToolBarArea.BottomToolBarArea, toolbar)
         self.layout.addWidget(self.input_toolbar)
 
         self.layout.addWidget(self.input_box)

@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from functools import lru_cache
 import subprocess
 import time
@@ -7,17 +6,8 @@ from typing import Any
 import openai
 from os import getenv
 from pprint import pprint
-from gptroles.ai.engines.orto.sections.params import (
-    OrtoUriParamsProperties,
-    UriParams,
-    UriParamsProperties,
-)
-from gptroles.ai.engines.orto.sections.sections import (
-    Section,
-    SectionProperties,
-    SectionFormat,
-    SectionProvider,
-)
+from gptroles.ai.engines.orto.memory import MemoryManager
+
 from gptroles.ai.engines.root.engine_root import root_roles, role_confirmation
 from PyQt6.QtWidgets import QWidget
 
@@ -50,150 +40,6 @@ def run_shell(command, shell="bash", string_flag=None, autorun=False):
         p.kill()
     print("#out", stdout, stderr)
     return stdout, stderr, p.returncode
-
-
-class MemoryResource(UriParamsProperties):
-    scheme: str = "resource"
-    host: str = "app.orto.memories"
-
-
-@dataclass
-class Memory:
-    resource_uri: MemoryResource
-    content: str
-    description: str = ""  # Short description of the memory for the index
-
-    def resource_uri_string(self):
-        return UriParams(self.resource_uri)()
-
-
-class MemoryManager:
-    """
-    Inserts a series of messages into the stack passed to openai create method,
-    these messages contain an index of memories, and the content of any focused memories.
-
-    Also provides open ai function call implenetations to select from and open memory.
-    """
-
-    memories: list[Memory] = []
-    open_memories_uris: list[str] = []
-
-    @property
-    def keyed_memories(self) -> dict[str, Memory]:
-        """
-        Returns the memories list keyed by their resource represented as a string
-        """
-        keyed_memories = {
-            memory.resource_uri_string(): memory for memory in self.memories
-        }
-        # Sort by key path
-        keyed_memories = dict(sorted(keyed_memories.items()))
-        return keyed_memories
-
-    @property
-    def resource_paths(self) -> list[str]:
-        """
-        Returns a list of all resource path strings for all memories
-        """
-        # Rebuild from the string
-        resource_paths = [
-            memory.resource_uri_string()
-            for key_path, memory in self.keyed_memories.items()
-        ]
-        resource_paths = list(sorted(resource_paths))
-        return resource_paths
-
-    @property
-    def memory_index(self) -> list[ChatMessage]:
-        """
-        Returns an index of all memories with the resource path and a description
-        """
-        memory_index = "\n".join(
-            [
-                f"{memory.resource_uri_string()}: {memory.description}"
-                for memory in self.memories
-            ]
-        )
-
-        memory_index_section = Section(
-            SectionProperties(
-                provider=SectionProvider.AI,
-                format=SectionFormat.DESCRIPTION,
-                params=OrtoUriParamsProperties(
-                    host="app.orto.context", path_parts=["/context/memory/index"]
-                ),
-                content=memory_index,
-            )
-        )()
-
-        return [ChatMessage(**{"role": "system", "content": memory_index_section})]
-
-    def get_memory_from_uri(self, resource_uri_string: str):
-        memory = None
-        keyed_memories = self.keyed_memories
-        if resource_uri_string in keyed_memories:
-            memory = self.keyed_memories[resource_uri_string]
-        return memory
-
-    # def memory_to_section(self, memory: str):
-    #     return Section()()
-
-    def add_memory(self, new_memory: Memory):
-        """
-        Adds a new memory.
-
-        This should check for duplicate resource paths, updating the memory if its the same
-        """
-        self.memories.append(new_memory)
-        self.memories = self.keyed_memories.values()
-
-    @property
-    def current_memory(self) -> list[ChatMessage]:
-        return self.memory()
-
-    def memory(self, for_uris: list[str] | None = None) -> list[ChatMessage]:
-        """
-        This returns a list of ChatMessage with Section text for current open memory uris
-        """
-        for_uris = for_uris or self.open_memories_uris
-
-        sections_texts_for_key_paths = [
-            Section(
-                SectionProperties(
-                    provider=SectionProvider.USER,
-                    format=SectionFormat.MEMORY,
-                    params=OrtoUriParamsProperties(
-                        host="app.orto.context",
-                        path_parts=[
-                            f"/context/memory/contents?for_memory_key_path={memory_key_path}"
-                        ],
-                    ),
-                    content=memory.content,
-                )
-            )()
-            for memory_key_path, memory in self.keyed_memories.items()
-            if memory_key_path in for_uris
-        ]
-
-        messages_for_sections = [
-            ChatMessage(**{"role": "system", "content": section_text})
-            for section_text in sections_texts_for_key_paths
-        ]
-
-        return messages_for_sections
-
-    def openai_memory_function_open_close_uri(self, resouce_uri_str: str):
-        """this is the function call that openai can use to open memory contents that it selects from the index"""
-
-
-class MemoryIndexBuilder:
-    """
-    This should contain functions to build the memory_index_dict in MemoryManader,
-    from files etc that are loaded in via the UI
-    """
-
-    def from_file(self, file):
-        pass
 
 
 class Connector:
