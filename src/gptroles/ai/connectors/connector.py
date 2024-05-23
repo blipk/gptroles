@@ -48,7 +48,7 @@ class Connector:
     """
 
     working_messages: list[ChatMessage] = []
-    memory_manager: MemoryManager = MemoryManager()
+    memory_manager: MemoryManager
 
     def __init__(
         self,
@@ -64,7 +64,7 @@ class Connector:
 
         self.working_messages = working_message or []
         self.root_system_messages = root_system_messages or []  # or root_roles
-        self.memory_manager = self.memory_manager or memory_manager
+        self.memory_manager = memory_manager or MemoryManager()
 
     @property
     def gpt_settings(self):

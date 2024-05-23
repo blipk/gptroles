@@ -79,39 +79,35 @@ icon_mapping = {
 }
 
 
-class MemoryToolbar(QToolBar):
-    def __init__(self):
-        super().__init__("Input Toolbar")
+class MemoryButton(QToolButton):
+    action: QWidgetAction | None = None
 
-        self.setMovable(False)
-        self.setContentsMargins(0, 0, 0, 0)
-        self.layout().setSpacing(0)
-        self.setIconSize(QSize(32, 32))
-
-        # Dictionary to keep track of button states
-        self.button_states = {}
-
-    def add_memory_button(self, memory: Memory):
-        # Create a QToolButton
-        button = QToolButton(self)
+    def __init__(self, memory: Memory, parent=None):
+        super().__init__(parent)
+        self.memory = memory
+        self.setText(memory.resource_uri_string)
 
         # Load image from resource_uri if it's a valid URL
-        try:
-            image = QPixmap()
-            image.loadFromData(memory.content)
-            button.setIcon(QIcon(image))
-        except Exception as e:
-            print(e)
-            path, file_extension = os.path.splitext(memory.resource_uri)
-            icon_name = icon_mapping.get(file_extension, "text-x-generic")
-            button.setIcon(QIcon.fromTheme(icon_name))
+        path, file_extension = os.path.splitext(memory.resource_uri_string)
+        icon_name = icon_mapping.get(file_extension, "text-x-generic")
+        if "image" in icon_name:
+            try:
+                image = QPixmap()
+                image.loadFromData(memory.content)
+                self.setIcon(QIcon(image))
+                self.setIconSize(QSize(128, 128))
+            except Exception as e:
+                self.setIcon(QIcon.fromTheme(icon_name))
+                self.setIconSize(QSize(32, 32))
+        else:
+            self.setIcon(QIcon.fromTheme(icon_name))
+            self.setIconSize(QSize(32, 32))
 
-        memory_info = f"{memory.description + ' | ' if memory.description else ""}{memory.resource_uri}"
-        button.setToolTip(memory_info)
-        button.setStatusTip(memory_info)
-        button.setIconSize(QSize(12, 12))
+        memory_info = f"{memory.description + ' | ' if memory.description else ""}{memory.resource_uri_string}"
+        self.setToolTip(memory_info)
+        self.setStatusTip(memory_info)
 
-        button.setStyleSheet(
+        self.setStyleSheet(
             """
             QToolButton {
                 border: none;
@@ -123,24 +119,16 @@ class MemoryToolbar(QToolBar):
             """
         )
 
-        # Add button to toolbar
-        action = QWidgetAction(self)
-        action.setDefaultWidget(button)
-        self.addAction(action)
-
         # Connect button click to toggle function
-        button.clicked.connect(lambda checked, b=button: self.on_button_click(b))
+        self.clicked.connect(self.on_button_click)
 
-        # Initialize button state
-        self.button_states[button] = False
-
-    def on_button_click(self, button):
+    def on_button_click(self, checked):
         # Toggle the state of the button
-        self.button_states[button] = not self.button_states[button]
+        self.memory.active = not self.memory.active
 
         # Update the button's style based on its state
-        if self.button_states[button]:
-            button.setStyleSheet(
+        if self.memory.active:
+            self.setStyleSheet(
                 """
                 QToolButton {
                     border: 1px dashed lightgray;
@@ -152,7 +140,7 @@ class MemoryToolbar(QToolBar):
                 """
             )
         else:
-            button.setStyleSheet(
+            self.setStyleSheet(
                 """
                 QToolButton {
                     border: none;
@@ -163,3 +151,38 @@ class MemoryToolbar(QToolBar):
                 }
                 """
             )
+
+
+class MemoryToolbar(QToolBar):
+    def __init__(self):
+        super().__init__("Input Toolbar")
+
+        self.setMovable(False)
+        self.setContentsMargins(0, 0, 0, 0)
+        self.layout().setSpacing(0)
+        self.setIconSize(QSize(64, 64))
+
+        self.memory_buttons = []
+
+    def update_memory_buttons(self, memories):
+        # Clear current buttons and their state
+        for button in self.memory_buttons:
+            button: MemoryButton
+            self.removeAction(button.action)
+            button.deleteLater()
+
+        self.memory_buttons = []
+
+        # Create new buttons for each memory and add them to the layout
+        for memory in memories:
+            button = MemoryButton(memory)
+
+            action = QWidgetAction(self)
+            button.action = action
+            action.setDefaultWidget(button)
+            self.addAction(action)
+
+            self.memory_buttons.append(button)
+            self.addAction(action)
+
+        print("Updated memory buttons")

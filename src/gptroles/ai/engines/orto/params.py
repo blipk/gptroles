@@ -1,3 +1,4 @@
+import re
 from dataclasses import asdict, dataclass
 from typing import Any
 
@@ -31,24 +32,6 @@ class ListParamsProperties:
     values: list
 
 
-@dataclass
-class UriParamsProperties:
-    """Class that wraps a uri type paramaters properties"""
-
-    scheme: str
-    host: str
-    path_parts: list[str]
-    uriparams: dict | None = None
-    anchor: str | None = None
-
-
-def OrtoUriParamsProperties(**kwargs: dict) -> UriParamsProperties:
-    return UriParamsProperties(**(kwargs | {"scheme": "orto"}))
-
-
-default_seperator: str = "|"
-
-
 class ListParams:
     """Class full of static methods for operating on UriParams"""
 
@@ -68,6 +51,59 @@ class ListParams:
         return params_str
 
 
+uri_pattern = re.compile(
+    r"^(?P<scheme>[a-zA-Z][a-zA-Z0-9+.-]*)://"  # Scheme
+    r"(?:(?P<user_info>[^@]*)@)?"  # User information (optional)
+    r"(?P<authority>"  # Authority (group containing host and port)
+    r"(?P<host>[^:/?#]*)"  # Host
+    r"(?:\:(?P<port>\d+))?"  # Port (optional)
+    r")"  # End of authority group
+    r"(?P<path>/[^?#]*)?"  # Path
+    r"(?:\?(?P<query>[^#]*))?"  # Query (optional)
+    r"(?:#(?P<fragment>.*))?"  # Fragment (optional)
+)
+
+
+@dataclass
+class UriParamsProperties:
+    """Class that wraps a uri type paramaters properties"""
+
+    scheme: str
+    authority: str
+    path: str
+    query: str | None = None
+    fragment: str | None = None
+
+    user_info: str | None = None
+
+    @property
+    def path_parts(self):
+        return self.path.split("/")
+
+    @property
+    def query_parts(self):
+        return self.query.split("&")
+
+    @classmethod
+    def from_string(cls, resource_uri: str) -> type["UriParamsProperties"] | None:
+        match = uri_pattern.match(resource_uri)
+        if match:
+            groups = match.groupdict()
+            del groups["host"]
+            del groups["port"]
+            return UriParamsProperties(**groups)
+        else:
+            print("Invalid URI")
+            return None
+
+    def to_string(self, resource_uri: type["UriParamsProperties"] | None = None) -> str:
+        resource_uri = resource_uri or self
+        return f"{self.scheme}://{self.authority}/{self.path}{'/?' + self.query if self.query else ''}{'#' + self.fragment if self.fragment else ''}"
+
+
+default_seperator: str = "|"
+
+
 class UriParams:
     """Class full of static methods for operating on UriParams"""
 
@@ -77,22 +113,19 @@ class UriParams:
         self.properties = properties
 
     def __call__(self, *args: Any, **kwds: Any) -> Any:
-        return self.uri_params_maker(**asdict(self.properties))
+        return self.to_string(self.properties)
 
-    def uri_params_maker(
-        cls,
-        scheme,
-        host,
-        path_parts: list[str],
-        uriparams: dict = None,
-        anchor: str = None,
-    ) -> str:
-        uriparams = uriparams or {}
-        anchor = anchor or ""
-        path_str = "/".join(path_parts)
-        params_str = "&".join([f"{k}={v}" for k, v in uriparams.items()])
-        return f"{scheme}://{host}{path_str}/?{params_str}#{anchor}"
+    def from_string(self, resource_uri: str):
+        self.properties = UriParamsProperties.from_string(resource_uri)
+
+    def to_string(self, resource_uri: type["UriParamsProperties"] | None = None) -> str:
+        resource_uri = resource_uri or self.properties
+        return resource_uri.to_string()
 
 
 ParamsPropertiesType = UriParamsProperties | ListParamsProperties
 ParamsMakerType = UriParams | ListParams
+
+
+def OrtoUriParamsProperties(**kwargs: dict) -> UriParamsProperties:
+    return UriParamsProperties(**(kwargs | {"scheme": "orto"}))

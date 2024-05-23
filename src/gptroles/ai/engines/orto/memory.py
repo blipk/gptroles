@@ -18,25 +18,16 @@ from gptroles.ai.engines.orto.sections import (
     SectionProvider,
 )
 
-uri_pattern = re.compile(
-    r"^(?P<scheme>[a-zA-Z][a-zA-Z0-9+.-]*)://"  # Scheme
-    r"(?:(?P<user_info>[^@]*)@)?"  # User information (optional)
-    r"(?P<authority>"  # Authority (group containing host and port)
-    r"(?P<host>[^:/?#]*)"  # Host
-    r"(?:\:(?P<port>\d+))?"  # Port (optional)
-    r")"  # End of authority group
-    r"(?P<path>/[^?#]*)?"  # Path
-    r"(?:\?(?P<query>[^#]*))?"  # Query (optional)
-    r"(?:#(?P<fragment>.*))?"  # Fragment (optional)
-)
-
 
 @dataclass
 class Memory:
-    resource_uri: UriParamsProperties | str
+    resource_uri: UriParamsProperties
     _content: str | bytes | None = None
     description: str = ""  # Short description of the memory for the index
 
+    active: bool = False
+
+    @property
     def resource_uri_string(self):
         return UriParams(self.resource_uri)()
 
@@ -47,22 +38,18 @@ class Memory:
         return self._content
 
     def load_resource(
-        self, resource_uri: UriParamsProperties | str | None = None
+        self, resource_uri: UriParamsProperties | None = None
     ) -> bytes | str:
         resource_uri = resource_uri or self.resource_uri
         content = None
 
-        match = uri_pattern.match(resource_uri)
-        if match:
-            scheme: str = match.group("scheme")
-            if scheme.startswith("http"):
-                content = self.from_url(resource_uri)
-            elif scheme.startswith("file"):
-                content = self.from_file(resource_uri.replace(f"{scheme}://", ""))
-            else:
-                print("Unknown scheme")
+        scheme = resource_uri.scheme
+        if scheme.startswith("http"):
+            content = self.from_url(resource_uri.to_string())
+        elif scheme.startswith("file"):
+            content = self.from_file(resource_uri.path)
         else:
-            print("Invalid URI")
+            print("Unknown scheme")
 
         return content
 
@@ -88,13 +75,28 @@ class MemoryManager:
     memories: list[Memory] = []
     open_memories_uris: list[str] = []
 
+    def add_memory(self, memory: Memory) -> list[Memory]:
+        """
+        Adds a new memory.
+
+        Checks for duplicate resource paths, updating the memory if its the same
+        """
+        if memory not in self.memories and not [
+            m for m in self.memories if m.resource_uri == memory.resource_uri
+        ]:
+            self.memories.append(memory)
+            print(f"Added memory {memory}")
+            self.memories = list(self.keyed_memories.values())  # Force sort
+
+        return self.memories
+
     @property
     def keyed_memories(self) -> dict[str, Memory]:
         """
         Returns the memories list keyed by their resource represented as a string
         """
         keyed_memories = {
-            memory.resource_uri_string(): memory for memory in self.memories
+            memory.resource_uri_string: memory for memory in self.memories
         }
         # Sort by key path
         keyed_memories = dict(sorted(keyed_memories.items()))
@@ -107,7 +109,7 @@ class MemoryManager:
         """
         # Rebuild from the string
         resource_paths = [
-            memory.resource_uri_string()
+            memory.resource_uri_string
             for key_path, memory in self.keyed_memories.items()
         ]
         resource_paths = list(sorted(resource_paths))
@@ -120,7 +122,7 @@ class MemoryManager:
         """
         memory_index = "\n".join(
             [
-                f"{memory.resource_uri_string()}: {memory.description}"
+                f"{memory.resource_uri_string}: {memory.description}"
                 for memory in self.memories
             ]
         )
@@ -147,15 +149,6 @@ class MemoryManager:
 
     # def memory_to_section(self, memory: str):
     #     return Section()()
-
-    def add_memory(self, new_memory: Memory):
-        """
-        Adds a new memory.
-
-        This should check for duplicate resource paths, updating the memory if its the same
-        """
-        self.memories.append(new_memory)
-        self.memories = self.keyed_memories.values()
 
     @property
     def current_memory(self) -> list[ChatMessage]:

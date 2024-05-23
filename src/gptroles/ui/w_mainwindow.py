@@ -39,6 +39,7 @@ from PyQt6.QtWidgets import (
     QGraphicsOpacityEffect,
 )
 from gptroles.ai.engines.orto.memory import Memory
+from gptroles.ai.engines.orto.params import UriParamsProperties
 from gptroles.ui.w_drawer import DrawerWidget
 from gptroles.ui.w_menubar import CustomMenuBar
 from gptroles.ui.w_tools import LayoutType, QHBoxWidget
@@ -166,8 +167,13 @@ class MainWindow(QMainWindow, BorderlessWindow, RoundedCornerWindow):
         mimedata = e.mimeData()
         for url in mimedata.urls():
             print("Dropped file:", url.toLocalFile(), url.url())
-            memory = Memory(resource_uri=url.url(), description="")
-            self.chatbox.memory_toolbar.add_memory_button(memory)
+            memory = Memory(
+                resource_uri=UriParamsProperties.from_string(url.url()), description=""
+            )
+            self.app.memory_manager.add_memory(memory)
+            self.chatbox.memory_toolbar.update_memory_buttons(
+                self.app.memory_manager.memories
+            )
         return super().dropEvent(e)
 
     def closeEvent(self, event):
