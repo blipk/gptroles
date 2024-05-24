@@ -110,14 +110,15 @@ class Connector:
             return ("Error", str(e))
 
     def ask_image(
-        self, inquiry, size=None, quality=None, assistant_name="dall-e"
+        self, inquiry, size=None, quality=None, model=None, assistant_name="dall-e"
     ) -> str:
         size = size or "1792x1024"  # 1024x1024, 1024x1792 or 1792x1024
         quality = quality or "standard"  # or "hd"
+        model = model or "dall-e-3"
 
         try:
             response = self.client.images.generate(
-                model="dall-e-3",
+                model=model,
                 prompt=inquiry,
                 size=size,
                 quality=quality,

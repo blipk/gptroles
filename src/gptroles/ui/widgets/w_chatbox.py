@@ -284,7 +284,7 @@ class ChatBox(QWidget):
         self.memory_toolbar = MemoryToolbar(self)
         self.layout.addWidget(self.memory_toolbar)
 
-        self.input_toolbar = InputToolbar()
+        self.input_toolbar: InputToolbar = InputToolbar()
         self.layout.addWidget(self.input_toolbar)
 
         self.layout.addWidget(self.input_box)
@@ -328,11 +328,21 @@ class ChatBox(QWidget):
             self.input_box.setFocus()
 
     def ask(self, prompt):
-        fn = (
-            self.role_gpt.ask_image
-            if self.input_toolbar.photo_button_pressed
-            else self.role_gpt.ask
-        )
+        photo_button = self.input_toolbar.photo_button
+
+        def fn(*args, **kwargs):
+            return (
+                self.role_gpt.ask_image(
+                    *args,
+                    **kwargs,
+                    size=photo_button.resolution_mode,
+                    quality=photo_button.quality_mode,
+                    model=photo_button.model_mode,
+                )
+                if photo_button.photo_button_pressed
+                else self.role_gpt.ask(*args, **kwargs)
+            )
+
         role, answer = fn(prompt)
         self.chatMessageSignal.emit(ChatMessage(role, answer))
 
