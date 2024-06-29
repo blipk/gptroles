@@ -13,14 +13,14 @@ fi
 
 buildWeb() {
     START_DIR=$PWD
-    cd src/gptroles/ui/web && pnpm install && pnpm run build && \
-    cd $START_DIR
+    cd src/gptroles/ui/web && ./package.sh && rm -rf dist && parcel build src/chatpage.html --dist-dir dist --public-url ./ && ./postpackage.sh \
+    && cd "$START_DIR"
 }
 
 watchWeb() {
     START_DIR=$PWD
     cd ./src/gptroles/ui/web && pnpm run start && \
-    cd $START_DIR
+    cd "$START_DIR"
 }
 
 BUILT="0"
@@ -56,7 +56,7 @@ elif [[ "x$CMD" == "xsysinstall" ]]; then
 elif [[ "x$CMD" == "xrun" ]]; then
     DIST_FOLDER="$(python3 -m site --user-site)/gptroles/"
     mkdir -p "$DIST_FOLDER"
-    # buildWeb && \
+    buildWeb && \
     yes | rm -rf "$DIST_FOLDER" &&
     mkdir -p  "$DIST_FOLDER" &&
     yes | cp -rf src/gptroles/* "$DIST_FOLDER" &&

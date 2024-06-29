@@ -42,7 +42,7 @@ def run_shell(command, shell="bash", string_flag=None, autorun=False):
     return stdout, stderr, p.returncode
 
 
-class Connector:
+class GptConnector:
     """
     This connects openai and the UI
     """

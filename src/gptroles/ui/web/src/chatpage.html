@@ -7,27 +7,21 @@
 
     <title>Chat Log</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./static/highlight.min.css">
+
     <script src="qrc:///qtwebchannel/qwebchannel.js"></script>
-    <script src="~/src/static/marked.min.js"></script>
-    <link rel="stylesheet" href="~/src/static/highlight.min.css">
-    <script src="~/src/static/highlight.min.js"></script>
-    <link rel="stylesheet" href="~/src/../node_modules/xterm/css/xterm.css" />
     <!-- <script src="node_modules/xterm/lib/xterm.js"></script> -->
 </head>
 
 <body>
+     <!--
     <div class="chat-container">
-        <!-- <div class="chat-message">
-            <span class="chat-message-username">John</span>
-            <p>Hello there!</p>
-            <span class="chat-message-time">10:00 AM</span>
-        </div> -->
+
 
         <div class="chat-message ">
             <div class="message-buttons"><input type="button" class="message-button" value="⚙️"></div>
             <span class="chat-message-username ">System</span>
-            <div class="chat-message-msg" x-msg-id="80d62596-326e-4f2c-a3fd-cd87dc7e9be1"
-                x-msg-time="1679824343.1036885" x-msg-user="System">
+            <div class="chat-message-msg" >
                 <p>Role successfully initialised.</p>
             </div>
             <span class="chat-message-time chat-message-time-self">1679824343.1036885</span>
@@ -58,9 +52,10 @@ say_hello(<span class="hljs-string">"World"</span>)
             <span class="chat-message-time chat-message-time-self">1679824364.809487</span>
         </div>
 
-        <!-- More chat messages here... -->
+        <\!-- More chat messages here... --/>
     </div>
-    <script src="~/src/index.js" type="module"></script>
+-->
+    <script src="./index.tsx" type="module"></script>
 </body>
 
 </html>

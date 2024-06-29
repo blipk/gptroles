@@ -2,7 +2,7 @@ import os
 import sys
 from PyQt6.QtCore import QTimer, QSettings, QCommandLineOption, QCommandLineParser
 from PyQt6.QtWidgets import QApplication, QFileDialog
-from gptroles.ai.connectors.connector import Connector
+from gptroles.ai.connectors.connector import GptConnector
 from gptroles.ai.engines.orto.memory import MemoryManager
 from gptroles.ui.w_mainwindow import MainWindow
 from gptroles.ai.connectors.OpenAISettings import OpenAISettings
@@ -21,13 +21,15 @@ class RoleChat(QApplication):
         self.parseCLIArgs()
         self.debug_mode = self.parser.isSet(self.cli_options["debug_option"])
 
-        # RoleGptDIProvider(self)
+        # GptConnectorDIProvider(self)
         self.qsettings = QSettings(self)
 
         self.settings = AppSettings(APP_NAME, APP_AUTHOR)
-        self.gpt_settings = OpenAISettings(self.settings.app_dirs)
         self.memory_manager = MemoryManager()
-        self.role_gpt = Connector(self.gpt_settings, memory_manager=self.memory_manager)
+        self.gpt_settings = OpenAISettings(self.settings.app_dirs)
+        self.gpt_connector = GptConnector(
+            self.gpt_settings, memory_manager=self.memory_manager
+        )
 
         self.mainWindow = MainWindow(self)
         self.mainWindow.center()

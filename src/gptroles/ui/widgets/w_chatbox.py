@@ -42,7 +42,7 @@ from gptroles.ui.widgets.w_memory_toolbar import MemoryToolbar
 from gptroles.ui.widgets.w_netprompts import PromptsWindow
 
 from gptroles.ai.connectors.connector import run_shell
-from gptroles.interfaces.ui_to_gpt.DI import RoleGptDI
+from gptroles.ui.interfaces.GptConnectorDI import GptConnectorDI
 
 
 from typing import TYPE_CHECKING
@@ -85,8 +85,11 @@ class ChatPage(QWebEnginePage):
         self.setZoomFactor(1.2)
         self.load(chatpage_url)
 
-    def sendMessageToJS(self, message):
-        script = f"window.handlePyMessage('{message}');"
+    def sendMessageToJS(self, cmd, args: list):
+        # Escapes for passing markdown ticked blocks etc into js template literals passed to the webview
+        args = [str(arg).replace("`", "|TICK|").replace("${", "$|{") for arg in args]
+        js_args = f"`{'`, `'.join([str(a) for a in args])}`"
+        script = f"window.setBusMessage({{ cmd: '{cmd}', args: [{js_args}] }});"
         self.runJavaScript(script)
 
     def jsMessageRecieved(self, data):
@@ -107,12 +110,12 @@ class ChatPage(QWebEnginePage):
                 out, err, rcode = run_shell(code, shell, string_flag, True)
                 if err or rcode:
                     print("Command failure:", rcode, err)
-                    js = f"window.chatPage.updateBlockOutput('{msgid}', `{out}{err}`, '{blockindex}', '{rcode}')"
-                    self.runJavaScript(js)
+                    self.sendMessageToJS(
+                        "updateBlockOutput", [msgid, f"{out}{err}", blockindex, rcode]
+                    )
                 else:
                     print("Command complete:", out)
-                    js = f"window.chatPage.updateBlockOutput('{msgid}', `{out}`, '{blockindex}')"
-                    self.runJavaScript(js)
+                    self.sendMessageToJS("updateBlockOutput", [msgid, out, blockindex])
             elif command == "save":
                 msgid, blockindex, lang, code = params
                 from gptroles.ui.utils import find_lang_extension
@@ -234,7 +237,7 @@ class ChatBox(QWidget):
 
     def __init__(self, parent=None):
         super(ChatBox, self).__init__(parent)
-        RoleGptDI(self)
+        GptConnectorDI(self)
         self.mwindow: MainWindow = parent
         self.messages: ChatMessage = []
         self.setContentsMargins(0, 0, 0, 0)
@@ -322,7 +325,7 @@ class ChatBox(QWidget):
     def onLoadFinished(self, ok):
         if ok:
             print("Page ready")
-            chat_user, chat_response = self.role_gpt.confirm_role()
+            chat_user, chat_response = self.gpt_connector.confirm_role()
             self.add_message(ChatMessage(chat_user, chat_response))
             self.input_box.setSize()
             self.input_box.setFocus()
@@ -332,7 +335,7 @@ class ChatBox(QWidget):
 
         def fn(*args, **kwargs):
             return (
-                self.role_gpt.ask_image(
+                self.gpt_connector.ask_image(
                     *args,
                     **kwargs,
                     size=photo_button.resolution_mode,
@@ -340,7 +343,7 @@ class ChatBox(QWidget):
                     model=photo_button.model_mode,
                 )
                 if photo_button.photo_button_pressed
-                else self.role_gpt.ask(*args, **kwargs)
+                else self.gpt_connector.ask(*args, **kwargs)
             )
 
         role, answer = fn(prompt)
@@ -349,13 +352,18 @@ class ChatBox(QWidget):
     @pyqtSlot(ChatMessage)
     def add_message(self, chat_message: ChatMessage):
         self.messages.append(chat_message)
-        chat_message_text = chat_message.text.replace("`", "|TICK|").replace(
-            "${", "$|{"
-        )
+        chat_message_text = chat_message.text
 
         if "dall-e" in chat_message.user:
             data_url = convert_image_to_base64(chat_message_text)
             chat_message_text = f"<image src='{data_url}' width='80%' height='80%'/>"
 
-        js = f"window.chatPage.addMessage('{html.escape(chat_message.user)}', `{chat_message_text}`, '{chat_message.time}', '{chat_message.id}')"
-        self.page.runJavaScript(js)
+        self.page.sendMessageToJS(
+            "addMessage",
+            [
+                html.escape(chat_message.user),
+                chat_message_text,
+                chat_message.time,
+                chat_message.id,
+            ],
+        )

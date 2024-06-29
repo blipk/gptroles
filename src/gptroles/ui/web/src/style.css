@@ -102,13 +102,13 @@ body {
     border-radius: 4px; */
 }
 
-.chat-message-msg {
+.chat-message .message-text {
     user-select: text;
     padding: 0;
     margin: 0;
 }
 
-.chat-message-msg p {
+.chat-message .message-text p {
     white-space: pre-wrap;
     font-size: 0.9rem;
     /* line-height: 0.98rem; */
@@ -116,7 +116,7 @@ body {
     margin: 1px;
 }
 
-.chat-message-msg p code {
+.chat-message .message-text p code {
     background-color: #f5f5f9;
     border-radius: 2.5px;
     padding: 1.4px 1.2px 1.4px 1.2px;
@@ -159,7 +159,7 @@ body {
     content: attr(x-output-tag);
 }
 
-.chat-message-msg pre {
+.chat-message .message-text pre {
     font-size: 0.89rem;
     background-color: #f5f5f9;
     border-radius: 2px;
@@ -244,7 +244,7 @@ body {
 }
 
 /* Chat message username */
-.chat-message-username {
+.chat-message .username {
     user-select: text;
     font-size: 12px;
     color: #C0C0C0;
@@ -255,7 +255,7 @@ body {
 }
 
 /* Chat message time */
-.chat-message-time {
+.chat-message .timestamp {
     font-size: 12px;
     color: #999;
     position: absolute;
@@ -265,13 +265,13 @@ body {
 
 
 /* Chat message from self username */
-/* .chat-message-username-self {
+/* .chat-message username-self {
 left: auto;
 right: 0;
 } */
 
 /* Chat message from self time */
-/* .chat-message-time-self {
+/* .chat-message .timestamp-self {
 left: 0;
 right: auto;
 } */

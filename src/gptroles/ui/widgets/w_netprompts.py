@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from gptroles.ui.widgets.w_chatbox import ChatBox
 
-from gptroles.interfaces.ui_to_gpt.DI import RoleGptDI
+from gptroles.ui.interfaces.GptConnectorDI import GptConnectorDI
 
 
 class CustomListView(QListWidget):
@@ -30,7 +30,7 @@ class CustomListView(QListWidget):
         # print("Setting prompt:", prompt)
         chatbox: ChatBox = self.parent().parent()
 
-        rolegpt, gpt_settings = RoleGptDI(self)()
+        rolegpt, gpt_settings = GptConnectorDI(self)()
         rolegpt.system_role = prompt
         rolegpt.sub_role = ""
         rolegpt.prompt_chain = []

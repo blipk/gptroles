@@ -1,0 +1,45 @@
+{
+    "include": [
+        "src/**/*",
+    ],
+    "compilerOptions": {
+        "outDir": "./dist",
+        "rootDir": "./src",
+        "lib": [
+            "DOM",
+            "DOM.AsyncIterable",
+            "DOM.Iterable",
+            "ESNext"
+        ],
+        "target": "ES2019", //ES2017
+        "module": "esnext", //common js
+        "strict": true,
+        "moduleResolution": "Bundler",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "jsx": "preserve",
+        "skipLibCheck": true,
+        "allowJs": true,
+        "noImplicitAny": true,
+        "noImplicitReturns": true,
+        "esModuleInterop": true,
+        "strictNullChecks": true,
+        "strictFunctionTypes": true,
+        "strictPropertyInitialization": true,
+        "noImplicitThis": true,
+        "alwaysStrict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true,
+        "inlineSourceMap": true,
+        "downlevelIteration": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true
+    },
+    "exclude": [
+        "./dev-only",
+        "./data",
+        "./resources",
+        "./node_modules"
+    ]
+}

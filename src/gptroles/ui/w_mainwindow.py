@@ -40,9 +40,9 @@ from PyQt6.QtWidgets import (
 )
 from gptroles.ai.engines.orto.memory import Memory
 from gptroles.ai.engines.orto.params import UriParamsProperties
-from gptroles.ui.w_drawer import DrawerWidget
-from gptroles.ui.w_menubar import CustomMenuBar
-from gptroles.ui.w_tools import LayoutType, QHBoxWidget
+from gptroles.ui.widgets.w_drawer import DrawerWidget
+from gptroles.ui.widgets.w_menubar import CustomMenuBar
+from gptroles.ui.widgets.w_tools import LayoutType, QHBoxWidget
 
 
 # from gptroles.ui.widgets.terminal import SerialPortWidget
@@ -52,9 +52,9 @@ from gptroles.ui.widgets.w_borderlesswindow import (
     BaseWindow,
     RoundedCornerWindow,
 )
-from gptroles.ui.w_settings import SettingsWidget
+from gptroles.ui.widgets.w_settings import SettingsWidget
 
-from gptroles.interfaces.ui_to_gpt.DI import RoleGptDI
+from gptroles.ui.interfaces.GptConnectorDI import GptConnectorDI
 
 from typing import TYPE_CHECKING, Any
 
@@ -68,7 +68,7 @@ class MainWindow(QMainWindow, BorderlessWindow, RoundedCornerWindow):
     def __init__(self, app):
         super(BorderlessWindow, self).__init__()
         super(QMainWindow, self).__init__()
-        RoleGptDI(self, app)
+        GptConnectorDI(self, app)
         self.app: RoleChat = app
         self.qsettings = self.app.qsettings
         self.setAcceptDrops(True)

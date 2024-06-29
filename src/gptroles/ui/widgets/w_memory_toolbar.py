@@ -7,7 +7,7 @@ import requests
 from io import BytesIO
 
 from gptroles.ai.engines.orto.memory import Memory, MemoryManager
-from gptroles.interfaces.ui_to_gpt.DI import RoleGptDI
+from gptroles.ui.interfaces.GptConnectorDI import GptConnectorDI
 
 # Define a more extensive mapping of file extensions to theme icons
 icon_mapping = {
@@ -166,8 +166,8 @@ class MemoryButton(QToolButton):
 class MemoryToolbar(QToolBar):
     def __init__(self, parent: QWidget = None):
         super().__init__(parent)
-        RoleGptDI(self)
-        self.memory_manager: MemoryManager = self.role_gpt.memory_manager
+        GptConnectorDI(self)
+        self.memory_manager: MemoryManager = self.gpt_connector.memory_manager
         self.setMovable(False)
         self.setContentsMargins(0, 0, 0, 0)
         self.layout().setSpacing(0)

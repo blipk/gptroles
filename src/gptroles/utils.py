@@ -1,6 +1,9 @@
 import base64
 import requests
 
+from functools import wraps
+from time import time
+
 
 def convert_image_to_base64(image_url):
     response = requests.get(image_url)
@@ -36,10 +39,6 @@ def repr_(
         ]
     )
     return f"{classname}({hex(id(cls))}, {args})"
-
-
-from functools import wraps
-from time import time
 
 
 def timeit(f):
