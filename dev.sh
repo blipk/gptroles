@@ -13,13 +13,13 @@ fi
 
 buildWeb() {
     START_DIR=$PWD
-    cd src/gptroles/ui/web && ./package.sh && rm -rf dist && parcel build src/chatpage.html --dist-dir dist --public-url ./ && ./postpackage.sh \
+    cd src/gptroles/ui/webapp && ./package.sh && rm -rf dist && parcel build src/chatpage.html --dist-dir dist --public-url ./ && ./postpackage.sh \
     && cd "$START_DIR"
 }
 
 watchWeb() {
     START_DIR=$PWD
-    cd ./src/gptroles/ui/web && pnpm run start && \
+    cd ./src/gptroles/ui/webapp && pnpm run start && \
     cd "$START_DIR"
 }
 

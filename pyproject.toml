@@ -21,7 +21,7 @@ packages = [
     { include = "gptroles", from = "src" }
 ]
 include = [
-    { path = "gptroles/ui/web/**/*", format = ["sdist", "wheel"] }
+    { path = "gptroles/ui/webapp/**/*", format = ["sdist", "wheel"] }
 ]
 
 

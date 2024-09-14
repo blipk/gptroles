@@ -53,6 +53,9 @@ if TYPE_CHECKING:
     from gptroles.ui.w_mainwindow import MainWindow
 
 
+import uuid
+
+
 class Bridge(QObject):
     dataChanged = pyqtSignal(QVariant)
     # Define a function that can be called from Javascript
@@ -89,7 +92,9 @@ class ChatPage(QWebEnginePage):
         # Escapes for passing markdown ticked blocks etc into js template literals passed to the webview
         args = [str(arg).replace("`", "|TICK|").replace("${", "$|{") for arg in args]
         js_args = f"`{'`, `'.join([str(a) for a in args])}`"
-        script = f"window.setBusMessage({{ cmd: '{cmd}', args: [{js_args}] }});"
+        # TODO track the ids
+
+        script = f"window.addBusMessage({{ id: '{uuid.uuid4()}', cmd: '{cmd}', args: [{js_args}] }});"
         self.runJavaScript(script)
 
     def jsMessageRecieved(self, data):
@@ -352,18 +357,18 @@ class ChatBox(QWidget):
     @pyqtSlot(ChatMessage)
     def add_message(self, chat_message: ChatMessage):
         self.messages.append(chat_message)
-        chat_message_text = chat_message.text
+        chat_message_content = chat_message.content
 
-        if "dall-e" in chat_message.user:
-            data_url = convert_image_to_base64(chat_message_text)
-            chat_message_text = f"<image src='{data_url}' width='80%' height='80%'/>"
+        if "dall-e" in chat_message.username:
+            data_url = convert_image_to_base64(chat_message_content)
+            chat_message_content = f"<image src='{data_url}' width='80%' height='80%'/>"
 
         self.page.sendMessageToJS(
             "addMessage",
             [
-                html.escape(chat_message.user),
-                chat_message_text,
-                chat_message.time,
                 chat_message.id,
+                chat_message.receivedAt,
+                html.escape(chat_message.username),
+                chat_message_content,
             ],
         )

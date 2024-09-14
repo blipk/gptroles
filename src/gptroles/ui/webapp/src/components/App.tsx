@@ -14,7 +14,6 @@ const App: React.FC = () => {
 
             <section id="content">
                 <ChatPage/>
-
             </section>
         </div>
     );

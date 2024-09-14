@@ -50,8 +50,6 @@ const Message: React.FC<MessageData> = ({ id, username, content, receivedAt}) =>
 
     useEffect(() => {
         Marked.setOptions(markedOptions);
-        applyMarkdownButtons();
-
     }, []);
 
 
