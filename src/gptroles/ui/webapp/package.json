@@ -1,0 +1,61 @@
+{
+    "name": "gptroles-webapp",
+    "author": "A.D.",
+    "license": "SEE LICENSE.txt - MIT Based",
+    "private": true,
+    "version": "1.0.0",
+    "description": "",
+    "source": "src/chatpage.html",
+    "type": "module",
+    "scripts": {
+        "start": "./package.sh && rm -rf dist && parcel src/chatpage.html --https --public-url / && ./postpackage.sh",
+        "watch": "./package.sh && rm -rf dist && parcel watch src/chatpage.html --public-url ./ && ./postpackage.sh",
+        "build": "./package.sh && rm -rf dist && parcel build src/chatpage.html --dist-dir dist --public-url ./ && ./postpackage.sh",
+        "lint": "eslint . --report-unused-disable-directives --max-warnings 0",
+        "lintfix": "eslint . --fix --report-unused-disable-directives"
+    },
+    "dependencies": {
+        "@types/turndown": "^5.0.5",
+        "dompurify": "^3.0.8",
+        "highlight.js": "^11.9.0",
+        "install": "^0.13.0",
+        "marked": "^13.0.0",
+        "qwebchannel": "^6.2.0",
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1",
+        "react-icons": "^5.3.0",
+        "react-markdown": "^9.0.1",
+        "turndown": "^7.2.0",
+        "uuid": "^10.0.0"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.9.0",
+        "@parcel/config-default": "^2.8.3",
+        "@parcel/core": "^2.11.0",
+        "@parcel/transformer-typescript-tsc": "^2.12.0",
+        "@types/dompurify": "^3.0.5",
+        "@types/eslint__js": "^8.42.3",
+        "@types/node": "^22.5.4",
+        "@types/react": "^18.3.3",
+        "@types/react-dom": "^18.3.0",
+        "@types/uuid": "^10.0.0",
+        "@typescript-eslint/eslint-plugin": "^8.0.1",
+        "@typescript-eslint/parser": "^8.0.1",
+        "eslint": "^9.9.0",
+        "eslint-plugin-react": "^7.35.0",
+        "eslint-plugin-react-hooks": "^4.6.2",
+        "eslint-plugin-react-refresh": "^0.4.9",
+        "globals": "^15.9.0",
+        "parcel": "^2.8.3",
+        "parcel-reporter-static-files-copy": "^1.5.0",
+        "process": "^0.11.10",
+        "sass": "^1.77.8",
+        "typescript": "^5.5.4",
+        "typescript-eslint": "^8.0.1"
+    },
+    "staticFiles": {
+        "staticPath": "src/static",
+        "staticOutPath": ""
+    },
+    "parcelIgnore": []
+}

@@ -1,0 +1,277 @@
+* {
+    box-sizing: border-box;
+}
+html, body {
+    padding: 0;
+    margin: 0;
+    height: 100vh;
+    width: 100vw;
+    /* height: 100%;
+    width: 100%; */
+    overflow-x: hidden;
+    overflow-y: auto;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.1em;
+}
+
+body {
+    background-color: #f5f5f9;
+    user-select: none;
+    /* font-size: 2em; */
+}
+
+/* Chat container */
+.chat-container {
+    height: 100% !important;
+    /* width: 99vw; */
+    padding: 0;
+    margin: 0;
+    overflow: auto;
+    height: 500px;
+}
+
+/* Chat message */
+.chat-message {
+    padding: 5px;
+    padding-top: 19px;
+    padding-bottom: 7px;
+    margin: 0;
+    margin-bottom: 1.1rem;
+    background-color: #fff;
+    border-radius: 10px;
+    position: relative;
+}
+
+.message-buttons {
+    position: relative;
+    float: right;
+    top: -19px;
+    right: 5px;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 4px;
+}
+
+.message-button {
+    position: relative;
+    border: none;
+    border-radius: 4px;
+    padding: 0 2px 0 2px;
+    margin: 1px;
+    cursor: pointer;
+}
+
+.message-button:hover {
+    top: 2px;
+    left: 2px;
+}
+
+.markdown-editor {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    cursor: text;
+}
+
+.markdown-editor .textarea-container {
+    margin: 0;
+    padding: 0;
+    position: relative;
+    float: left;
+    /* height: 10ch; */
+}
+
+.markdown-editor textarea {
+    /* min-height: 100%; */
+    width: 95vw;
+    max-width: 95vw;
+    font-size: 100%;
+}
+
+.markdown-editor .editor-buttons {
+    z-index: 14;
+    position: absolute;
+    top: 0;
+    right: 5px;
+    /* margin: 0;
+    padding: 0;
+    min-height: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 4px; */
+}
+
+.chat-message .message-content {
+    user-select: text;
+    padding: 0;
+    margin: 0;
+}
+
+.chat-message .message-content p {
+    white-space: pre-wrap;
+    font-size: 0.9rem;
+    /* line-height: 0.98rem; */
+    padding: 1px;
+    margin: 1px;
+}
+
+.chat-message .message-content p code {
+    background-color: #f5f5f9;
+    border-radius: 2.5px;
+    padding: 1.4px 1.2px 1.4px 1.2px;
+    font-size: 82%;
+}
+
+.inline-container {
+    pointer-events: all !important;
+    /* visibility: hidden; */
+    position: absolute;
+    width: 60%;
+    height: 50px;
+    padding: 0;
+    margin: 4px;
+    background-color: transparent;
+    z-index: 10;
+}
+
+#terminal {
+    pointer-events: all !important;
+    /* visibility: hidden; */
+    position: absolute;
+    width: 80%;
+    height: 50px;
+    padding: 0;
+    margin: 4px;
+    background-color: transparent;
+    z-index: 10;
+}
+
+.output-container {
+    display: none;
+    margin-top: 10px;
+    padding-top: 2px;
+    border-top: 1.5px solid black;
+}
+.output-container::before {
+    font-family: monospace, monospace, monospace;
+    font-variant: small-caps;
+    content: attr(x-output-tag);
+}
+
+.chat-message .message-content pre {
+    font-size: 0.89rem;
+    background-color: #f5f5f9;
+    border-radius: 2px;
+    /* padding: 4px;
+    margin: 4px; */
+    margin-left: 10px;
+    margin-top: 7px;
+    margin-bottom: 10px;
+    max-width: 95vw;
+    white-space: pre-wrap;
+    /* min-width: 70%; */
+    /* display: table;
+    border-collapse: separate; */
+}
+
+.hljs {
+    padding: 0.5em !important;
+}
+
+.code-buttons {
+    position: relative;
+    float: right;
+    top: 5px;
+    right: 5px;
+    margin: 0;
+    padding: 0;
+    min-height: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 4px;
+}
+
+.code-button {
+    position: relative;
+    border: none;
+    border-radius: 4px;
+    padding: 0 2px 0 2px;
+    margin: 1px;
+    cursor: pointer;
+}
+
+.code-button:hover {
+    top: 2px;
+    left: 2px;
+}
+
+@keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; display: block; }
+}
+
+@keyframes fadeout {
+    from { opacity: 1; }
+    to   { opacity: 0; display: none !important; }
+}
+
+.notification {
+    display: block;
+    position: absolute;
+    float: inline-end;
+    top: 2.8em;
+    right: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.5rem;
+    line-height: 0.5rem;
+    white-space:nowrap;
+    margin: 0;
+    padding: 2px;
+    border-radius: 3px;
+    border: 0.9px solid #d9d9d9;
+    background-color: #fdfdfd;
+    animation: fadein 1s;
+}
+
+
+
+
+
+/* Chat message from self */
+.chat-message-self {
+    background-color: #dcf8c6;
+}
+
+/* Chat message username */
+.chat-message .username {
+    user-select: text;
+    font-size: 12px;
+    color: #C0C0C0;
+    position: absolute;
+    bottom: -20px;
+    left: 2;
+    top: 0;
+}
+
+/* Chat message time */
+.chat-message .timestamp {
+    font-size: 12px;
+    color: #999;
+    position: absolute;
+    bottom: -10px;
+    right: 0;
+}
+
+
+/* Chat message from self username */
+/* .chat-message username-self {
+left: auto;
+right: 0;
+} */
+
+/* Chat message from self time */
+/* .chat-message .timestamp-self {
+left: 0;
+right: auto;
+} */
