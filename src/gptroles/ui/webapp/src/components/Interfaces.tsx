@@ -27,9 +27,10 @@ interface MessageData {
     receivedAt: string; // This is python time.time() as a string
     username: string;
     content: string;
+    isInContext: boolean;
 
     // Set in webapp
-    updatedAt?: Date;    // this is set in the webapp on updated message
+    updatedAt?: Date; // this is set in the webapp on updated message
 }
 
 export type { BusMessage, BusResponse, MessageData }

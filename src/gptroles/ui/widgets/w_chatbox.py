@@ -1,5 +1,6 @@
 import os
 import html
+import json
 import base64
 import requests
 import threading
@@ -76,7 +77,7 @@ class ChatPage(QWebEnginePage):
         self.channel.registerObject("bridge", self.bridge)
         self.setWebChannel(self.channel)
         page_path = os.path.join(
-            os.path.dirname(__file__), "..", "web", "dist", "chatpage.html"
+            os.path.dirname(__file__), "..", "webapp", "dist", "index.html"
         )
         chatpage_url = QUrl("file://" + page_path)
 
@@ -98,8 +99,14 @@ class ChatPage(QWebEnginePage):
         self.runJavaScript(script)
 
     def jsMessageRecieved(self, data):
-        print(f"Received JS message: {data}")
-        if type(data) is list:
+        if type(data) is str:
+            data = json.loads(data)
+
+        print(f"Received JS message: {data}", type(data))
+
+        id, sourceMessageId, message = data
+
+        if type(message) is list:
             command, *params = data
             if command == "run_code":
                 msgid, blockindex, lang, code = params
@@ -370,5 +377,6 @@ class ChatBox(QWidget):
                 chat_message.receivedAt,
                 html.escape(chat_message.username),
                 chat_message_content,
+                chat_message.isInContext or ""
             ],
         )

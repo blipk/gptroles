@@ -3,8 +3,10 @@ import uuid
 
 
 class ChatMessage:
-    def __init__(self, user, text, mtime=None, id=None) -> None:
-        self.user = user
-        self.text = text
+    def __init__(self, username, content, receivedAt = None, id: str = None, isInContext: bool = True) -> None:
+        self.username = username
+        self.content = content
         self.id = id or str(uuid.uuid4())
-        self.time = mtime or time.time()
+        self.receivedAt = receivedAt or time.time()
+        self.isInContext = isInContext
+

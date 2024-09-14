@@ -6,18 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Chat Log</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="./static/highlight.min.css">
-
-    <script src="qrc:///qtwebchannel/qwebchannel.js"></script>
+    <link rel="stylesheet" href="./src/style.css">
     <!-- <script src="node_modules/xterm/lib/xterm.js"></script> -->
 </head>
 
 <body>
      <!--
     <div class="chat-container">
-
-
         <div class="chat-message ">
             <div class="message-buttons"><input type="button" class="message-button" value="⚙️"></div>
             <span class="chat-message-username ">System</span>
@@ -55,7 +50,9 @@ say_hello(<span class="hljs-string">"World"</span>)
         <\!-- More chat messages here... --/>
     </div>
 -->
-    <script src="./index.tsx" type="module"></script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <script src="qrc:///qtwebchannel/qwebchannel.js" defer></script>
 </body>
 
 </html>

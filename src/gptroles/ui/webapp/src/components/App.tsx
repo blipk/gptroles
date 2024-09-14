@@ -1,6 +1,6 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React from "react"
 
-import ChatPage from "./ChatPage.jsx";
+import ChatPage from "./ChatPage.jsx"
 
 const App: React.FC = () => {
     return (
@@ -16,10 +16,10 @@ const App: React.FC = () => {
                 <ChatPage/>
             </section>
         </div>
-    );
-};
+    )
+}
 
 
 
 
-export default App;
+export default App

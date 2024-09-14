@@ -7,7 +7,7 @@ import * as globals from "globals"
 
 
 export default tseslint.config(
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
     eslint.configs.recommended,
     ...tseslint.configs.recommended,
     ...tseslint.configs.strictTypeChecked,
@@ -16,12 +16,12 @@ export default tseslint.config(
         {
             files   : [ "**/*.{js,jsx,mjs,cjs,ts,tsx}" ],
             plugins : {
-			    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
 			    "react"         : reactPlugin,
 			    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 			    "react-refresh" : reactRefresh,
-			    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                "tsdoc"         : tsdoceslint
+
+                "tsdoc": tsdoceslint
             },
             languageOptions: {
                 parserOptions: {
@@ -29,7 +29,7 @@ export default tseslint.config(
                     projectService : {
                         allowDefaultProject: [ "*.mjs", "*.ts", "*.tsx" ],
                     },
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
                     tsconfigRootDir : import.meta.dirname,
                     ecmaFeatures    : {
                         jsx: true,
@@ -121,10 +121,7 @@ export default tseslint.config(
             },
         },
         {
-            ignores: [ "**/node_modules/**", "**/docs/**", "**/dist/**", ],
-        },
-        {
-            ignores: [ "**/api-client/**" ],
+            ignores: [ "**/node_modules/**", "**/docs/**", "**/dist/**", "**/*/qwebchannel.js" ],
         }
     ]
 )
