@@ -7,23 +7,21 @@ import Markdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import rehypeSanitize from "rehype-sanitize"
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
-// import { dark } from "react-syntax-highlighter/dist/esm/styles/hljs"
-import { dark } from "react-syntax-highlighter/dist/esm/styles/prism"
-
-import TurndownService from "turndown"
+import { vscDarkPlus as SyntaxHighlighterTheme } from "react-syntax-highlighter/dist/esm/styles/prism"
 
 
 import type { MessageData } from "./Interfaces.jsx"
+// import MarkdownPre from "./MarkdownPre.js"
 
-
-
-const turndownService = new TurndownService()
+// import TurndownService from "turndown"
+// const turndownService = new TurndownService()
 
 
 const Message: React.FC<MessageData> = ( { id, username, content, receivedAt } ) => {
     const usersName = "You"
 
     useEffect( () => {
+
     }, [] )
 
 
@@ -48,146 +46,19 @@ const Message: React.FC<MessageData> = ( { id, username, content, receivedAt } )
     //     blockOutput.style.display = "block";
     // };
 
+    // const _parsedContent = turndownService.turndown( unescape( content ) )
+    const parsedContent =  unescape( content )
+    console.log( "parsedContent:", [ parsedContent ] )
 
-    /** Markdown Component */
-    // const copyText = ( text: string ) => {
-    //     const copyText = document.createElement( "textarea" )
-    //     copyText.style.width = "1px"
-    //     copyText.style.border = "0"
-    //     copyText.style.opacity = "0"
-    //     document.body.appendChild( copyText )
-    //     copyText.value = text.trim()
-    //     copyText.select()
-    //     copyText.setSelectionRange( 0, 99999 )
-    //     document.execCommand( "copy" )
-    //     document.body.removeChild( copyText )
-    // }
-
-
-    // const notification = ( message: string, parent: HTMLElement ) => {
-    //     const notification = document.createElement( "div" )
-    //     notification.className = "notification"
-    //     notification.innerText = message
-    //     parent.appendChild( notification )
-    //     setTimeout( () => {
-    //         notification.style.animation = "fadeout 1s"
-    //         setTimeout( () => parent.removeChild( notification ), 1000 )
-    //     }, 1500 )
-    // }
-
-
-    // const applyMarkdownButton = ( chatMessageEl, codeEl, codeElIndex ) => {
-    //     // Run output container
-
-    //     console.log( "applyMarkdownButton", chatMessageEl, codeEl, codeElIndex )
-
-    //     const outputContainer = codeEl.querySelector( ".output-container" ) || element( "div", [ [ "class", "output-container" ] ] )
-    //     if ( outputContainer.parentElement !== codeEl )
-    //         codeEl.appendChild( outputContainer )
-
-    //     // Buttons container
-    //     const codeButtons = codeEl.querySelector( ".code-buttons" )
-    //     const msg = codeEl.parentElement.parentElement
-    //     const msgId = msg.getAttribute( "x-msg-id" )
-    //     codeEl.setAttribute( "x-block-index", codeElIndex )
-    //     if ( codeButtons )
-    //         codeButtons.parentNode.removeChild( codeButtons )
-    //     const lang = [ ...codeEl.classList ].find( c => c.includes( "language" ) )?.replace( "language-", "" )
-    //     const newButtons = element( "div", [ [ "class", "code-buttons" ] ] )
-    //     if ( [ "python", "shell", "sh", "bash", "js", "javascript" ].includes( lang ) ) {
-    //         newButtons.innerHTML = "<input type=\"button\" class=\"code-button play-button\" value=\"▶️\"/>"
-    //         newButtons.innerHTML += "<input type=\"button\" class=\"code-button edit-button\" value=\"✏️\"/>"
-    //     }
-
-    //     newButtons.innerHTML += "<input type=\"button\" class=\"code-button save-button\" value=\"💾\"/>"
-    //     newButtons.innerHTML += "<input type=\"button\" class=\"code-button copy-button\" value=\"📋\"/>"
-    //     codeEl.prepend( newButtons )
-    //     const playButton = codeEl.querySelector( ".play-button" )
-    //     const editButton = codeEl.querySelector( ".edit-button" )
-    //     const saveButton = codeEl.querySelector( ".save-button" )
-    //     const copyButton = codeEl.querySelector( ".copy-button" )
-    //     const codeText = codeEl.textContent.replace( outputContainer.textContent, "" ).trim()
-    //     copyButton?.addEventListener( "click", ( e ) => {
-    //         e.preventDefault()
-    //         copyText( codeText )
-    //         notification( "Copied!", copyButton.parentElement )
-    //     } )
-    //     playButton?.addEventListener( "click", ( e ) => {
-    //         e.preventDefault()
-    //         window.bridge.setData( [ "run_code", msgId, codeElIndex, lang, codeText ] )
-    //     } )
-    //     saveButton?.addEventListener( "click", ( e ) => {
-    //         e.preventDefault()
-    //         window.bridge.setData( [ "save", msgId, codeElIndex, lang, codeText ] )
-    //         //TODO add open in editor icon after saving
-    //     } )
-    //     editButton?.addEventListener( "click", ( e ) => {
-    //         e.preventDefault()
-    //         codeEl.style.display = "none"
-    //         // codeEl.style.visibility = "hidden"
-    //         codeEl.style.height = "0px"
-    //         const editor = element( "div", [ [ "class", "markdown-editor" ] ] )
-
-    //         const editorAreaContainer = element( "div", [ [ "class", "textarea-container" ] ] )
-    //         const editorArea = element( "textarea" )
-    //         const editorButtons = element( "div", [ [ "class", "editor-buttons" ] ] )
-    //         editorButtons.innerHTML = "<input type=\"button\" class=\"code-button close-button\" value=\"❌\"/><input type=\"button\" class=\"code-button editor-save-button\" value=\"✅\"/>"
-    //         editorAreaContainer.appendChild( editorButtons )
-    //         editorAreaContainer.appendChild( editorArea )
-    //         editor.appendChild( editorAreaContainer )
-
-    //         const lineCount = ( codeText.match( /\n/g ) || [] ).length
-    //         const height = ( lineCount * 2 ) + 5.2
-    //         // editor.style.height = height + "ch"
-    //         editorArea.style.height = height + "ch"
-    //         console.log( height )
-    //         editorArea.value = codeText
-    //         codeEl.parentElement.insertBefore( editor, codeEl )
-    //         editorButtons
-    //             .querySelector( ".close-button" )
-    //             .addEventListener( "click", ( e ) => {
-    //                 codeEl.style.visibility = "revert"
-    //                 codeEl.style.display = "block"
-    //                 codeEl.style.height = ""
-
-    //                 editor.parentNode.removeChild( editor )
-    //             } )
-    //         editorButtons
-    //             .querySelector( ".editor-save-button" )
-    //             .addEventListener( "click", ( e ) => {
-    //                 codeEl.style.visibility = "revert"
-    //                 codeEl.style.display = "block"
-    //                 codeEl.style.height = ""
-    //                 // codeEl.innerText = editorArea.value
-    //                 const template = document.createElement( "template" )
-    //                 template.innerHTML = marked.parse( `\`\`\`${lang}\n${editorArea.value}\n\`\`\`` )
-    //                 // const newNodes = template.content.childNodes;
-    //                 const newCodeEl = template.content.firstChild
-    //                 codeEl.parentNode.replaceWith( newCodeEl )
-    //                 editor.parentNode.removeChild( editor )
-    //                 applyMarkdownButtons( [ chatMessageEl ] )
-    //             } )
-    //     } )
-
-    //     // SVG Display
-    //     if ( lang === "svg" || ( ( lang === "html" || lang === "xml" ) && codeText.includes( "</svg>" ) ) ) {
-    //         const svgContainer = element( "div", [ [ "class", "svg-container" ] ] )
-    //         svgContainer.innerHTML = codeText
-    //         const parentChildren = [ ...codeEl.parentNode.childNodes ]
-    //         const nextNode = parentChildren[ parentChildren.indexOf( codeEl ) + 1 ]
-    //         if ( nextNode && !( [ ...nextNode.classList ].includes( "svg-container" ) ) )
-    //             codeEl.parentNode.insertBefore( svgContainer, nextNode )
-    //     }
-    // }
-
-    const parsedContent = turndownService.turndown( unescape( content ) )
     return (
         <>
             <div className={"chat-message" + ( username === usersName ? " chat-message-self" : "" )} key={id}>
                 <div className="message-buttons"><input type="button" className="message-button" value="⚙️" /></div>
                 <div className="message-header">
                     <span className={"username" + ( username === usersName ? " username-self" : "" )}>{username}</span>
-                    <span className={"timestamp" + ( username === usersName ? " timestamp-self" : "" )}>{new Date( Number( receivedAt ) * 1000 ).toLocaleTimeString()}</span>
+                    <span className={"timestamp" + ( username === usersName ? " timestamp-self" : "" )}>
+                        {new Date( Number( receivedAt ) * 1000 ).toLocaleTimeString()}
+                    </span>
                 </div>
                 <div className="message-content">
                     <Markdown
@@ -197,12 +68,14 @@ const Message: React.FC<MessageData> = ( { id, username, content, receivedAt } )
                             code( props ) {
                                 const { children, className, node, key, ref, ...rest } = props
                                 const match = /language-(\w+)/.exec( className || "" )
+                                console.log( "match", match, node )
                                 return match ? (
                                     <SyntaxHighlighter
-                                        PreTag="div"
+                                        // PreTag={MarkdownPre} // Can make this a component
+                                        // CodeTag
                                         children={String( children ).replace( /\n$/, "" )}
                                         language={match[ 1 ]}
-                                        style={dark}
+                                        style={SyntaxHighlighterTheme}
                                     />
                                 ) : (
                                     <code {...rest} className={className}>

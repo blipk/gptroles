@@ -4,6 +4,8 @@ import json
 import base64
 import requests
 import threading
+
+
 from PyQt6.QtGui import (
     QAction,
     QGuiApplication,
@@ -11,6 +13,7 @@ from PyQt6.QtGui import (
     QTextCursor,
     QDragEnterEvent,
     QDropEvent,
+    QDesktopServices
 )
 from PyQt6.QtCore import (
     Qt,
@@ -88,6 +91,14 @@ class ChatPage(QWebEnginePage):
         )
         self.setZoomFactor(1.2)
         self.load(chatpage_url)
+
+    def acceptNavigationRequest(self, url: QUrl, _type, isMainFrame):
+        """Open links in external browser"""
+        # print(f"Navigation request: {url.toString()}, Type: {_type}, Is Main Frame: {isMainFrame}")
+        if _type == QWebEnginePage.NavigationType.NavigationTypeLinkClicked:
+            QDesktopServices.openUrl(url)
+            return False
+        return super().acceptNavigationRequest(url, _type, isMainFrame)
 
     def sendMessageToJS(self, cmd, args: list):
         # Escapes for passing markdown ticked blocks etc into js template literals passed to the webview
