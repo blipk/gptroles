@@ -3,7 +3,7 @@ Version=1.0
 Name=GPTRoles Chat (Debug Terminal)
 GenericName=GPTRoles Chat (Debug Terminal)
 Comment=Chat with GPT
-Exec=bash -c 'F=%u "$HOME/.local/bin/gptroles" "$F"'
+Exec=bash -c 'F=%u "$HOME/.local/bin/gptroles" --debug "$F"'
 Icon=gptroles
 Terminal=true
 Type=Application

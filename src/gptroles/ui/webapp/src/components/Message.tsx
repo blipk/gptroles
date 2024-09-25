@@ -1,11 +1,14 @@
 
 
-import React, { useEffect } from "react"
+import React from "react"
 
 
 import Markdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import rehypeSanitize from "rehype-sanitize"
+import rehypeRaw from "rehype-raw"
+import { defaultSchema, type Schema } from "hast-util-sanitize"
+
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
 import { vscDarkPlus as SyntaxHighlighterTheme } from "react-syntax-highlighter/dist/esm/styles/prism"
 
@@ -20,10 +23,9 @@ import type { MessageData } from "./Interfaces.jsx"
 const Message: React.FC<MessageData> = ( { id, username, content, receivedAt } ) => {
     const usersName = "You"
 
-    useEffect( () => {
+    // useEffect( () => {
 
-    }, [] )
-
+    // }, [] )
 
     const unescape = ( text: string ): string => {
         // Extra escaping to pass template literals through qt bridge
@@ -46,8 +48,23 @@ const Message: React.FC<MessageData> = ( { id, username, content, receivedAt } )
     //     blockOutput.style.display = "block";
     // };
 
-    // const _parsedContent = turndownService.turndown( unescape( content ) )
+    const sanitizeSchema: Schema = {
+        ...defaultSchema,
+        tagNames   : [ ...( defaultSchema.tagNames || [] ), "img" ],
+        attributes : {
+            ...defaultSchema.attributes,
+            img: [
+                [ "src", /.*/ ], "alt", "title", "width", "height",
+            ],
+        },
+        protocols: {
+            ...defaultSchema.protocols,
+            src: [ ...( defaultSchema.protocols?.src || [] ), "data", "data:image/png", "http", "https" ],
+        },
+    }
+
     const parsedContent =  unescape( content )
+    // const _parsedContent = turndownService.turndown( unescape( content ) )
     console.log( "parsedContent:", [ parsedContent ] )
 
     return (
@@ -63,7 +80,7 @@ const Message: React.FC<MessageData> = ( { id, username, content, receivedAt } )
                 <div className="message-content">
                     <Markdown
                         remarkPlugins={[ [ remarkGfm, { singleTilde: false } ] ]}
-                        rehypePlugins={[ rehypeSanitize ]}
+                        rehypePlugins={[ rehypeRaw, [ rehypeSanitize, sanitizeSchema ] ]}
                         components={{
                             code( props ) {
                                 const { children, className, node, key, ref, ...rest } = props

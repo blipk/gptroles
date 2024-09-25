@@ -241,9 +241,9 @@ a {
             thread.start()
             self.setSize()
         elif event.key() == Qt.Key.Key_Up and not shifting and not self.toPlainText():
-            user_messages = [m for m in self.chatbox.messages if m.user == "You"]
+            user_messages = [m for m in self.chatbox.messages if m.username == "You"]
             if len(user_messages):
-                self.setText(user_messages[-1].text)
+                self.setText(user_messages[-1].content)
                 self.setSize()
         # elif event.key() in (Qt.Key.Key_Delete, Qt.Key.Key_Backspace):
         #     super().keyPressEvent(event)
@@ -379,7 +379,7 @@ class ChatBox(QWidget):
 
         if "dall-e" in chat_message.username:
             data_url = convert_image_to_base64(chat_message_content)
-            chat_message_content = f"<image src='{data_url}' width='80%' height='80%'/>"
+            chat_message_content = f"<img src='{data_url}' width='80%' height='80%'/>"
 
         self.page.sendMessageToJS(
             "addMessage",
